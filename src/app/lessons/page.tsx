@@ -2,7 +2,13 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
@@ -60,27 +66,26 @@ export default function LessonsPage() {
         <TabsContent value="adult" className="space-y-8">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {adultLessons.map((lesson) => (
-              <Card key={lesson.id} className={lesson.isCurrentTrimester ? "border-primary" : ""}>
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={lesson.coverImage || "/placeholder.svg"}
-                      alt={lesson.title}
-                      fill
-                      className="object-cover rounded-t-lg"
-                    />
-                    {lesson.isCurrentTrimester && <Badge className="absolute top-2 right-2">Actual</Badge>}
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6">
+              <Card
+                key={lesson.id}
+                className={lesson.isCurrentTrimester ? "border-primary" : ""}
+              >
+                <CardHeader className="pl-6 pr-6 pb-0">
                   <CardTitle className="mb-2">{lesson.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground mb-2">{lesson.dateRange}</p>
-                  <p className="text-sm font-medium mb-2">{lesson.currentWeek}</p>
+                </CardHeader>
+                <CardContent className="pl-6 pr-6">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {lesson.dateRange}
+                  </p>
+                  <p className="text-sm font-medium mb-2">
+                    {lesson.currentWeek}
+                  </p>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Progreso</span>
                       <span>
-                        {lesson.completedDays}/{lesson.totalDays} días completados
+                        {lesson.completedDays}/{lesson.totalDays} días
+                        completados
                       </span>
                     </div>
                     <Progress value={lesson.progress} className="h-2" />
@@ -91,7 +96,9 @@ export default function LessonsPage() {
                     href={`/lesson/${lesson.id}/1`}
                     className="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                   >
-                    {lesson.progress > 0 ? "Continuar Estudio" : "Comenzar Estudio"}
+                    {lesson.progress > 0
+                      ? "Continuar Estudio"
+                      : "Comenzar Estudio"}
                   </Link>
                 </CardFooter>
               </Card>
@@ -102,7 +109,10 @@ export default function LessonsPage() {
         <TabsContent value="inverse" className="space-y-8">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {inverseLessons.map((lesson) => (
-              <Card key={lesson.id} className={lesson.isCurrentTrimester ? "border-primary" : ""}>
+              <Card
+                key={lesson.id}
+                className={lesson.isCurrentTrimester ? "border-primary" : ""}
+              >
                 <CardHeader className="p-0">
                   <div className="relative h-48 w-full">
                     <Image
@@ -111,18 +121,25 @@ export default function LessonsPage() {
                       fill
                       className="object-cover rounded-t-lg"
                     />
-                    {lesson.isCurrentTrimester && <Badge className="absolute top-2 right-2">Actual</Badge>}
+                    {lesson.isCurrentTrimester && (
+                      <Badge className="absolute top-2 right-2">Actual</Badge>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
                   <CardTitle className="mb-2">{lesson.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground mb-2">{lesson.dateRange}</p>
-                  <p className="text-sm font-medium mb-2">{lesson.currentWeek}</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {lesson.dateRange}
+                  </p>
+                  <p className="text-sm font-medium mb-2">
+                    {lesson.currentWeek}
+                  </p>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Progreso</span>
                       <span>
-                        {lesson.completedDays}/{lesson.totalDays} días completados
+                        {lesson.completedDays}/{lesson.totalDays} días
+                        completados
                       </span>
                     </div>
                     <Progress value={lesson.progress} className="h-2" />
@@ -133,7 +150,9 @@ export default function LessonsPage() {
                     href={`/lesson/${lesson.id}/1`}
                     className="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                   >
-                    {lesson.progress > 0 ? "Continuar Estudio" : "Comenzar Estudio"}
+                    {lesson.progress > 0
+                      ? "Continuar Estudio"
+                      : "Comenzar Estudio"}
                   </Link>
                 </CardFooter>
               </Card>

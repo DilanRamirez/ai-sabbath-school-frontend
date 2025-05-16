@@ -2,13 +2,22 @@
 
 import React from "react";
 import { useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AccessibilityIcon as PsychologyAlt, BookOpen, Check, Share2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AccessibilityIcon as PsychologyAlt,
+  BookOpen,
+  Check,
+  Share2,
+} from "lucide-react";
 
 // Mock data for a lesson day
 const lessonData = {
@@ -37,7 +46,11 @@ const lessonData = {
   ],
 };
 
-export default function LessonDayPage({ params }: { params: { week: string; day: string } }) {
+export default function LessonDayPage({
+  params,
+}: {
+  params: { week: string; day: string };
+}) {
   const [activeAITool, setActiveAITool] = useState<string | null>(null);
   const [reflection, setReflection] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
@@ -64,16 +77,17 @@ export default function LessonDayPage({ params }: { params: { week: string; day:
   return (
     <div className="flex flex-col min-h-screen">
       {/* Banner Image */}
-      <div className="relative w-full h-64">
-        <Image
-          src={lessonData.bannerImage || "/placeholder.svg"}
-          alt={lessonData.title}
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40 flex items-end">
+      <div
+        className="relative w-full h-40"
+        style={{
+          background: "#333",
+        }}
+      >
+        <div className="absolute inset-0 flex items-end">
           <div className="container p-6">
-            <h1 className="text-3xl font-bold text-white mb-2">{lessonData.dayTitle}</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {lessonData.dayTitle}
+            </h1>
             <p className="text-white/90">{lessonData.subtitle}</p>
           </div>
         </div>
@@ -103,28 +117,39 @@ export default function LessonDayPage({ params }: { params: { week: string; day:
                         <CardContent className="p-4">
                           <Tabs defaultValue="explain">
                             <TabsList className="grid w-full grid-cols-3">
-                              <TabsTrigger value="explain">Explicar</TabsTrigger>
-                              <TabsTrigger value="reflect">Reflexionar</TabsTrigger>
+                              <TabsTrigger value="explain">
+                                Explicar
+                              </TabsTrigger>
+                              <TabsTrigger value="reflect">
+                                Reflexionar
+                              </TabsTrigger>
                               <TabsTrigger value="apply">Aplicar</TabsTrigger>
                             </TabsList>
                             <TabsContent value="explain" className="p-4">
                               <p>
-                                Este párrafo destaca la importancia de Jesús como el medio definitivo por el cual Dios
-                                se ha comunicado con la humanidad. A diferencia de las comunicaciones anteriores a
-                                través de los profetas, Jesús representa la revelación completa y perfecta de Dios.
+                                Este párrafo destaca la importancia de Jesús
+                                como el medio definitivo por el cual Dios se ha
+                                comunicado con la humanidad. A diferencia de las
+                                comunicaciones anteriores a través de los
+                                profetas, Jesús representa la revelación
+                                completa y perfecta de Dios.
                               </p>
                             </TabsContent>
                             <TabsContent value="reflect" className="p-4">
                               <p>
-                                ¿De qué manera has experimentado la comunicación de Dios en tu vida? ¿Cómo te ayuda
-                                saber que Jesús es la revelación definitiva de Dios a entender mejor el carácter divino?
+                                ¿De qué manera has experimentado la comunicación
+                                de Dios en tu vida? ¿Cómo te ayuda saber que
+                                Jesús es la revelación definitiva de Dios a
+                                entender mejor el carácter divino?
                               </p>
                             </TabsContent>
                             <TabsContent value="apply" className="p-4">
                               <p>
-                                Considera dedicar tiempo esta semana a estudiar más profundamente quién es Jesús según
-                                Hebreos 1. Reflexiona sobre cómo su superioridad afecta tu adoración y tu confianza en
-                                Él como tu Salvador.
+                                Considera dedicar tiempo esta semana a estudiar
+                                más profundamente quién es Jesús según Hebreos
+                                1. Reflexiona sobre cómo su superioridad afecta
+                                tu adoración y tu confianza en Él como tu
+                                Salvador.
                               </p>
                             </TabsContent>
                           </Tabs>
@@ -138,7 +163,11 @@ export default function LessonDayPage({ params }: { params: { week: string; day:
                   <Card
                     key={index}
                     className="bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
-                    onClick={() => handleVerseClick(item as { reference: string; text: string })}
+                    onClick={() =>
+                      handleVerseClick(
+                        item as { reference: string; text: string },
+                      )
+                    }
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-2">
@@ -169,7 +198,11 @@ export default function LessonDayPage({ params }: { params: { week: string; day:
                   <Share2 className="h-4 w-4" />
                   Compartir con mi Grupo
                 </Button>
-                <Button onClick={markAsStudied} disabled={isCompleted} className="gap-2">
+                <Button
+                  onClick={markAsStudied}
+                  disabled={isCompleted}
+                  className="gap-2"
+                >
                   <Check className="h-4 w-4" />
                   {isCompleted ? "Completado" : "Marcar como Estudiado"}
                 </Button>
@@ -186,7 +219,9 @@ export default function LessonDayPage({ params }: { params: { week: string; day:
                   {["S", "D", "L", "M", "M", "J", "V"].map((day, i) => (
                     <Button
                       key={i}
-                      variant={params.day === String(i + 1) ? "default" : "outline"}
+                      variant={
+                        params.day === String(i + 1) ? "default" : "outline"
+                      }
                       className="w-full h-10"
                       asChild
                     >

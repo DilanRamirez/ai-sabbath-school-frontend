@@ -31,7 +31,9 @@ export default function Header() {
           <Link
             href="/lessons"
             className={`text-sm font-medium transition-colors hover:text-primary ${
-              pathname.startsWith("/lessons") ? "text-primary" : "text-muted-foreground"
+              pathname.startsWith("/lessons")
+                ? "text-primary"
+                : "text-muted-foreground"
             }`}
           >
             Lecciones
@@ -39,7 +41,9 @@ export default function Header() {
           <Link
             href="/groups"
             className={`text-sm font-medium transition-colors hover:text-primary ${
-              pathname.startsWith("/groups") ? "text-primary" : "text-muted-foreground"
+              pathname.startsWith("/groups")
+                ? "text-primary"
+                : "text-muted-foreground"
             }`}
           >
             Grupos
@@ -52,7 +56,11 @@ export default function Header() {
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
-            {theme === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+            {theme === "dark" ? (
+              <SunIcon className="h-5 w-5" />
+            ) : (
+              <MoonIcon className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>

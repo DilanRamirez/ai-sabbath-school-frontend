@@ -18,7 +18,8 @@ export const store = configureStore({
     lesson: lessonReducer,
     theme: themeReducer,
   },
-  middleware: (getDefaultMiddleware) => (isDev ? getDefaultMiddleware().concat(logger) : getDefaultMiddleware()),
+  middleware: (getDefaultMiddleware) =>
+    isDev ? getDefaultMiddleware().concat(logger) : getDefaultMiddleware(),
 });
 // Infer typed hooks
 export type RootState = ReturnType<typeof store.getState>;

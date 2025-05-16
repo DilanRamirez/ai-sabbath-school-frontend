@@ -60,3 +60,5 @@ public
 
 .pnp/
 .pnp.js
+
+.next/

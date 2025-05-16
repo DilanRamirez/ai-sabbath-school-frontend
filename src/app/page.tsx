@@ -17,7 +17,8 @@ export default function HomePage() {
             Bienvenido a tu Escuela Sabática Interactiva
           </h1>
           <p className="text-muted-foreground text-lg">
-            Profundiza tu estudio bíblico diario con herramientas interactivas y reflexiones personales.
+            Profundiza tu estudio bíblico diario con herramientas interactivas y
+            reflexiones personales.
           </p>
         </div>
       </section>
@@ -32,7 +33,9 @@ export default function HomePage() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-bold">Comenzar Lección de Hoy</h3>
-                <p className="text-muted-foreground">Continúa tu estudio diario con la lección de hoy.</p>
+                <p className="text-muted-foreground">
+                  Continúa tu estudio diario con la lección de hoy.
+                </p>
               </div>
               <Button asChild size="lg" className="mt-4">
                 <Link href="/lesson/current">Comenzar Ahora</Link>
@@ -44,7 +47,9 @@ export default function HomePage() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-bold">Ver Todas las Lecciones</h3>
-                <p className="text-muted-foreground">Explora todas las lecciones disponibles por trimestre.</p>
+                <p className="text-muted-foreground">
+                  Explora todas las lecciones disponibles por trimestre.
+                </p>
               </div>
               <Button asChild size="lg" className="mt-4">
                 <Link href="/lessons">Ver Lecciones</Link>
@@ -55,8 +60,12 @@ export default function HomePage() {
                 <Users className="h-10 w-10 text-primary" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-bold">Unirse a un Grupo de Estudio</h3>
-                <p className="text-muted-foreground">Conéctate con otros estudiantes y maestros.</p>
+                <h3 className="text-xl font-bold">
+                  Unirse a un Grupo de Estudio
+                </h3>
+                <p className="text-muted-foreground">
+                  Conéctate con otros estudiantes y maestros.
+                </p>
               </div>
               <Button asChild size="lg" className="mt-4">
                 <Link href="/groups/join">Unirse a Grupo</Link>

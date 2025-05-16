@@ -26,7 +26,7 @@ const userSlice = createSlice({
         name: string;
         email: string;
         studyGroupId?: string;
-      }>
+      }>,
     ) {
       const { id, name, email, studyGroupId } = action.payload;
       state.id = id;
