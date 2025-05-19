@@ -5,3 +5,9 @@ const api = axios.create({
 });
 
 export default api;
+
+const bible_api = axios.create({
+  baseURL: "https://bible-api.com",
+});
+
+export { bible_api };

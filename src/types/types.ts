@@ -10,12 +10,15 @@ export interface PingResponse {
 // --- Lesson Data ---
 export interface DailySection {
   id: string;
+  day: string;
   lesson_number: number;
   day_index: number;
   title: string;
   date: string;
   page_number: string;
   content: string[];
+  memory_verse?: string;
+  study_texts?: string;
 }
 
 export interface Lesson {

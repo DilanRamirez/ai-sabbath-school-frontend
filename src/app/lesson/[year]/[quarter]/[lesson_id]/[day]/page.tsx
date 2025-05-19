@@ -18,6 +18,7 @@ import {
   Check,
   Share2,
 } from "lucide-react";
+import { fetchBibleText } from "@/lib/utils";
 
 export default function LessonDayPage(props: {
   params: Promise<{
@@ -71,7 +72,16 @@ export default function LessonDayPage(props: {
     setActiveAITool(activeAITool === tool ? null : tool);
   };
 
-  const handleVerseClick = (verse: { reference: string; text: string }) => {
+  const handleVerseClick = async (verse: {
+    reference: string;
+    text: string;
+  }) => {
+    const res = await fetchBibleText(verse.reference.replace("\n", " "));
+    if (res) {
+      verse.text = res;
+    } else {
+      verse.text = "No se pudo obtener el texto bíblico.";
+    }
     setSelectedVerse(verse);
     setOpenVerseDialog(true);
   };
@@ -149,6 +159,47 @@ export default function LessonDayPage(props: {
       {/* Lesson Content */}
       <div className="container py-8 full-width">
         <h2 className="text-2xl font-bold mb-4">Estudio de la Lección</h2>
+
+        {dayData.day === "Sabado" && (
+          <>
+            <div className="mb-5">
+              <h3 className="text-lg font-semibold mb-1">
+                Lee para el estudio de esta semana
+              </h3>
+              <p className="text-gray-700 whitespace-pre-line flex flex-wrap gap-2">
+                {dayData.study_texts
+                  ?.split(";")
+                  .filter((text) => text.trim())
+                  .map((verse, i) => (
+                    <Button
+                      key={i}
+                      variant="link"
+                      className="p-0 h-auto text-primary"
+                      onClick={() =>
+                        handleVerseClick({
+                          reference: verse.trim(),
+                          text: `Texto bíblico de referencia: ${verse.trim()}`,
+                        })
+                      }
+                    >
+                      {verse.trim()}
+                    </Button>
+                  ))}
+              </p>
+            </div>
+            <div className="mb-8 space-y-4 bg-muted p-4 rounded">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Versículo de Memoria
+                </h3>
+                <p className="italic text-gray-700">
+                  {dayData.memory_verse?.replace("\n", "")}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {dayData.content &&
@@ -264,21 +315,14 @@ export default function LessonDayPage(props: {
             <DialogTitle>{selectedVerse?.reference}</DialogTitle>
           </DialogHeader>
           <div className="mt-4">
-            <p>{selectedVerse?.text}</p>
-          </div>
-          <div className="mt-4">
             <Tabs defaultValue="rvr1960">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="rvr1960">RVR 1960</TabsTrigger>
               </TabsList>
               <TabsContent value="rvr1960" className="p-4">
-                <p>{selectedVerse?.text}</p>
-              </TabsContent>
-              <TabsContent value="nvi" className="p-4">
-                <p>Versión en NVI del texto bíblico seleccionado.</p>
-              </TabsContent>
-              <TabsContent value="dhh" className="p-4">
-                <p>Versión en DHH del texto bíblico seleccionado.</p>
+                <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+                  <p>{selectedVerse?.text}</p>
+                </div>
               </TabsContent>
             </Tabs>
           </div>

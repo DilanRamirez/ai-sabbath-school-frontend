@@ -12,9 +12,11 @@ export default [
   {
     ...js.configs.recommended,
   },
+
   // TypeScript + React support
   {
     files: ["**/*.ts", "**/*.tsx"],
+
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
