@@ -12,27 +12,46 @@ export interface DailySection {
   id: string;
   lesson_number: number;
   day_index: number;
-  day_title: string;
+  title: string;
+  date: string;
+  page_number: string;
   content: string[];
 }
 
 export interface Lesson {
-  lesson: {
-    id: string;
-    lesson_number: number;
-    week_start_date: string; // "YYYY-MM-DD"
-    week_end_date: string; // "YYYY-MM-DD"
-    daily_sections: DailySection[];
-  };
+  id: string;
+  lesson_number: number;
+  title: string;
+  week_start_date: string; // "YYYY-MM-DD"
+  week_end_date: string; // "YYYY-MM-DD"
+  memory_verse_reference: string;
+  study_texts: string[];
+  daily_sections: DailySection[];
+}
+
+export interface DailyTitle {
+  day: string;
+  title: string;
 }
 
 export interface LessonMetadata {
+  id: string;
   title: string;
-  summary: string;
-  week_start_date: string; // "YYYY-MM-DD"
-  week_end_date: string; // "YYYY-MM-DD"
   lesson_number: number;
-  day_titles: string[];
+  week_start_date: string;
+  week_end_date: string;
+  daily_titles: DailyTitle[];
+  discussion_question_count: number;
+  has_egw_quotes: boolean;
+  memory_verse_reference: string;
+  study_texts: string[];
+}
+
+export interface LessonMetadataResponse {
+  lesson_id: string;
+  quarter: string; // e.g. "2023-Q4"
+  year: string; // e.g. "2023"
+  metadata: LessonMetadata;
 }
 
 // --- Search Results ---

@@ -1,9 +1,9 @@
-import { Lesson, LessonMetadata } from "@/types/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Lesson } from "@/types/types";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import api from "@/lib/api";
 
 interface LessonState {
   currentLesson: Lesson | null;
-  metadata: LessonMetadata[]; // List of all lessons available
   selectedDayIndex: number | null; // Tracks current study day
   loading: boolean;
   error?: string;
@@ -11,10 +11,26 @@ interface LessonState {
 
 const initialState: LessonState = {
   currentLesson: null,
-  metadata: [],
   selectedDayIndex: null,
   loading: false,
 };
+
+export const fetchLessonById = createAsyncThunk<
+  { lesson: Lesson },
+  { year: string; quarter: string; lesson_id: string }
+>("lesson/fetchLessonById", async ({ year, quarter, lesson_id }) => {
+  const res = await api.get<{ lesson: Lesson }>(
+    `/lessons/${year}/${quarter}/${lesson_id}`,
+  );
+  if (res.status !== 200) {
+    throw new Error("Failed to fetch lesson");
+  }
+  if (!res.data) {
+    throw new Error("Lesson not found");
+  }
+
+  return { lesson: res.data.lesson };
+});
 
 const lessonSlice = createSlice({
   name: "lesson",
@@ -22,9 +38,6 @@ const lessonSlice = createSlice({
   reducers: {
     setLesson(state, action: PayloadAction<Lesson>) {
       state.currentLesson = action.payload;
-    },
-    setMetadata(state, action: PayloadAction<LessonMetadata[]>) {
-      state.metadata = action.payload;
     },
     setSelectedDay(state, action: PayloadAction<number>) {
       state.selectedDayIndex = action.payload;
@@ -36,14 +49,24 @@ const lessonSlice = createSlice({
       state.error = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchLessonById.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(fetchLessonById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentLesson = action.payload.lesson;
+      })
+      .addCase(fetchLessonById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+  },
 });
 
-export const {
-  setLesson,
-  setMetadata,
-  setSelectedDay,
-  setLessonLoading,
-  setLessonError,
-} = lessonSlice.actions;
+export const { setLesson, setSelectedDay, setLessonLoading, setLessonError } =
+  lessonSlice.actions;
 
 export default lessonSlice.reducer;
