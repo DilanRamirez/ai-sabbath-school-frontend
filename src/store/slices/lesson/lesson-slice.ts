@@ -29,7 +29,15 @@ export const fetchLessonById = createAsyncThunk<
     throw new Error("Lesson not found");
   }
 
-  return { lesson: res.data.lesson };
+  // remove all breakpoints from the lesson
+  const updatedLesson = {
+    ...res.data.lesson,
+    daily_sections: res.data.lesson.daily_sections.map((section) => ({
+      ...section,
+      content: section.content.map((content) => content.replace("\n", " ")),
+    })),
+  };
+  return { lesson: updatedLesson };
 });
 
 const lessonSlice = createSlice({
