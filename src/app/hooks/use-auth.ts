@@ -1,0 +1,54 @@
+// src/hooks/useAuth.ts
+import { useRouter } from "next/navigation";
+import { loginUser, registerUser } from "../lib/auth";
+import { useAppDispatch } from "../store/hooks";
+import { login } from "../store/slices/user/user-slice";
+import { LoginResponse } from "../types/types";
+
+export function useAuth() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const _login = async (email: string, password: string) => {
+    const { token_type, access_token, user }: LoginResponse = await loginUser(
+      email,
+      password,
+    );
+    localStorage.setItem("token", access_token);
+    dispatch(
+      login({
+        access_token,
+        token_type,
+        user,
+      }),
+    );
+    router.push("/quarters");
+  };
+
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    isTeacher: boolean,
+  ) => {
+    const response = await registerUser({
+      name,
+      email,
+      password,
+      role: isTeacher ? "teacher" : "student",
+    });
+
+    const { user, access_token, token_type } = response;
+    localStorage.setItem("token", access_token);
+    dispatch(
+      login({
+        access_token,
+        token_type,
+        user,
+      }),
+    );
+    router.push("/quarters");
+  };
+
+  return { login: _login, register };
+}

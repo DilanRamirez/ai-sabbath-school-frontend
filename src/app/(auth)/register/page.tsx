@@ -15,8 +15,10 @@ import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/app/hooks/use-auth";
 
 const schema = z.object({
+  name: z.string().min(2, "Nombre requerido"),
   email: z.string().email("Correo inválido"),
   password: z.string().min(6, "Mínimo 6 caracteres"),
   isTeacher: z.boolean().optional(),
@@ -26,6 +28,9 @@ type FormData = z.infer<typeof schema>;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { register } = useAuth();
+
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const {
     handleSubmit,
@@ -34,23 +39,50 @@ export default function RegisterPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       isTeacher: false,
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Register:", {
-      email: data.email,
-      password: data.password,
-      role: data.isTeacher ? "teacher" : "student",
-    });
-    router.push("/quarters");
+  const onSubmit = async (data: FormData) => {
+    try {
+      await register(
+        data.name,
+        data.email,
+        data.password,
+        data.isTeacher ?? false,
+      );
+    } catch (err) {
+      console.error("Register error:", err);
+      setErrorMessage("Error al registrarse. Inténtalo de nuevo.");
+    }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <Box
+      component="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(onSubmit)(e);
+      }}
+      noValidate
+    >
+      <Controller
+        name="name"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            label="Nombre"
+            fullWidth
+            margin="normal"
+            {...field}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+          />
+        )}
+      />
       <Controller
         name="email"
         control={control}
@@ -96,6 +128,11 @@ export default function RegisterPage() {
           />
         )}
       />
+      {errorMessage && (
+        <Typography color="error" align="center" sx={{ mt: 2 }}>
+          {errorMessage}
+        </Typography>
+      )}
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
         Registrarse
       </Button>

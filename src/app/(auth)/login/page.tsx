@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/app/hooks/use-auth";
 
 const schema = z.object({
   email: z.string().email("Correo inválido"),
@@ -23,6 +24,8 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const {
     handleSubmit,
@@ -36,13 +39,24 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Login:", data);
-    router.push("/quarters");
+  const onSubmit = async (data: FormData) => {
+    try {
+      await login(data.email, data.password);
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrorMessage("Error al iniciar sesión. Verifica tus datos.");
+    }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <Box
+      component="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(onSubmit)(e);
+      }}
+      noValidate
+    >
       <Controller
         name="email"
         control={control}
@@ -72,6 +86,11 @@ export default function LoginPage() {
           />
         )}
       />
+      {errorMessage && (
+        <Typography color="error" align="center" sx={{ mt: 2 }}>
+          {errorMessage}
+        </Typography>
+      )}
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
         Iniciar sesión
       </Button>
