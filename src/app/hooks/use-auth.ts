@@ -1,5 +1,6 @@
 // src/hooks/useAuth.ts
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { loginUser, registerUser } from "../lib/auth";
 import { useAppDispatch } from "../store/hooks";
 import { login } from "../store/slices/user/user-slice";
@@ -14,7 +15,7 @@ export function useAuth() {
       email,
       password,
     );
-    localStorage.setItem("token", access_token);
+    Cookies.set("token", access_token);
     dispatch(
       login({
         access_token,
@@ -39,7 +40,7 @@ export function useAuth() {
     });
 
     const { user, access_token, token_type } = response;
-    localStorage.setItem("token", access_token);
+    Cookies.set("token", access_token);
     dispatch(
       login({
         access_token,
