@@ -11,6 +11,16 @@ export default [
   // Base config
   {
     ...js.configs.recommended,
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+    linterOptions: {
+      env: {
+        browser: true,
+        es2021: true,
+      },
+    },
   },
 
   // TypeScript + React support
