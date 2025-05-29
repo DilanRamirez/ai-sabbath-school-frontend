@@ -50,6 +50,16 @@ let theme = createTheme({
       fontFamily: '"Merriweather", serif',
     },
   },
+  components: {
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f9f9f9",
+          color: "#2C3E50",
+        },
+      },
+    },
+  },
 });
 theme = responsiveFontSizes(theme);
 

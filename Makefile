@@ -13,4 +13,4 @@ lint:
 types:
 	npx tsc --noEmit
 
-test-all: check-format lint types
+test-all: format check-format lint types

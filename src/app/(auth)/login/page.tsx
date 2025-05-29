@@ -8,7 +8,6 @@ import {
   Typography,
   Link as MuiLink,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -23,9 +22,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const {
     handleSubmit,
@@ -40,11 +39,14 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: FormData) => {
+    setLoading(true);
     try {
       await login(data.email, data.password);
     } catch (err) {
       console.error("Login error:", err);
       setErrorMessage("Error al iniciar sesión. Verifica tus datos.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,8 +93,14 @@ export default function LoginPage() {
           {errorMessage}
         </Typography>
       )}
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-        Iniciar sesión
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3 }}
+        disabled={loading}
+      >
+        {loading ? "Cargando..." : "Iniciar sesión"}
       </Button>
       <Typography variant="body2" align="center" sx={{ mt: 2 }}>
         ¿No tienes cuenta?{" "}

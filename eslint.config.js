@@ -15,10 +15,17 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
     },
-    linterOptions: {
-      env: {
-        browser: true,
-        es2021: true,
+  },
+  {
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        window: "readonly",
+        console: "readonly",
+        document: "readonly",
+        fetch: "readonly",
+        process: "readonly",
       },
     },
   },
@@ -44,6 +51,14 @@ export default [
       ...eslintPluginReact.configs.recommended.rules,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_", // allow underscore-prefixed
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];

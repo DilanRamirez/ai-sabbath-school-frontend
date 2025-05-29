@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /** Date range for the week */
 export interface WeekRange {
   start: string; // ISO date, e.g. "2025-05-17"

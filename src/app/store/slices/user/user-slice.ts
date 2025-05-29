@@ -1,6 +1,5 @@
 import { LoginResponse, User } from "@/app/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { sign } from "node:crypto";
 
 export interface UserState {
   user: User;

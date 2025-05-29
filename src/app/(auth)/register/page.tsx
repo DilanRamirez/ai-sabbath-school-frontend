@@ -10,7 +10,6 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -27,7 +26,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function RegisterPage() {
-  const router = useRouter();
   const { register } = useAuth();
 
   const [errorMessage, setErrorMessage] = React.useState("");

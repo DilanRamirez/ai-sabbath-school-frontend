@@ -1,23 +1,29 @@
-// app/(auth)/layout.tsx
-import React, { ReactNode } from "react";
-import { Box, Container, Typography } from "@mui/material";
+import React from "react";
+import { Container, CssBaseline, Box } from "@mui/material";
+import Header from "@/app/components/layout/header";
+import Footer from "@/app/components/layout/footer";
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Typography variant="h4" align="center" gutterBottom>
-        Escuela Sabática Interactiva
-      </Typography>
-      <Box sx={{ mt: 2 }}>{children}</Box>
-    </Container>
+    <>
+      <CssBaseline />
+      <Header />
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          minHeight: "calc(100vh - 120px)",
+          py: 4,
+          backgroundColor: "#F9F9F9",
+        }}
+      >
+        <Container maxWidth="lg">{children}</Container>
+      </Box>
+      <Footer />
+    </>
   );
 }

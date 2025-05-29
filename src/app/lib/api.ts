@@ -1,6 +1,4 @@
-/* eslint-disable no-undef */
 import axios from "axios";
-import type { QARequest, LLMResponse, LLMModes } from "@/app/types/types";
 
 const api = axios.create({
   baseURL: "https://ai-sabbath-school-backend-production.up.railway.app/api/v1",
@@ -21,9 +19,9 @@ export { bible_api };
  * @param request - QARequest containing question, top_k, lang, and mode
  * @returns LLMResponse from the server
  */
-export async function fetchLLMAnswer(request: QARequest): Promise<LLMResponse> {
+export async function fetchLLMAnswer(request: any): Promise<any> {
   try {
-    const response = await api.post<LLMResponse>("/llm/answer", request);
+    const response = await api.post<any>("/llm/answer", request);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching LLM answer:", error);
@@ -41,11 +39,11 @@ export async function fetchLLMAnswer(request: QARequest): Promise<LLMResponse> {
  */
 export async function getLLMResponse(
   text: string,
-  mode: LLMModes = "explain",
+  mode: any = "explain",
   topK = 3,
   lang: "es" | "en" = "es",
-): Promise<LLMResponse> {
-  const request: QARequest = {
+): Promise<any> {
+  const request: any = {
     question: text,
     mode,
     top_k: topK,
@@ -53,11 +51,11 @@ export async function getLLMResponse(
   };
 
   try {
-    const data: LLMResponse = await fetchLLMAnswer(request);
+    const data: any = await fetchLLMAnswer(request);
     console.log("LLM response:", data);
     return data || "";
   } catch (err) {
     console.error("LLM request failed:", err);
-    return {} as LLMResponse;
+    return {} as any;
   }
 }

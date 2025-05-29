@@ -16,6 +16,8 @@ export function useAuth() {
       password,
     );
     Cookies.set("token", access_token);
+    // eslint-disable-next-line no-undef
+    localStorage.setItem("user", JSON.stringify(user));
     dispatch(
       login({
         access_token,
@@ -41,6 +43,8 @@ export function useAuth() {
 
     const { user, access_token, token_type } = response;
     Cookies.set("token", access_token);
+    // eslint-disable-next-line no-undef
+    localStorage.setItem("user", JSON.stringify(user));
     dispatch(
       login({
         access_token,
@@ -51,5 +55,22 @@ export function useAuth() {
     router.push("/quarters");
   };
 
-  return { login: _login, register };
+  const logout = () => {
+    Cookies.remove("token");
+    dispatch(
+      login({
+        access_token: "",
+        token_type: "bearer",
+        user: {
+          name: "",
+          email: "",
+          role: "student",
+          isLoggedIn: false,
+        },
+      }),
+    );
+    router.push("/login");
+  };
+
+  return { login: _login, register, logout };
 }
