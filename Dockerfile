@@ -1,10 +1,11 @@
+# To rebuild without cache, run: docker build --no-cache -t my-app .
 # Install dependencies only when needed
 FROM node:18-alpine AS deps
 WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm install --no-cache
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
@@ -15,7 +16,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 ENV NODE_ENV production
 
-RUN npm run build
+RUN npm run build --no-cache
 
 # Production image
 FROM node:18-alpine AS runner
