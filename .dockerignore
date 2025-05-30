@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-store
+
+# output
+.next
+out
+
+# local env
+.env*
+.env.local
+
+# OS & Editor
+.DS_Store
+.vscode
+.idea
+*.swp
+
+# Git
+.git
+.gitignore
