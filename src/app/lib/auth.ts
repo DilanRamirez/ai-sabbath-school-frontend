@@ -5,6 +5,10 @@ export async function loginUser(
   email: string,
   password: string,
 ): Promise<LoginResponse> {
+  console.log(
+    "process.env.NEXT_PUBLIC_API_BASE_URL:",
+    process.env.NEXT_PUBLIC_API_BASE_URL,
+  );
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
     {
@@ -14,6 +18,7 @@ export async function loginUser(
     },
   );
 
+  console.log("Response status:", response);
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || "Login failed");
