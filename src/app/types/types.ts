@@ -120,6 +120,23 @@ export interface RegisterResponse {
   user_id: string;
 }
 
+export interface Quarter {
+  year: string;
+  slug: string;
+  metadata: QuarterMetadata;
+  cover_url: string | null;
+}
+
+export interface QuarterMetadata {
+  slug: string;
+  displayName: string;
+  weekRange: {
+    start: string;
+    end: string;
+  };
+  coverKey: string;
+}
+
 export enum SectionType {
   READING = "reading",
   MEMORY_VERSE = "memory_verse",

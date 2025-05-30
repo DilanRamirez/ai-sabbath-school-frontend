@@ -10,6 +10,7 @@ import {
   responsiveFontSizes,
 } from "@mui/material";
 
+const BORDER_RADIUS = 4; // Define a constant for border radius
 // Define your custom MUI theme
 let theme = createTheme({
   palette: {
@@ -49,6 +50,12 @@ let theme = createTheme({
     h6: {
       fontFamily: '"Merriweather", serif',
     },
+    body1: {
+      fontFamily: '"Merriweather", serif',
+    },
+    body2: {
+      fontFamily: '"Merriweather", serif',
+    },
   },
   components: {
     MuiAvatar: {
@@ -56,6 +63,14 @@ let theme = createTheme({
         root: {
           backgroundColor: "#f9f9f9",
           color: "#2C3E50",
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#fff",
+          borderRadius: BORDER_RADIUS,
         },
       },
     },
