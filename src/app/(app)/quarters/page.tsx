@@ -7,8 +7,12 @@ import LessonPreview from "@/app/dashboard/lesson-preview";
 import QuickActions from "@/app/dashboard/quick-actions";
 import { useLessonData } from "@/app/hooks/use-lesson-data";
 import { Quarter } from "@/app/types/types";
+import { useAppSelector } from "@/app/store/hooks";
+import { RootState } from "@/app/store";
 
 const Quarters = () => {
+  const user = useAppSelector((state: RootState) => state.user);
+
   const [selectedQuarter, setSelectedQuarter] = useState<Quarter | undefined>(
     undefined,
   );
@@ -16,12 +20,11 @@ const Quarters = () => {
 
   const handleQuarterSelect = (quarter: Quarter) => {
     setSelectedQuarter(quarter);
-    console.log("Selected Quarter:", quarter);
   };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <WelcomeHeader name="Dilan" role="student" />
+      <WelcomeHeader name={user.user.name} role={user.user.role} />
       <Box sx={{ mt: 4 }}>
         <QuarterSelector quarters={quarters} onSelect={handleQuarterSelect} />
       </Box>

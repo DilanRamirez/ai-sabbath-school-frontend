@@ -12,7 +12,6 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
   quarters,
   onSelect,
 }) => {
-  console.log("Rendering QuarterSelector with quarters:", quarters);
   return (
     <Grid container spacing={2}>
       {quarters.map((q) => (
@@ -21,7 +20,7 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
             sx={{
               cursor: "pointer",
               width: "100%",
-              maxWidth: { xs: 250, sm: 250, md: 250 },
+              maxWidth: { xs: 100, sm: 150, md: 150 },
               margin: "auto",
               transition: "box-shadow 0.3s",
               "&:hover": {
@@ -37,7 +36,7 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
               alt={q.metadata.slug}
             />
             <CardContent>
-              <Typography>{q.metadata.displayName}</Typography>
+              <Typography variant="body1">{q.metadata.displayName}</Typography>
               <Typography sx={{ mt: 2 }} variant="body2" color="text.secondary">
                 {q.metadata.weekRange.start} - {q.metadata.weekRange.end}
               </Typography>

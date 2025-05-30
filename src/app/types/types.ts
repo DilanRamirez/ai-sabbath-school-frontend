@@ -137,6 +137,12 @@ export interface QuarterMetadata {
   coverKey: string;
 }
 
+export interface LessonsResponse {
+  year: string;
+  quarter: string;
+  lesson_id: string;
+}
+
 export enum SectionType {
   READING = "reading",
   MEMORY_VERSE = "memory_verse",

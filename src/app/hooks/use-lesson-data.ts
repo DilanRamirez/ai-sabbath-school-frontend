@@ -6,19 +6,20 @@ import {
   loadQuarters,
   loadQuartersError,
 } from "../store/slices/quarters/quarters-slice";
-import { Quarter } from "../types/types";
-
-export interface Lesson {
-  lesson_id: string;
-  title: string;
-  week_range: string;
-  memory_verse: string;
-}
+import { LessonsResponse, Quarter } from "../types/types";
+import {
+  loadLessons,
+  loadLessonsError,
+  loadLessonsLoading,
+} from "../store/slices/lessons/lessons-slice";
+import { useRouter } from "next/navigation";
 
 export function useLessonData(selectedQuarter?: Quarter) {
+  const router = useRouter();
+
   const dispatch = useDispatch();
   const [quarters, setQuarters] = useState<Quarter[]>([]);
-  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [lessons, setLessons] = useState<LessonsResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +27,6 @@ export function useLessonData(selectedQuarter?: Quarter) {
     dispatch(loadQuartersLoading());
     getQuarters()
       .then((data) => {
-        console.log("Loaded quarters:", data);
         setQuarters(data);
         dispatch(loadQuarters(data));
       })
@@ -35,22 +35,33 @@ export function useLessonData(selectedQuarter?: Quarter) {
         setError("Error loading quarters");
         dispatch(loadQuartersError("Error loading quarters"));
       });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!selectedQuarter) return;
     setLoading(true);
     setLessons([]);
     setError(null);
+    dispatch(loadLessonsLoading({ loading: true }));
 
     getLessons(selectedQuarter.year, selectedQuarter.metadata.slug)
-      .then(setLessons)
+      .then((data) => {
+        setLessons(data);
+        dispatch(loadLessons(data));
+        setLoading(false);
+        dispatch(loadLessonsLoading({ loading: false }));
+        router.push("/lessons");
+      })
       .catch((err) => {
         console.error(err);
         setError("Error loading lessons");
+        dispatch(loadLessons([]));
+        dispatch(loadLessonsError("Error loading lessons"));
+        setLoading(false);
+        dispatch(loadLessonsLoading({ loading: false }));
       })
       .finally(() => setLoading(false));
-  }, [selectedQuarter]);
+  }, [dispatch, router, selectedQuarter]);
 
   return { quarters, lessons, loading, error };
 }

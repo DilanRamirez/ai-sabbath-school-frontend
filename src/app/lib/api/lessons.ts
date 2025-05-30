@@ -1,3 +1,5 @@
+import { LessonsResponse } from "@/app/types/types";
+
 export async function getQuarters() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/quarters`,
@@ -15,7 +17,10 @@ export async function getQuarters() {
   return response.json();
 }
 
-export async function getLessons(year?: string, quarter?: string) {
+export async function getLessons(
+  year?: string,
+  quarter?: string,
+): Promise<LessonsResponse[]> {
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons`);
 
   if (year) url.searchParams.append("year", year);
