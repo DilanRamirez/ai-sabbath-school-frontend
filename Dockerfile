@@ -17,7 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 RUN npm run build --no-cache
 
@@ -25,7 +25,7 @@ RUN npm run build --no-cache
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Copy built app
 COPY --from=builder /app/public ./public
