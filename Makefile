@@ -1,3 +1,6 @@
+run-gha:
+	act
+	
 develop:
 	npm run dev
 

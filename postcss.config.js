@@ -1,5 +1,8 @@
-export const content = ["./src/**/*.{html,js}"];
-export const plugins = {
-  tailwindcss: {},
-  autoprefixer: {},
+/* eslint-disable no-undef */
+module.exports = {
+  content: ["./src/**/*.{html,js}"],
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
 };
