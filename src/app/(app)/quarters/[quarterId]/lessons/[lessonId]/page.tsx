@@ -1,21 +1,57 @@
-// lessons/[lessonId]/page.tsx
+// src/app/(app)/quarters/[quarterId]/lessons/[lessonId]/page.tsx
 "use client";
+import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 
-import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+const days = [
+  "saturday",
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+];
 
-const LessonRedirectPage = () => {
+export default function LessonOverviewPage() {
   const router = useRouter();
-  const params = useParams();
-  const { lessonId, quarterId } = params;
+  const { quarterId, lessonId } = useParams();
 
-  useEffect(() => {
-    if (lessonId && quarterId) {
-      router.replace(`/quarters/${quarterId}/lessons/${lessonId}/saturday`);
-    }
-  }, [lessonId, quarterId, router]);
+  const handleClick = (day: string) => {
+    router.push(`/quarters/${quarterId}/lessons/${lessonId}/${day}`);
+  };
 
-  return null; // or a loading spinner
-};
-
-export default LessonRedirectPage;
+  return (
+    <Box
+      p={4}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+    >
+      <Typography variant="h4" gutterBottom>
+        Días del Estudio
+      </Typography>
+      <Box maxWidth={360} width="100%">
+        <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {days.map((day) => (
+            <ListItemButton key={day} onClick={() => handleClick(day)}>
+              <ListItemText
+                primary={day.charAt(0).toUpperCase() + day.slice(1)}
+                sx={{ textAlign: "center" }}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      </Box>
+    </Box>
+  );
+}
