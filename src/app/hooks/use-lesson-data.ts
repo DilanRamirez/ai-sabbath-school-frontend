@@ -50,7 +50,7 @@ export function useLessonData(selectedQuarter?: Quarter) {
         dispatch(loadLessons(data));
         setLoading(false);
         dispatch(loadLessonsLoading({ loading: false }));
-        router.push("/lessons");
+        router.push(`/quarters/${selectedQuarter.metadata.slug}/lessons`);
       })
       .catch((err) => {
         console.error(err);

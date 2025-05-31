@@ -5,9 +5,11 @@ import { List, ListItem, ListItemText } from "@mui/material";
 
 interface Props {
   lessons: LessonsResponse[];
+  quarterId: string;
 }
 
-const LessonsList: React.FC<Props> = ({ lessons }) => {
+const LessonsList: React.FC<Props> = ({ lessons, quarterId }) => {
+  console.log("LessonsList rendered with lessons:", quarterId, lessons);
   return (
     <List>
       {lessons.map((lesson, index) => (
@@ -15,7 +17,7 @@ const LessonsList: React.FC<Props> = ({ lessons }) => {
           key={lesson.lesson_id}
           divider
           component={Link}
-          href={`/lessons/${lesson.lesson_id}`}
+          href={`/quarters/${quarterId}/lessons/${lesson.lesson_id}`}
         >
           <ListItemText
             primary={`Lesson ${index + 1}: ${lesson.metadata.title}`}

@@ -38,3 +38,27 @@ export async function getLessons(
 
   return response.json();
 }
+
+export async function getLesson(
+  year: string,
+  quarter: string,
+  lessonId: string,
+): Promise<any> {
+  console.log(
+    `Fetching lesson for year: ${year}, quarter: ${quarter}, lessonId: ${lessonId}`,
+  );
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons/${year}/${quarter}/${lessonId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch lesson");
+  }
+
+  return response.json();
+}

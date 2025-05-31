@@ -17,7 +17,7 @@ export default function DashboardLayout({
         sx={{
           flex: 1,
           minHeight: "calc(100vh - 120px)",
-          py: 4,
+          py: 0,
           backgroundColor: "#F9F9F9",
         }}
       >

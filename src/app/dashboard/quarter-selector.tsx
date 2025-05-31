@@ -1,5 +1,12 @@
 import React from "react";
-import { Grid, Card, CardContent, Typography, CardMedia } from "@mui/material";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  CardMedia,
+  Box,
+} from "@mui/material";
 import { Quarter } from "../types/types";
 
 interface QuarterSelectorProps {
@@ -13,38 +20,57 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
   onSelect,
 }) => {
   return (
-    <Grid container spacing={2}>
-      {quarters.map((q) => (
-        <Grid key={q.year}>
-          <Card
-            sx={{
-              cursor: "pointer",
-              width: "100%",
-              maxWidth: { xs: 100, sm: 150, md: 150 },
-              margin: "auto",
-              transition: "box-shadow 0.3s",
-              "&:hover": {
-                boxShadow: 6, // Increase elevation on hover
-              },
-            }}
-            onClick={() => onSelect(q)}
-          >
-            <CardMedia
-              component="img"
-              height="140"
-              image={q.cover_url ?? ""}
-              alt={q.metadata.slug}
-            />
-            <CardContent>
-              <Typography variant="body1">{q.metadata.displayName}</Typography>
-              <Typography sx={{ mt: 2 }} variant="body2" color="text.secondary">
-                {q.metadata.weekRange.start} - {q.metadata.weekRange.end}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+    <Box sx={{ px: 3 }}>
+      <Typography variant="h3" fontWeight="bold" gutterBottom>
+        Escuela Sabática
+      </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        Edición para adultos
+      </Typography>
+
+      <Grid
+        container
+        spacing={2}
+        wrap="nowrap"
+        sx={{
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          "-webkit-overflow-scrolling": "touch",
+        }}
+      >
+        {quarters.map((q) => (
+          <Grid key={q.year} sx={{ scrollSnapAlign: "start", minWidth: 220 }}>
+            <Card
+              sx={{
+                cursor: "pointer",
+                width: 200,
+                height: "100%",
+                transition: "box-shadow 0.3s",
+                "&:hover": {
+                  boxShadow: 6,
+                },
+              }}
+              onClick={() => onSelect(q)}
+            >
+              <CardMedia
+                component="img"
+                height="160"
+                image={q.cover_url ?? ""}
+                alt={q.metadata.slug}
+              />
+              <CardContent>
+                <Typography variant="subtitle1" noWrap>
+                  {q.metadata.displayName}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {q.metadata.weekRange.start} – {q.metadata.weekRange.end}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
