@@ -10,11 +10,11 @@ import {
   responsiveFontSizes,
 } from "@mui/material";
 
-const BORDER_RADIUS = 4; // Define a constant for border radius
-// Define your custom MUI theme
+const BORDER_RADIUS = 12;
+
 let theme = createTheme({
   palette: {
-    mode: "light", // will be overridden by NextThemesProvider
+    mode: "light",
     primary: {
       main: "#2C3E50",
     },
@@ -22,24 +22,30 @@ let theme = createTheme({
       main: "#34495E",
     },
     background: {
-      default: "#f9f9f9",
-      paper: "#BDC3C7",
+      default: "#F4F4F6",
+      paper: "#FFFFFF",
     },
     text: {
       primary: "#2C3E50",
-      secondary: "#34495E",
+      secondary: "#7F8C8D",
     },
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
     h1: {
       fontFamily: '"Merriweather", serif',
+      fontSize: "2rem",
+      fontWeight: 700,
     },
     h2: {
       fontFamily: '"Merriweather", serif',
+      fontSize: "1.75rem",
+      fontWeight: 600,
     },
     h3: {
       fontFamily: '"Merriweather", serif',
+      fontSize: "1.5rem",
+      fontWeight: 600,
     },
     h4: {
       fontFamily: '"Merriweather", serif',
@@ -51,17 +57,19 @@ let theme = createTheme({
       fontFamily: '"Merriweather", serif',
     },
     body1: {
-      fontFamily: '"Merriweather", serif',
+      fontFamily: '"Inter", sans-serif',
+      fontSize: "1rem",
     },
     body2: {
-      fontFamily: '"Merriweather", serif',
+      fontFamily: '"Inter", sans-serif',
+      fontSize: "0.875rem",
     },
   },
   components: {
     MuiAvatar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#f9f9f9",
+          backgroundColor: "#ECF0F1",
           color: "#2C3E50",
         },
       },
@@ -69,8 +77,24 @@ let theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: "#fff",
+          backgroundColor: "#FFFFFF",
           borderRadius: BORDER_RADIUS,
+          boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: BORDER_RADIUS,
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: BORDER_RADIUS,
+          marginBottom: 8,
         },
       },
     },
