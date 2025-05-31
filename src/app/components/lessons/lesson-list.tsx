@@ -18,11 +18,8 @@ const LessonsList: React.FC<Props> = ({ lessons }) => {
           href={`/lessons/${lesson.lesson_id}`}
         >
           <ListItemText
-            primary={`Lesson ${index + 1}: ${lesson.lesson_id.replace(
-              /-/g,
-              " ",
-            )}`}
-            secondary="date"
+            primary={`Lesson ${index + 1}: ${lesson.metadata.title}`}
+            secondary={`Date: ${lesson.metadata.week_range.start} - ${lesson.metadata.week_range.end}`}
           />
         </ListItem>
       ))}

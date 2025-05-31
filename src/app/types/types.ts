@@ -137,10 +137,19 @@ export interface QuarterMetadata {
   coverKey: string;
 }
 
+export interface LessonMetadata {
+  id: string;
+  lesson_number: number;
+  title: string;
+  week_range: WeekRange;
+  memory_verse: MemoryVerse;
+}
+
 export interface LessonsResponse {
   year: string;
   quarter: string;
   lesson_id: string;
+  metadata: LessonMetadata;
 }
 
 export enum SectionType {
