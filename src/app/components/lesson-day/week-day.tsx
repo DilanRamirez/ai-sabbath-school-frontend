@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AnswerField from "./answer-field";
 import { StudyNotes } from "@/app/types/types";
+import AiButton from "./ai-button";
+import AiActions from "./ai-actions";
 
 interface WeekDayProps {
   paragraphs: string[];
@@ -33,20 +35,36 @@ export default function WeekDay({
   dayName,
   cohortId,
 }: WeekDayProps) {
+  const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
+  const toggleSection = (id: string) =>
+    setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
+
   return (
     <Box px={2} py={4}>
       {/* First Paragraph */}
-      <Box mb={3}>
-        <Typography variant="body1">{paragraphs[0]}</Typography>
+      <Box mb={3} sx={{ ...style.passageWrapper, flexDirection: "column" }}>
+        <Box sx={{ display: "flex" }}>
+          <AiButton toggleActions={() => toggleSection(`para-${0}`)} />
+          <Typography variant="body1">{paragraphs[0]}</Typography>
+        </Box>
+        {openMap[`para-${0}`] && (
+          <Box mt={2}>
+            <AiActions open={openMap[`para-${0}`]} context={paragraphs[0]} />
+          </Box>
+        )}
       </Box>
 
       {/* Bible Question */}
       <Box mb={4} p={2} bgcolor="#ECF0F1" borderRadius={2}>
-        {bibleQuestion.label && (
-          <Typography variant="subtitle2" color="text.secondary">
-            {bibleQuestion.label}
-          </Typography>
-        )}
+        <Box sx={style.passageWrapper}>
+          <AiButton toggleActions={() => toggleSection(`bible-q-${0}`)} />
+          {bibleQuestion.label && (
+            <Typography variant="subtitle2" color="text.secondary">
+              {bibleQuestion.label}
+            </Typography>
+          )}
+        </Box>
+
         <Typography variant="body1" fontStyle="italic" mb={2}>
           {bibleQuestion.question}
         </Typography>
@@ -61,22 +79,32 @@ export default function WeekDay({
             .toLowerCase()}`}
           notes={notes}
         />
+        <AiActions
+          open={openMap[`bible-q-${0}`]}
+          context={bibleQuestion.question}
+        />
       </Box>
 
       {/* Remaining Paragraphs */}
-      {paragraphs.slice(1, 4).map((para, idx) => (
-        <Box key={idx} mb={3}>
-          <Typography variant="body1">{para}</Typography>
+      {paragraphs.map((para, idx) => (
+        <Box key={idx}>
+          <Box mb={3} sx={style.passageWrapper}>
+            <AiButton toggleActions={() => toggleSection(`para-${idx}`)} />
+            <Typography variant="body1">{para}</Typography>
+          </Box>
+          <AiActions open={openMap[`para-${idx}`]} context={para} />
         </Box>
       ))}
-
       {/* Reflection */}
       <Box mt={4} p={2} borderLeft={4} borderColor="primary.main">
-        {reflection.label && (
-          <Typography variant="subtitle2" color="primary">
-            {reflection.label}
-          </Typography>
-        )}
+        <Box sx={{ ...style.passageWrapper, flexDirection: "row" }}>
+          <AiButton toggleActions={() => toggleSection(`reflection-${0}`)} />
+          {reflection.label && (
+            <Typography variant="subtitle2" color="primary">
+              {reflection.label}
+            </Typography>
+          )}
+        </Box>
         <Typography variant="body1">{reflection.question}</Typography>
         <AnswerField
           userId={userId}
@@ -89,7 +117,21 @@ export default function WeekDay({
             .toLowerCase()}`}
           notes={notes}
         />
+        {openMap[`reflection-${0}`] && (
+          <Box mt={2}>
+            <AiActions
+              open={openMap[`reflection-${0}`]}
+              context={reflection.question}
+            />
+          </Box>
+        )}
       </Box>
     </Box>
   );
 }
+
+const style: { [key: string]: React.CSSProperties } = {
+  passageWrapper: {
+    display: "flex",
+  },
+};
