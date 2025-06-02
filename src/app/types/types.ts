@@ -198,6 +198,29 @@ export interface StudyNotes {
   created_at: string; // ISO timestamp
 }
 
+export interface LLMRequest {
+  mode: LLMMode;
+  text: string;
+  lang: "es" | "en"; // language code
+}
+
+export interface LLMResponse {
+  result: LLMAnswer;
+  error?: string; // optional error message
+  status: "success" | "error"; // indicates if the request was successful
+}
+
+export interface LLMAnswer {
+  answer: string; // main response text
+  refs: string[]; // optional array of references
+}
+export enum LLMMode {
+  EXPLAIN = "explain",
+  REFLECT = "reflect",
+  APPLY = "apply",
+  SUMMARIZE = "summarize",
+  ASK = "ask",
+}
 export enum SectionType {
   REFLECTION = "reflection",
   READING = "reading",

@@ -1,13 +1,7 @@
 "use client";
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Typography,
-  CircularProgress,
-  Alert,
-  Button,
-  Box,
-} from "@mui/material";
+import { Typography, Alert, Button, Box } from "@mui/material";
 import { useStudyProgress } from "@/app/hooks/use-study";
 import { useAppSelector } from "@/app/store/hooks";
 import { useLessonDay } from "@/app/hooks/use-lesson-day";
@@ -16,6 +10,7 @@ import Container from "@mui/material/Container";
 import SabbathDay from "@/app/components/lesson-day/sabbath";
 import FridayDay from "@/app/components/lesson-day/friday";
 import WeekDay from "@/app/components/lesson-day/week-day";
+import LessonDaySkeleton from "@/app/components/skeletons/lesson-day-skeleton";
 
 const DayView = () => {
   const { lessonId, dayName, quarterId } = useParams();
@@ -46,8 +41,6 @@ const DayView = () => {
     error: lessonError,
   } = useLessonDay(getLessonDetails(lessonId as string));
 
-  console.log("progress:", progress);
-
   const currentDayData = lesson?.days?.find((day) => {
     return day.day.toLowerCase() === decodedDayName.toLowerCase();
   });
@@ -75,7 +68,9 @@ const DayView = () => {
     );
   };
 
-  if (loading || lessonLoading) return <CircularProgress />;
+  if (loading || lessonLoading) {
+    return <LessonDaySkeleton />;
+  }
   if (error || lessonError)
     return <Alert severity="error">{error || lessonError}</Alert>;
 

@@ -1,23 +1,33 @@
+import { useLLM } from "@/app/hooks/use-llm";
+import { LLMMode } from "@/app/types/types";
 import { Box, Collapse, Tab, Tabs, Typography } from "@mui/material";
 import React, { FC, useState } from "react";
 
-const actionOptions = [
-  "Explicar",
-  "Refleccionar",
-  "Aplicar",
-  "Resumir",
-  "Preguntar",
+const actionOptions: LLMMode[] = [
+  LLMMode.SUMMARIZE,
+  LLMMode.REFLECT,
+  LLMMode.ASK,
+  LLMMode.APPLY,
+  LLMMode.EXPLAIN,
 ];
 
 interface AiActionsProps {
   open: boolean;
+  context: string;
 }
 
-const AiActions: FC<AiActionsProps> = ({ open }) => {
+const AiActions: FC<AiActionsProps> = ({ open, context }) => {
   const [activeTab, setActiveTab] = useState(0);
+  const { getLLMResponse, responses, loading, error } = useLLM();
+
+  console.log("responses", responses);
+
+  // Removed useEffect that calls getLLMResponse on tab/context/open changes
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    console.log("Tab changed to:", actionOptions[newValue]);
     setActiveTab(newValue);
+    getLLMResponse(actionOptions[newValue], context);
   };
 
   return (
@@ -51,9 +61,16 @@ const AiActions: FC<AiActionsProps> = ({ open }) => {
         </Tabs>
         <Box mt={2}>
           <Typography variant="body1">
-            {/* Placeholder response */}
-            {`Contenido generado por LLM para la acción "${actionOptions[activeTab]}"`}
+            {loading
+              ? "Cargando respuesta..."
+              : (responses?.[actionOptions[activeTab]]?.answer ??
+                `No hay respuesta para la acción "${actionOptions[activeTab]}"`)}
           </Typography>
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
         </Box>
       </Box>
     </Collapse>
@@ -61,3 +78,6 @@ const AiActions: FC<AiActionsProps> = ({ open }) => {
 };
 
 export default AiActions;
+
+// 320 *2.27% = 7.254 /12
+// 720: taxes

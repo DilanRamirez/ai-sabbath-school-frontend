@@ -49,7 +49,7 @@ export default function SabbathDay({
           </Typography>
         </Box>
       </Box>
-      <AiActions open={openMap["memory"]} />
+      <AiActions open={openMap["memory"]} context={memoryVerse.text} />
 
       {/* Paragraphs */}
       {paragraphs.map((para, idx) => (
@@ -58,7 +58,7 @@ export default function SabbathDay({
             <AiButton toggleActions={() => toggleSection(`para-${idx}`)} />
             <Typography variant="body1">{para}</Typography>
           </Box>
-          <AiActions open={openMap[`para-${idx}`]} />
+          <AiActions open={openMap[`para-${idx}`]} context={para} />
         </Box>
       ))}
     </Box>
