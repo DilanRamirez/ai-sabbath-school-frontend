@@ -76,9 +76,21 @@ const DayView = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        {decodedDayName}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <Typography variant="h4">{decodedDayName}</Typography>
+        <Button
+          variant="outlined"
+          sx={{ ml: 2 }}
+          onClick={() => {
+            const year = lesson?.week_range?.start?.slice(0, 4);
+            if (lessonId && quarterSlug && year) {
+              router.push(`/home/${quarterSlug}/${year}/lessons/${lessonId}`);
+            }
+          }}
+        >
+          <Typography>Select Another Day</Typography>
+        </Button>
+      </Box>
 
       {progress && (
         <>
