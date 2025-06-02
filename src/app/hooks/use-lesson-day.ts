@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { getLesson } from "../lib/api/lessons";
 import { LessonsResponse, LessonWeek } from "../types/types";
 
@@ -7,25 +8,32 @@ export function useLessonDay(lessonMetadata: LessonsResponse | undefined) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const params = useParams();
+  const quarterFromUrl =
+    typeof params?.quarterId === "string" ? params.quarterId : "";
+  const lessonIdFromUrl =
+    typeof params?.lessonId === "string" ? params.lessonId : "";
+
   useEffect(() => {
-    if (!lessonMetadata) {
+    const year = lessonMetadata?.year;
+    const quarter = lessonMetadata?.quarter || quarterFromUrl;
+    const lessonId = lessonMetadata?.lesson_id || lessonIdFromUrl;
+
+    console.log(
+      `useLessonDay: year=${year}, quarter=${quarter}, lessonId=${lessonId}`,
+    );
+    if (!year || !quarter || !lessonId) {
       setLoading(false);
       return;
     }
 
-    console.log(
-      `Fetching lesson for ${lessonMetadata.year}-${lessonMetadata.quarter} - ${lessonMetadata.lesson_id}`,
-    );
+    console.log(`Fetching lesson for ${year}-${quarter} - ${lessonId}`);
     setLoading(true);
-    getLesson(
-      lessonMetadata.year,
-      lessonMetadata.quarter,
-      lessonMetadata.lesson_id,
-    )
+    getLesson(year, quarter, lessonId)
       .then(setLesson)
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [lessonMetadata]);
+  }, [lessonMetadata, quarterFromUrl, lessonIdFromUrl]);
 
   return { lesson, loading, error };
 }

@@ -10,16 +10,17 @@ import salmos4 from "@/app/assets/salmos4.png";
 interface Props {
   lessons: LessonsResponse[];
   quarterId: string;
+  year: string;
 }
 
-const LessonsList: React.FC<Props> = ({ lessons, quarterId }) => {
+const LessonsList: React.FC<Props> = ({ lessons, quarterId, year }) => {
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       {lessons.map((lesson, index) => (
         <Paper
           key={lesson.lesson_id}
           component={Link}
-          href={`/quarters/${quarterId}/lessons/${lesson.lesson_id}`}
+          href={`/quarters/${quarterId}/${year}/lessons/${lesson.lesson_id}`}
           sx={{
             display: "flex",
             justifyContent: "space-between",

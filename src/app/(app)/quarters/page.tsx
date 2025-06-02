@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Box, Container } from "@mui/material";
 import QuarterSelector from "@/app/dashboard/quarter-selector";
 import { useLessonData } from "@/app/hooks/use-lesson-data";
@@ -10,9 +11,14 @@ const Quarters = () => {
     undefined,
   );
   const { quarters } = useLessonData(selectedQuarter);
+  const router = useRouter();
 
   const handleQuarterSelect = (quarter: Quarter) => {
     setSelectedQuarter(quarter);
+    const year = quarter.year;
+    const slug = quarter.metadata.slug;
+    console.log(`Selected quarter: ${slug} for year: ${year}`);
+    router.push(`/quarters/${slug}/${year}/lessons`);
   };
 
   return (

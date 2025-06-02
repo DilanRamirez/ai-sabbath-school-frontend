@@ -22,10 +22,10 @@ const days = [
 
 export default function LessonOverviewPage() {
   const router = useRouter();
-  const { quarterId, lessonId } = useParams();
+  const { quarterId, lessonId, year } = useParams();
 
   const handleClick = (day: string) => {
-    router.push(`/quarters/${quarterId}/lessons/${lessonId}/${day}`);
+    router.push(`/quarters/${quarterId}/${year}/lessons/${lessonId}/${day}`);
   };
 
   return (

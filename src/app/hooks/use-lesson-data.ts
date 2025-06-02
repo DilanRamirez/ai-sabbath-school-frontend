@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { getLessons, getQuarters } from "../lib/api/lessons";
 import {
@@ -12,10 +12,13 @@ import {
   loadLessonsError,
   loadLessonsLoading,
 } from "../store/slices/lessons/lessons-slice";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 export function useLessonData(selectedQuarter?: Quarter) {
   const router = useRouter();
+  const params = useParams();
+  const quarterIdFromUrl =
+    typeof params?.quarterId === "string" ? params.quarterId : "";
 
   const dispatch = useDispatch();
   const [quarters, setQuarters] = useState<Quarter[]>([]);
@@ -37,6 +40,28 @@ export function useLessonData(selectedQuarter?: Quarter) {
       });
   }, [dispatch]);
 
+  const onGetLessons = useCallback(
+    (selectedQuarter: Quarter) => {
+      getLessons(selectedQuarter.year, selectedQuarter.metadata.slug)
+        .then((data) => {
+          setLessons(data);
+          dispatch(loadLessons(data));
+          setLoading(false);
+          dispatch(loadLessonsLoading({ loading: false }));
+        })
+        .catch((err) => {
+          console.error(err);
+          setError("Error loading lessons");
+          dispatch(loadLessons([]));
+          dispatch(loadLessonsError("Error loading lessons"));
+          setLoading(false);
+          dispatch(loadLessonsLoading({ loading: false }));
+        })
+        .finally(() => setLoading(false));
+    },
+    [dispatch, router],
+  );
+
   useEffect(() => {
     if (!selectedQuarter) return;
     setLoading(true);
@@ -44,24 +69,17 @@ export function useLessonData(selectedQuarter?: Quarter) {
     setError(null);
     dispatch(loadLessonsLoading({ loading: true }));
 
-    getLessons(selectedQuarter.year, selectedQuarter.metadata.slug)
-      .then((data) => {
-        setLessons(data);
-        dispatch(loadLessons(data));
-        setLoading(false);
-        dispatch(loadLessonsLoading({ loading: false }));
-        router.push(`/quarters/${selectedQuarter.metadata.slug}/lessons`);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Error loading lessons");
-        dispatch(loadLessons([]));
-        dispatch(loadLessonsError("Error loading lessons"));
-        setLoading(false);
-        dispatch(loadLessonsLoading({ loading: false }));
-      })
-      .finally(() => setLoading(false));
-  }, [dispatch, router, selectedQuarter]);
+    onGetLessons(selectedQuarter);
+  }, [dispatch, onGetLessons, router, selectedQuarter]);
 
-  return { quarters, lessons, loading, error };
+  useEffect(() => {
+    if (!selectedQuarter && quarterIdFromUrl && quarters.length > 0) {
+      const match = quarters.find((q) => q.metadata.slug === quarterIdFromUrl);
+      if (match) {
+        onGetLessons(match);
+      }
+    }
+  }, [selectedQuarter, quarterIdFromUrl, quarters, onGetLessons]);
+
+  return { quarters, lessons, loading, error, selectedQuarter, onGetLessons };
 }
