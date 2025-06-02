@@ -2,6 +2,7 @@ import { useLLM } from "@/app/hooks/use-llm";
 import { LLMMode } from "@/app/types/types";
 import { Box, Collapse, Tab, Tabs, Typography } from "@mui/material";
 import React, { FC, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 const actionOptions: LLMMode[] = [
   LLMMode.SUMMARIZE,
@@ -19,8 +20,6 @@ interface AiActionsProps {
 const AiActions: FC<AiActionsProps> = ({ open, context }) => {
   const [activeTab, setActiveTab] = useState(0);
   const { getLLMResponse, responses, loading, error } = useLLM();
-
-  console.log("responses", responses);
 
   // Removed useEffect that calls getLLMResponse on tab/context/open changes
 
@@ -60,12 +59,14 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
           ))}
         </Tabs>
         <Box mt={2} bgcolor={"white"} p={2} borderRadius={1}>
-          <Typography variant="body1">
-            {loading
-              ? "Cargando respuesta..."
-              : (responses?.[actionOptions[activeTab]]?.answer ??
-                `No hay respuesta para la acción "${actionOptions[activeTab]}"`)}
-          </Typography>
+          {loading ? (
+            <Typography variant="body1">Cargando respuesta...</Typography>
+          ) : (
+            <ReactMarkdown>
+              {responses?.[actionOptions[activeTab]]?.answer ??
+                `No hay respuesta para la acción "${actionOptions[activeTab]}"`}
+            </ReactMarkdown>
+          )}
           {error && (
             <Typography color="error" variant="body2">
               {error}
