@@ -25,13 +25,7 @@ export function useStudyProgress({
 
   const initialFetchProgress = useCallback(async () => {
     const hasParams = userId && quarterSlug && lessonId && dayName && cohortId;
-    console.log("Initial fetch - Params:", {
-      userId,
-      quarterSlug,
-      lessonId,
-      dayName,
-      cohortId,
-    });
+
     if (!hasParams) {
       setError("Missing required parameters");
       setLoading(false);
@@ -46,7 +40,6 @@ export function useStudyProgress({
       const isNotFound =
         err.message?.includes("500") ||
         err.message?.includes("Internal Server Error");
-      console.log("Fetch error:", err.message);
       if (isNotFound) {
         setProgress({
           lesson_id: lessonId,
@@ -83,11 +76,9 @@ export function useStudyProgress({
 
       try {
         const updated = await updateStudyProgress(payload);
+        console.log("Study progress updated:", updated);
         // eslint-disable-next-line no-undef
-        localStorage.setItem(
-          "lastPosition",
-          JSON.stringify(updated.last_position),
-        );
+        localStorage.setItem("lastPosition", JSON.stringify(updated));
         const fetchedProgress = await getStudyProgress(userId, lessonId);
         setProgress(fetchedProgress);
       } catch (err) {

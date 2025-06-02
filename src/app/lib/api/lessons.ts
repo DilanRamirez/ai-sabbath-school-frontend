@@ -44,9 +44,6 @@ export async function getLesson(
   quarter: string,
   lessonId: string,
 ): Promise<LessonWeek> {
-  console.log(
-    `Fetching lesson for year: ${year}, quarter: ${quarter}, lessonId: ${lessonId}`,
-  );
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons/${year}/${quarter}/${lessonId}`,
     {

@@ -39,6 +39,10 @@ export async function getStudyProgress(
   }
 
   const data: StudyProgressRecord = await response.json();
+  console.log("Study progress updated:", data);
+  // save in local storage for quick access
+  // eslint-disable-next-line no-undef
+  localStorage.setItem("studyProgress", JSON.stringify(data));
   return data;
 }
 
@@ -72,6 +76,6 @@ export async function updateStudyProgress(
   }
 
   const data: StudyProgressResponse = await response.json();
-  console.log("Updated progress:", data);
+
   return data;
 }

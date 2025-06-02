@@ -14,10 +14,7 @@ export function useUpdateStudyProgress() {
     try {
       const result = await updateStudyProgress(payload);
       // eslint-disable-next-line no-undef
-      localStorage.setItem(
-        "lastPosition",
-        JSON.stringify(result.last_position),
-      );
+      localStorage.setItem("lastPosition", JSON.stringify(result));
       return result;
     } catch (err: any) {
       console.error("Failed to update study progress:", err);

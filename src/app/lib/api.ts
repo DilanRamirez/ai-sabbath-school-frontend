@@ -52,7 +52,6 @@ export async function getLLMResponse(
 
   try {
     const data: any = await fetchLLMAnswer(request);
-    console.log("LLM response:", data);
     return data || "";
   } catch (err) {
     console.error("LLM request failed:", err);

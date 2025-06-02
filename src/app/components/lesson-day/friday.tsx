@@ -39,7 +39,6 @@ export default function FridayDay({
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
   const dayContent = paragraph + " " + quote;
 
-  console.log("Day Content:", dayContent);
   return (
     <Box px={2} py={4}>
       {/* Paragraph Section */}

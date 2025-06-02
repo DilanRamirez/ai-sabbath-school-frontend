@@ -20,15 +20,11 @@ export function useLessonDay(lessonMetadata: LessonsResponse | undefined) {
     const quarter = lessonMetadata?.quarter || quarterFromUrl;
     const lessonId = lessonMetadata?.lesson_id || lessonIdFromUrl;
 
-    console.log(
-      `useLessonDay: year=${year}, quarter=${quarter}, lessonId=${lessonId}`,
-    );
     if (!year || !quarter || !lessonId) {
       setLoading(false);
       return;
     }
 
-    console.log(`Fetching lesson for ${year}-${quarter} - ${lessonId}`);
     setLoading(true);
     getLesson(year, quarter, lessonId)
       .then(setLesson)

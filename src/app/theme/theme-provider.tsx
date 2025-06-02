@@ -66,11 +66,40 @@ let theme = createTheme({
     },
   },
   components: {
-    MuiAvatar: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        "@global": {
+          "@media (prefers-reduced-motion: reduce)": {
+            "*": {
+              animation: "none !important",
+              transition: "none !important",
+            },
+          },
+        },
+      },
+    },
+    MuiButton: {
       styleOverrides: {
         root: {
-          backgroundColor: "#ECF0F1",
-          color: "#2C3E50",
+          transition: "all 250ms ease-in-out",
+          "&:hover": {
+            transform: "scale(1.03)",
+          },
+          "&:active": {
+            transform: "scale(0.97)",
+          },
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: BORDER_RADIUS,
+          marginBottom: 8,
+          transition: "all 200ms ease-in-out",
+          "&:hover": {
+            backgroundColor: "#ecf0f1",
+          },
         },
       },
     },
@@ -80,6 +109,10 @@ let theme = createTheme({
           backgroundColor: "#FFFFFF",
           borderRadius: BORDER_RADIUS,
           boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+          transition: "transform 300ms ease",
+          "&:hover": {
+            transform: "translateY(-4px)",
+          },
         },
       },
     },
@@ -87,14 +120,26 @@ let theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: BORDER_RADIUS,
+          transition: "box-shadow 300ms ease",
         },
       },
     },
-    MuiListItem: {
+    MuiAvatar: {
       styleOverrides: {
         root: {
-          borderRadius: BORDER_RADIUS,
-          marginBottom: 8,
+          backgroundColor: "#ECF0F1",
+          color: "#2C3E50",
+          transition: "transform 300ms ease",
+          "&:hover": {
+            transform: "scale(1.05)",
+          },
+        },
+      },
+    },
+    MuiCollapse: {
+      styleOverrides: {
+        root: {
+          transition: "height 300ms ease, opacity 300ms ease",
         },
       },
     },

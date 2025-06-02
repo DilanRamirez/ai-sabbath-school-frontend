@@ -8,12 +8,6 @@ export default function QuarterYearRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(
-      "Redirecting to lessons page for quarterId:",
-      quarterId,
-      "and year:",
-      year,
-    );
     if (quarterId && year) {
       router.replace(`/home/${quarterId}/${year}/lessons`);
     }

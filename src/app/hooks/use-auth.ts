@@ -41,8 +41,6 @@ export function useAuth() {
       role: isTeacher ? "teacher" : "student",
     });
 
-    console.log("Register response:", response);
-
     const { user, access_token, token_type } = response;
     Cookies.set("token", access_token);
     // eslint-disable-next-line no-undef

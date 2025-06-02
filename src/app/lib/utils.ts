@@ -210,8 +210,5 @@ export const generateContext = (
   passage: string,
   dayContent: string,
 ): string => {
-  console.log(
-    `Having the following content: ${dayContent}\n  focus on the day part: ${passage}\n`,
-  );
   return `Having the following content: ${dayContent}\n  focus on the day part: ${passage}\n`;
 };

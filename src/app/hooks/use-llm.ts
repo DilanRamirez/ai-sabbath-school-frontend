@@ -23,7 +23,6 @@ export function useLLM() {
 
     try {
       const response = await callLLM({ text: context, mode, lang: "es" });
-      console.log("LLM response:", response);
 
       if (response.result) {
         setResponses((prev) => ({ ...prev, [mode]: response.result }));
