@@ -168,6 +168,7 @@ export interface StudyProgressPayload {
   note?: string; // optional note for the day
   cohort_id: string; // e.g. "COHORT#xyz"
   mark_studied: boolean; // true to mark the day as studied
+  question_id: string; // optional question ID if applicable
 }
 
 export interface StudyProgressResponse {
@@ -183,11 +184,18 @@ export interface StudyProgressResponse {
 export interface StudyProgressRecord {
   lesson_id: string;
   days_completed: string[]; // e.g. ["saturday", "sunday"]
-  notes: { day: string; note: string }[];
+  notes: StudyNotes[];
   last_accessed: string; // ISO timestamp
   cohort_id: string;
   score: number;
   quarter: string;
+}
+
+export interface StudyNotes {
+  day: string;
+  note: string;
+  question_id: string;
+  created_at: string; // ISO timestamp
 }
 
 export enum SectionType {

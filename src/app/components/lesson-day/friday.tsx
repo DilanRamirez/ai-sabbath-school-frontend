@@ -2,6 +2,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import AnswerField from "./answer-field";
+import { StudyNotes } from "@/app/types/types";
 
 interface FridayProps {
   paragraph: string;
@@ -9,6 +10,12 @@ interface FridayProps {
   author?: string; // Optional author for the quote
   source?: string; // Optional source for the quote
   questions: string[];
+  userId: string;
+  quarterSlug: string;
+  lessonId: string;
+  dayName: string;
+  cohortId: string;
+  notes: StudyNotes[]; // Optional prop for study progress record
 }
 
 export default function FridayDay({
@@ -17,6 +24,12 @@ export default function FridayDay({
   author,
   source,
   questions,
+  userId,
+  quarterSlug,
+  lessonId,
+  dayName,
+  cohortId,
+  notes,
 }: FridayProps) {
   return (
     <Box px={2} py={4}>
@@ -26,19 +39,21 @@ export default function FridayDay({
       </Box>
 
       {/* Quote Section */}
-      <Box mb={4} pl={2} borderLeft={4} borderColor="grey.300">
-        <Typography variant="body2" fontStyle="italic" color="text.secondary">
-          {quote}
-          {author && (
-            <>
-              <b>
-                — {author}
-                {source ? `, ${source}` : ""}
-              </b>
-            </>
-          )}
-        </Typography>
-      </Box>
+      {quote && (
+        <Box mb={4} pl={2} borderLeft={4} borderColor="grey.300">
+          <Typography variant="body2" fontStyle="italic" color="text.secondary">
+            {quote}
+            {author && (
+              <>
+                <b>
+                  — {author}
+                  {source ? `, ${source}` : ""}
+                </b>
+              </>
+            )}
+          </Typography>
+        </Box>
+      )}
 
       {/* Discussion Questions */}
       <Box>
@@ -48,7 +63,15 @@ export default function FridayDay({
         {questions.map((q, index) => (
           <Box key={index} mb={2}>
             <Typography variant="body1">{`${q}`}</Typography>
-            <AnswerField />
+            <AnswerField
+              userId={userId}
+              quarterSlug={quarterSlug}
+              lessonId={lessonId}
+              dayName={dayName}
+              cohortId={cohortId}
+              questionId={`friday-q-${index.toString()}`}
+              notes={notes}
+            />
           </Box>
         ))}
       </Box>

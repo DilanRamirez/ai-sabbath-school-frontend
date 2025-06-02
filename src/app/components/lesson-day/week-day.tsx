@@ -2,6 +2,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import AnswerField from "./answer-field";
+import { StudyNotes } from "@/app/types/types";
 
 interface WeekDayProps {
   paragraphs: string[];
@@ -13,12 +14,24 @@ interface WeekDayProps {
     label?: string;
     question: string;
   };
+  notes: StudyNotes[]; // Optional prop for study progress record
+  userId: string;
+  quarterSlug: string;
+  lessonId: string;
+  dayName: string;
+  cohortId: string;
 }
 
 export default function WeekDay({
   paragraphs,
   bibleQuestion,
   reflection,
+  notes,
+  userId,
+  quarterSlug,
+  lessonId,
+  dayName,
+  cohortId,
 }: WeekDayProps) {
   return (
     <Box px={2} py={4}>
@@ -37,7 +50,17 @@ export default function WeekDay({
         <Typography variant="body1" fontStyle="italic" mb={2}>
           {bibleQuestion.question}
         </Typography>
-        <AnswerField />
+        <AnswerField
+          userId={userId}
+          quarterSlug={quarterSlug}
+          lessonId={lessonId}
+          dayName={dayName}
+          cohortId={cohortId}
+          questionId={`week-day-q-${bibleQuestion.question
+            .replace(/\s+/g, "-")
+            .toLowerCase()}`}
+          notes={notes}
+        />
       </Box>
 
       {/* Remaining Paragraphs */}
@@ -55,7 +78,17 @@ export default function WeekDay({
           </Typography>
         )}
         <Typography variant="body1">{reflection.question}</Typography>
-        <AnswerField />
+        <AnswerField
+          userId={userId}
+          quarterSlug={quarterSlug}
+          lessonId={lessonId}
+          dayName={dayName}
+          cohortId={cohortId}
+          questionId={`week-day-q-${bibleQuestion.question
+            .replace(/\s+/g, "-")
+            .toLowerCase()}`}
+          notes={notes}
+        />
       </Box>
     </Box>
   );

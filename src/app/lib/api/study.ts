@@ -14,9 +14,10 @@ export async function getStudyProgress(
   userId: string,
   lessonId: string,
 ): Promise<StudyProgressRecord> {
+  const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
   const response = await fetch(
     `${BASE_URL}/study/progress/${encodeURIComponent(
-      userId,
+      safeUserId,
     )}/${encodeURIComponent(lessonId)}`,
   );
 
@@ -47,6 +48,9 @@ export async function getStudyProgress(
 export async function updateStudyProgress(
   payload: StudyProgressPayload,
 ): Promise<StudyProgressResponse> {
+  const safeUserId = payload.user_id
+    .replace(/@/g, "-at-")
+    .replace(/\./g, "-dot-");
   const response = await fetch(`${BASE_URL}/study/progress`, {
     method: "POST",
     headers: {
@@ -54,7 +58,10 @@ export async function updateStudyProgress(
       // Add authorization here if needed:
       // Authorization: `Bearer ${authToken}`,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      ...payload,
+      userId: safeUserId,
+    }),
   });
 
   if (!response.ok) {

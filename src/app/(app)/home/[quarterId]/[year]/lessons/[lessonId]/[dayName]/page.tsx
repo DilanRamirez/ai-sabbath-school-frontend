@@ -46,6 +46,8 @@ const DayView = () => {
     error: lessonError,
   } = useLessonDay(getLessonDetails(lessonId as string));
 
+  console.log("progress:", progress);
+
   const currentDayData = lesson?.days?.find((day) => {
     return day.day.toLowerCase() === decodedDayName.toLowerCase();
   });
@@ -148,11 +150,23 @@ const DayView = () => {
                       (s) => s.type === SectionType.DISCUSSION_QUESTIONS,
                     )?.questions || []
                   }
+                  userId={userId}
+                  quarterSlug={quarterSlug}
+                  lessonId={lessonId as string}
+                  dayName={decodedDayName}
+                  cohortId={cohortId}
+                  notes={progress?.notes || []}
                 />
               )}
 
               {decodedDayName !== "Sábado" && decodedDayName !== "Viernes" && (
                 <WeekDay
+                  userId={userId}
+                  quarterSlug={quarterSlug}
+                  lessonId={lessonId as string}
+                  dayName={decodedDayName}
+                  cohortId={cohortId}
+                  notes={progress?.notes || []}
                   paragraphs={currentDayData.sections
                     .filter((s) => s.type === SectionType.PARAGRAPH)
                     .map((s) => s.content)}
