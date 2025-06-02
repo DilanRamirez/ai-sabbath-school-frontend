@@ -1,17 +1,9 @@
 import { useEffect, useState } from "react";
 import { getLesson } from "../lib/api/lessons";
-import { LessonsResponse } from "../types/types";
-
-interface LessonData {
-  title: string;
-  memory_verse: string;
-  week_start_date: string;
-  week_end_date: string;
-  days: Record<string, unknown>; // Update as needed for the lesson structure
-}
+import { LessonsResponse, LessonWeek } from "../types/types";
 
 export function useLessonDay(lessonMetadata: LessonsResponse | undefined) {
-  const [lesson, setLesson] = useState<LessonData | null>(null);
+  const [lesson, setLesson] = useState<LessonWeek | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

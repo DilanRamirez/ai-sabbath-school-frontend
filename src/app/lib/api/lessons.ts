@@ -1,4 +1,4 @@
-import { LessonsResponse } from "@/app/types/types";
+import { LessonsResponse, LessonWeek } from "@/app/types/types";
 
 export async function getQuarters() {
   const response = await fetch(
@@ -43,7 +43,7 @@ export async function getLesson(
   year: string,
   quarter: string,
   lessonId: string,
-): Promise<any> {
+): Promise<LessonWeek> {
   console.log(
     `Fetching lesson for year: ${year}, quarter: ${quarter}, lessonId: ${lessonId}`,
   );

@@ -33,7 +33,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ borderRadius: 0 }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Typography variant="h6">Escuela Sabática</Typography>
         <Box display="flex" alignItems="center">

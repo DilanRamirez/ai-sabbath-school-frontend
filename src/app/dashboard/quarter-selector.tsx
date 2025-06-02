@@ -39,7 +39,10 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
         }}
       >
         {quarters.map((q) => (
-          <Grid key={q.year} sx={{ scrollSnapAlign: "start", minWidth: 220 }}>
+          <Grid
+            key={q.year}
+            sx={{ scrollSnapAlign: "start", minWidth: 220, py: 1 }}
+          >
             <Card
               sx={{
                 cursor: "pointer",

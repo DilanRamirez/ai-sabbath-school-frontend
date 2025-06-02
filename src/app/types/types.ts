@@ -58,6 +58,13 @@ export interface DiscussionQuestionsSection extends BaseSection {
   questions: string[];
 }
 
+export interface ReflectionSection extends BaseSection {
+  type: SectionType.REFLECTION;
+  label?: string; // optional label for the section
+  questions: string[]; // main content of the reflection
+  content?: string[]; // optional array of verse strings
+}
+
 /** Union of all section types */
 export type LessonSection =
   | ReadingSection
@@ -65,12 +72,13 @@ export type LessonSection =
   | ParagraphSection
   | BibleQuestionSection
   | QuoteSection
-  | DiscussionQuestionsSection;
-
+  | DiscussionQuestionsSection
+  | ReflectionSection;
 /** One day’s worth of lesson content */
 export interface LessonDay {
   day: string; // e.g. "Sábado", "Domingo", …
   date: string; // ISO date
+  rawMarkdown: string; // optional raw markdown content
   type:
     | LessonDayTypes.INTRODUCTION // Sábado
     | LessonDayTypes.DEVOTIONAL // Domingo–Jueves
@@ -183,6 +191,7 @@ export interface StudyProgressRecord {
 }
 
 export enum SectionType {
+  REFLECTION = "reflection",
   READING = "reading",
   MEMORY_VERSE = "memory_verse",
   PARAGRAPH = "paragraph",

@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 
 const days = [
-  "saturday",
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
+  "Sábado",
+  "Domingo",
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
 ];
 
 export default function LessonOverviewPage() {
@@ -30,7 +30,6 @@ export default function LessonOverviewPage() {
 
   return (
     <Box
-      p={4}
       display="flex"
       flexDirection="column"
       alignItems="center"

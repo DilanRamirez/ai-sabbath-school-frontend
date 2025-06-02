@@ -1,11 +1,15 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useParams } from "next/navigation";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import { Typography, CircularProgress, Alert } from "@mui/material";
 import { useStudyProgress } from "@/app/hooks/use-study";
 import { useAppSelector } from "@/app/store/hooks";
 import { useLessonDay } from "@/app/hooks/use-lesson-day";
-import { LessonsResponse } from "@/app/types/types";
+import { LessonsResponse, SectionType } from "@/app/types/types";
+import Container from "@mui/material/Container";
+import SabbathDay from "@/app/components/lesson-day/sabbath";
+import FridayDay from "@/app/components/lesson-day/friday";
+import WeekDay from "@/app/components/lesson-day/week-day";
 
 const DayView = () => {
   const { lessonId, dayName, quarterId } = useParams();
@@ -35,42 +39,119 @@ const DayView = () => {
     error: lessonError,
   } = useLessonDay(getLessonDetails(lessonId as string));
 
-  useEffect(() => {
-    console.log("lesson:", lesson);
-  }, [lesson]);
+  const decodedDayName = decodeURIComponent(dayName as string);
+  const currentDayData = lesson?.days?.find((day) => {
+    return day.day.toLowerCase() === decodedDayName.toLowerCase();
+  });
 
   if (loading || lessonLoading) return <CircularProgress />;
   if (error || lessonError)
     return <Alert severity="error">{error || lessonError}</Alert>;
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        {dayName?.toString().toUpperCase()}
+        {decodedDayName}
       </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        Lesson ID: {lessonId?.toString()}
-      </Typography>
+
       {progress && (
         <>
           <Typography>
-            <strong>Score:</strong> {progress.score}
+            <strong>Score:</strong> {Math.round(progress.score * 100)}%
           </Typography>
           <Typography>
             <strong>Days Completed:</strong>{" "}
-            {progress.days_completed.join(", ")}
+            {progress.days_completed
+              .map((day) => decodeURIComponent(day))
+              .join(", ")}
           </Typography>
         </>
       )}
       {lesson && (
         <>
-          <Typography variant="h5" sx={{ mt: 4 }}>
-            {lesson.title}
-          </Typography>
+          {currentDayData && (
+            <>
+              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                {currentDayData.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                {new Date(currentDayData.date).toLocaleDateString()}
+              </Typography>
+
+              {decodedDayName === "Sábado" && (
+                <SabbathDay
+                  reading={
+                    currentDayData.sections
+                      .find((s) => s.type === SectionType.READING)
+                      ?.references?.join(", ") || ""
+                  }
+                  memoryVerse={lesson.memory_verse}
+                  paragraphs={currentDayData.sections
+                    .filter((s) => s.type === SectionType.PARAGRAPH)
+                    .map((s) => s.content)}
+                />
+              )}
+
+              {decodedDayName === "Viernes" && (
+                <FridayDay
+                  paragraph={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.PARAGRAPH,
+                    )?.content || ""
+                  }
+                  quote={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.QUOTE,
+                    )?.content || ""
+                  }
+                  author={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.QUOTE,
+                    )?.author || ""
+                  }
+                  source={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.QUOTE,
+                    )?.source || ""
+                  }
+                  questions={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.DISCUSSION_QUESTIONS,
+                    )?.questions || []
+                  }
+                />
+              )}
+
+              {decodedDayName !== "Sábado" && decodedDayName !== "Viernes" && (
+                <WeekDay
+                  paragraphs={currentDayData.sections
+                    .filter((s) => s.type === SectionType.PARAGRAPH)
+                    .map((s) => s.content)}
+                  bibleQuestion={
+                    currentDayData.sections.find(
+                      (s) => s.type === SectionType.BIBLE_QUESTION,
+                    ) || { question: "" }
+                  }
+                  reflection={(() => {
+                    const reflectionSection = currentDayData.sections.find(
+                      (s) => s.type === SectionType.REFLECTION,
+                    );
+                    return reflectionSection
+                      ? {
+                          label: reflectionSection.label,
+                          question: Array.isArray(reflectionSection.content)
+                            ? reflectionSection.content.join(", ")
+                            : reflectionSection.content || "",
+                        }
+                      : { question: "" };
+                  })()}
+                />
+              )}
+            </>
+          )}
         </>
       )}
-      {/* TODO: Render Bible reading and study content here */}
-    </Box>
+    </Container>
   );
 };
 
