@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && isPublicRoute) {
+  if (token && (isPublicRoute || request.nextUrl.pathname === "/")) {
     return NextResponse.redirect(new URL("/quarters", request.url));
   }
 
@@ -21,5 +21,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/quarters/:path*", "/cohorts/:path*"],
+  matcher: ["/", "/quarters/:path*", "/cohorts/:path*", "/login", "/register"],
 };
