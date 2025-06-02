@@ -1,6 +1,15 @@
 import { useLLM } from "@/app/hooks/use-llm";
 import { LLMMode } from "@/app/types/types";
-import { Box, Collapse, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  Collapse,
+  Tab,
+  Tabs,
+  Typography,
+  TextField,
+  Button,
+  Divider,
+} from "@mui/material";
 import React, { FC, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
@@ -19,6 +28,8 @@ interface AiActionsProps {
 
 const AiActions: FC<AiActionsProps> = ({ open, context }) => {
   const [activeTab, setActiveTab] = useState(0);
+  const [userQuestion, setUserQuestion] = useState("");
+  const [showResponse, setShowResponse] = useState(false);
   const { getLLMResponse, responses, loading, error } = useLLM();
 
   // Removed useEffect that calls getLLMResponse on tab/context/open changes
@@ -26,7 +37,7 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     console.log("Tab changed to:", actionOptions[newValue]);
     setActiveTab(newValue);
-    getLLMResponse(actionOptions[newValue], context);
+    setShowResponse(false); // Reset on tab change
   };
 
   return (
@@ -59,13 +70,74 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
           ))}
         </Tabs>
         <Box mt={2} bgcolor={"white"} p={2} borderRadius={1}>
-          {loading ? (
-            <Typography variant="body1">Cargando respuesta...</Typography>
+          {actionOptions[activeTab] === LLMMode.ASK ? (
+            <Box>
+              <TextField
+                fullWidth
+                label="Haz tu pregunta"
+                variant="outlined"
+                value={userQuestion}
+                onChange={(e) => setUserQuestion(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Box display="flex" justifyContent="center" mb={2}>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    getLLMResponse(LLMMode.ASK, `${context}\n\n${userQuestion}`)
+                  }
+                  disabled={loading || !userQuestion.trim()}
+                >
+                  Preguntar
+                </Button>
+              </Box>
+              {loading && (
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                  Cargando respuesta...
+                </Typography>
+              )}
+              {responses?.[LLMMode.ASK]?.answer && (
+                <Box mt={2}>
+                  <Divider sx={{ mb: 2 }} />
+                  <Typography variant="subtitle2" gutterBottom>
+                    Respuesta:
+                  </Typography>
+                  <ReactMarkdown>{responses[LLMMode.ASK].answer}</ReactMarkdown>
+                </Box>
+              )}
+            </Box>
           ) : (
-            <ReactMarkdown>
-              {responses?.[actionOptions[activeTab]]?.answer ??
-                `No hay respuesta para la acción "${actionOptions[activeTab]}"`}
-            </ReactMarkdown>
+            <>
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    getLLMResponse(actionOptions[activeTab], context);
+                    setShowResponse(true);
+                  }}
+                  disabled={loading}
+                >
+                  Obtener respuesta
+                </Button>
+              </Box>
+              {loading && (
+                <Typography variant="body1">Cargando respuesta...</Typography>
+              )}
+              {!loading &&
+                showResponse &&
+                responses?.[actionOptions[activeTab]]?.answer && (
+                  <ReactMarkdown>
+                    {responses?.[actionOptions[activeTab]]?.answer}
+                  </ReactMarkdown>
+                )}
+              {!loading &&
+                showResponse &&
+                !responses?.[actionOptions[activeTab]]?.answer && (
+                  <Typography variant="body2">
+                    No hay respuesta para la acción {actionOptions[activeTab]}
+                  </Typography>
+                )}
+            </>
           )}
           {error && (
             <Typography color="error" variant="body2">
@@ -79,6 +151,3 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
 };
 
 export default AiActions;
-
-// 320 *2.27% = 7.254 /12
-// 720: taxes

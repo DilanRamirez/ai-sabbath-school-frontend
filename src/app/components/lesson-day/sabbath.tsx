@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
+import { generateContext } from "@/app/lib/utils";
 
 interface SabbathProps {
   reading: string;
@@ -21,6 +22,7 @@ export default function SabbathDay({
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
   const toggleSection = (id: string) =>
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  const dayContent = paragraphs.join(" ");
 
   return (
     <Box px={2} py={4}>
@@ -49,7 +51,10 @@ export default function SabbathDay({
           </Typography>
         </Box>
       </Box>
-      <AiActions open={openMap["memory"]} context={memoryVerse.text} />
+      <AiActions
+        open={openMap["memory"]}
+        context={generateContext(memoryVerse.text, dayContent)}
+      />
 
       {/* Paragraphs */}
       {paragraphs.map((para, idx) => (
@@ -58,7 +63,10 @@ export default function SabbathDay({
             <AiButton toggleActions={() => toggleSection(`para-${idx}`)} />
             <Typography variant="body1">{para}</Typography>
           </Box>
-          <AiActions open={openMap[`para-${idx}`]} context={para} />
+          <AiActions
+            open={openMap[`para-${idx}`]}
+            context={generateContext(para, dayContent)}
+          />
         </Box>
       ))}
     </Box>

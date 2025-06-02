@@ -5,6 +5,7 @@ import AnswerField from "./answer-field";
 import { StudyNotes } from "@/app/types/types";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
+import { generateContext } from "@/app/lib/utils";
 
 interface FridayProps {
   paragraph: string;
@@ -36,6 +37,9 @@ export default function FridayDay({
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
   const toggleSection = (id: string) =>
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  const dayContent = paragraph + " " + quote;
+
+  console.log("Day Content:", dayContent);
   return (
     <Box px={2} py={4}>
       {/* Paragraph Section */}
@@ -46,7 +50,10 @@ export default function FridayDay({
         </Box>
         {openMap[`para-${0}`] && (
           <Box mt={2}>
-            <AiActions open={openMap[`para-${0}`]} context={paragraph} />
+            <AiActions
+              open={openMap[`para-${0}`]}
+              context={generateContext(paragraph, dayContent)}
+            />
           </Box>
         )}
       </Box>
@@ -76,7 +83,10 @@ export default function FridayDay({
           </Box>
           {openMap[`quote-${0}`] && (
             <Box mt={2}>
-              <AiActions open={openMap[`quote-${0}`]} context={quote} />
+              <AiActions
+                open={openMap[`quote-${0}`]}
+                context={generateContext(quote, dayContent)}
+              />
             </Box>
           )}
         </Box>
@@ -106,7 +116,10 @@ export default function FridayDay({
             />
             {openMap[`dialogue-q-${index}`] && (
               <Box mt={2}>
-                <AiActions open={openMap[`dialogue-q-${index}`]} context={q} />
+                <AiActions
+                  open={openMap[`dialogue-q-${index}`]}
+                  context={generateContext(q, dayContent)}
+                />
               </Box>
             )}
           </Box>

@@ -5,6 +5,7 @@ import AnswerField from "./answer-field";
 import { StudyNotes } from "@/app/types/types";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
+import { generateContext } from "@/app/lib/utils";
 
 interface WeekDayProps {
   paragraphs: string[];
@@ -38,6 +39,7 @@ export default function WeekDay({
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
   const toggleSection = (id: string) =>
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  const dayContent = paragraphs.join(" ");
 
   return (
     <Box px={2} py={4}>
@@ -49,7 +51,10 @@ export default function WeekDay({
         </Box>
         {openMap[`para-${0}`] && (
           <Box mt={2}>
-            <AiActions open={openMap[`para-${0}`]} context={paragraphs[0]} />
+            <AiActions
+              open={openMap[`para-${0}`]}
+              context={generateContext(paragraphs[0], dayContent)}
+            />
           </Box>
         )}
       </Box>
@@ -81,7 +86,7 @@ export default function WeekDay({
         />
         <AiActions
           open={openMap[`bible-q-${0}`]}
-          context={bibleQuestion.question}
+          context={generateContext(bibleQuestion.question, dayContent)}
         />
       </Box>
 
@@ -92,7 +97,10 @@ export default function WeekDay({
             <AiButton toggleActions={() => toggleSection(`para-${idx}`)} />
             <Typography variant="body1">{para}</Typography>
           </Box>
-          <AiActions open={openMap[`para-${idx}`]} context={para} />
+          <AiActions
+            open={openMap[`para-${idx}`]}
+            context={generateContext(para, dayContent)}
+          />
         </Box>
       ))}
       {/* Reflection */}
@@ -121,7 +129,7 @@ export default function WeekDay({
           <Box mt={2}>
             <AiActions
               open={openMap[`reflection-${0}`]}
-              context={reflection.question}
+              context={generateContext(reflection.question, dayContent)}
             />
           </Box>
         )}
