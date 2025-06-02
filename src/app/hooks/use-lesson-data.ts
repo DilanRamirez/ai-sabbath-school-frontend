@@ -59,7 +59,7 @@ export function useLessonData(selectedQuarter?: Quarter) {
         })
         .finally(() => setLoading(false));
     },
-    [dispatch, router],
+    [dispatch],
   );
 
   useEffect(() => {
