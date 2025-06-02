@@ -6,12 +6,15 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
   const isPublicRoute =
+    request.nextUrl.pathname === "/" ||
     request.nextUrl.pathname.startsWith("/login") ||
-    request.nextUrl.pathname.startsWith("/register") ||
-    request.nextUrl.pathname.startsWith("/");
+    request.nextUrl.pathname.startsWith("/register");
 
   if (!token && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (token && request.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   if (token && (isPublicRoute || request.nextUrl.pathname === "/")) {

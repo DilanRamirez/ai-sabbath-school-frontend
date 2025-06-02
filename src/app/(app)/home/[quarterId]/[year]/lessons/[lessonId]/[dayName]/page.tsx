@@ -1,7 +1,13 @@
 "use client";
 import React from "react";
-import { useParams } from "next/navigation";
-import { Typography, CircularProgress, Alert } from "@mui/material";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Typography,
+  CircularProgress,
+  Alert,
+  Button,
+  Box,
+} from "@mui/material";
 import { useStudyProgress } from "@/app/hooks/use-study";
 import { useAppSelector } from "@/app/store/hooks";
 import { useLessonDay } from "@/app/hooks/use-lesson-day";
@@ -24,12 +30,13 @@ const DayView = () => {
   const userId = user.email;
   const cohortId = user.studyGroupId || "test-cohort";
   const quarterSlug = quarterId as string;
+  const decodedDayName = decodeURIComponent(dayName as string);
 
-  const { progress, loading, error } = useStudyProgress({
+  const { progress, loading, error, markDayAsStudied } = useStudyProgress({
     userId,
     quarterSlug,
     lessonId: lessonId as string,
-    dayName: dayName as string,
+    dayName: decodedDayName,
     cohortId,
   });
 
@@ -39,17 +46,39 @@ const DayView = () => {
     error: lessonError,
   } = useLessonDay(getLessonDetails(lessonId as string));
 
-  const decodedDayName = decodeURIComponent(dayName as string);
   const currentDayData = lesson?.days?.find((day) => {
     return day.day.toLowerCase() === decodedDayName.toLowerCase();
   });
+
+  const dayIndex = lesson?.days.findIndex(
+    (day) => day.day.toLowerCase() === decodedDayName.toLowerCase(),
+  );
+
+  const prevDay =
+    dayIndex !== undefined && dayIndex > 0 ? lesson?.days[dayIndex - 1] : null;
+  const nextDay =
+    dayIndex !== undefined && dayIndex < (lesson?.days.length ?? 0) - 1
+      ? lesson?.days[dayIndex + 1]
+      : null;
+
+  const router = useRouter();
+
+  const handleNavigate = (targetDay: string) => {
+    const encodedDay = encodeURIComponent(targetDay);
+    router.push(
+      `/home/${quarterSlug}/${lesson?.week_range?.start?.slice(
+        0,
+        4,
+      )}/lessons/${lessonId}/${encodedDay}`,
+    );
+  };
 
   if (loading || lessonLoading) return <CircularProgress />;
   if (error || lessonError)
     return <Alert severity="error">{error || lessonError}</Alert>;
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
         {decodedDayName}
       </Typography>
@@ -151,6 +180,23 @@ const DayView = () => {
           )}
         </>
       )}
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 2 }}
+      >
+        {prevDay && (
+          <Button variant="text" onClick={() => handleNavigate(prevDay.day)}>
+            ← {prevDay.day}
+          </Button>
+        )}
+        <Button variant="outlined" onClick={markDayAsStudied}>
+          Mark as Studied
+        </Button>
+        {nextDay && (
+          <Button variant="text" onClick={() => handleNavigate(nextDay.day)}>
+            {nextDay.day} →
+          </Button>
+        )}
+      </Box>
     </Container>
   );
 };

@@ -17,7 +17,7 @@ export default function QuarterLayout({
         sx={{
           flex: 1,
           height: "calc(100vh - 120px)",
-          overflow: "hidden",
+          overflow: "auto",
           py: 0,
           backgroundColor: "#F9F9F9",
         }}

@@ -21,7 +21,41 @@ export function useStudyProgress({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProgress = useCallback(() => {
+  const isValidParams = useCallback(() => {
+    return !!(userId && quarterSlug && lessonId && dayName && cohortId);
+  }, [userId, quarterSlug, lessonId, dayName, cohortId]);
+
+  const syncProgress = useCallback(
+    async (payload: StudyProgressPayload) => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const updated = await updateStudyProgress(payload);
+        // eslint-disable-next-line no-undef
+        localStorage.setItem(
+          "lastPosition",
+          JSON.stringify(updated.last_position),
+        );
+
+        const fetchedProgress = await getStudyProgress(userId, lessonId);
+        setProgress(fetchedProgress);
+      } catch (err) {
+        console.error("Study progress error:", err);
+        setError((err as Error).message || "Unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userId, lessonId],
+  );
+
+  const markDayAsStudied = useCallback(() => {
+    if (!isValidParams()) {
+      console.warn("Missing required parameters for markDayAsStudied");
+      return;
+    }
+
     const payload: StudyProgressPayload = {
       user_id: userId,
       quarter: quarterSlug,
@@ -30,27 +64,49 @@ export function useStudyProgress({
       cohort_id: cohortId,
       mark_studied: true,
     };
-
-    setLoading(true);
-    setError(null);
-
-    updateStudyProgress(payload)
-      .then((resp) => {
-        // eslint-disable-next-line no-undef
-        localStorage.setItem(
-          "lastPosition",
-          JSON.stringify(resp.last_position),
-        );
-        return getStudyProgress(userId, lessonId);
-      })
-      .then((record) => setProgress(record))
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [userId, quarterSlug, lessonId, dayName, cohortId]);
+    syncProgress(payload);
+  }, [
+    userId,
+    quarterSlug,
+    lessonId,
+    dayName,
+    cohortId,
+    isValidParams,
+    syncProgress,
+  ]);
 
   useEffect(() => {
-    fetchProgress();
-  }, [fetchProgress]);
+    if (!isValidParams()) {
+      setError("Missing required parameters");
+      setLoading(false);
+      return;
+    }
 
-  return { progress, loading, error, refetch: fetchProgress };
+    const payload: StudyProgressPayload = {
+      user_id: userId,
+      quarter: quarterSlug,
+      lesson_id: lessonId,
+      day: dayName,
+      cohort_id: cohortId,
+      mark_studied: false,
+    };
+
+    syncProgress(payload);
+  }, [
+    cohortId,
+    dayName,
+    isValidParams,
+    lessonId,
+    quarterSlug,
+    syncProgress,
+    userId,
+  ]);
+
+  return {
+    progress,
+    loading,
+    error,
+    refetch: syncProgress,
+    markDayAsStudied,
+  };
 }

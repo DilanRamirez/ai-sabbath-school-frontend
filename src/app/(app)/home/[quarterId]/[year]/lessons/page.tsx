@@ -14,7 +14,7 @@ const LessonsPage = () => {
   const year = typeof params?.year === "string" ? params.year : "";
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="sm" sx={{ py: 4 }}>
       {loading && <Typography>Cargando lecciones...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
