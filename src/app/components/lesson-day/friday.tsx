@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import AnswerField from "./answer-field";
 
 interface FridayProps {
   paragraph: string;
@@ -47,6 +48,7 @@ export default function FridayDay({
         {questions.map((q, index) => (
           <Box key={index} mb={2}>
             <Typography variant="body1">{`${q}`}</Typography>
+            <AnswerField />
           </Box>
         ))}
       </Box>

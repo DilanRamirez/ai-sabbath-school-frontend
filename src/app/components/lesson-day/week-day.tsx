@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import AnswerField from "./answer-field";
 
 interface WeekDayProps {
   paragraphs: string[];
@@ -33,9 +34,10 @@ export default function WeekDay({
             {bibleQuestion.label}
           </Typography>
         )}
-        <Typography variant="body1" fontStyle="italic">
+        <Typography variant="body1" fontStyle="italic" mb={2}>
           {bibleQuestion.question}
         </Typography>
+        <AnswerField />
       </Box>
 
       {/* Remaining Paragraphs */}
@@ -53,6 +55,7 @@ export default function WeekDay({
           </Typography>
         )}
         <Typography variant="body1">{reflection.question}</Typography>
+        <AnswerField />
       </Box>
     </Box>
   );
