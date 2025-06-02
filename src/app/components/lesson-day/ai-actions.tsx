@@ -39,7 +39,7 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
         border={1}
         borderRadius={2}
         borderColor="grey.300"
-        bgcolor="grey.50"
+        bgcolor="grey.200"
       >
         <Tabs
           value={activeTab}
@@ -59,7 +59,7 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
             />
           ))}
         </Tabs>
-        <Box mt={2}>
+        <Box mt={2} bgcolor={"white"} p={2} borderRadius={1}>
           <Typography variant="body1">
             {loading
               ? "Cargando respuesta..."
