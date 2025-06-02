@@ -18,7 +18,7 @@ const Quarters = () => {
     const year = quarter.year;
     const slug = quarter.metadata.slug;
     console.log(`Selected quarter: ${slug} for year: ${year}`);
-    router.push(`/quarters/${slug}/${year}/lessons`);
+    router.push(`/home/${slug}/${year}/lessons`);
   };
 
   return (

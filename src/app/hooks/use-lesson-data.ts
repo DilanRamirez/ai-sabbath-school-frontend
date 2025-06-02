@@ -1,11 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { getLessons, getQuarters } from "../lib/api/lessons";
-import {
-  loadQuartersLoading,
-  loadQuarters,
-  loadQuartersError,
-} from "../store/slices/quarters/quarters-slice";
+
 import { LessonsResponse, Quarter } from "../types/types";
 import {
   loadLessons,
@@ -13,6 +9,11 @@ import {
   loadLessonsLoading,
 } from "../store/slices/lessons/lessons-slice";
 import { useRouter, useParams } from "next/navigation";
+import {
+  loadQuarters,
+  loadQuartersError,
+  loadQuartersLoading,
+} from "../store/slices/quarters/quarters-slice";
 
 export function useLessonData(selectedQuarter?: Quarter) {
   const router = useRouter();

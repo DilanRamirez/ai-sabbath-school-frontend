@@ -20,7 +20,7 @@ const LessonsList: React.FC<Props> = ({ lessons, quarterId, year }) => {
         <Paper
           key={lesson.lesson_id}
           component={Link}
-          href={`/quarters/${quarterId}/${year}/lessons/${lesson.lesson_id}`}
+          href={`/home/${quarterId}/${year}/lessons/${lesson.lesson_id}`}
           sx={{
             display: "flex",
             justifyContent: "space-between",

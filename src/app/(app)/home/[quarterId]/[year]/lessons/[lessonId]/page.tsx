@@ -1,4 +1,4 @@
-// src/app/(app)/quarters/[quarterId]/lessons/[lessonId]/page.tsx
+// src/app/(app)/home/[quarterId]/lessons/[lessonId]/page.tsx
 "use client";
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ export default function LessonOverviewPage() {
   const { quarterId, lessonId, year } = useParams();
 
   const handleClick = (day: string) => {
-    router.push(`/quarters/${quarterId}/${year}/lessons/${lessonId}/${day}`);
+    router.push(`/home/${quarterId}/${year}/lessons/${lessonId}/${day}`);
   };
 
   return (

@@ -35,7 +35,7 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
         sx={{
           overflowX: "auto",
           scrollSnapType: "x mandatory",
-          "-webkit-overflow-scrolling": "touch",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {quarters.map((q) => (

@@ -15,7 +15,7 @@ export default function QuarterYearRedirectPage() {
       year,
     );
     if (quarterId && year) {
-      router.replace(`/quarters/${quarterId}/${year}/lessons`);
+      router.replace(`/home/${quarterId}/${year}/lessons`);
     }
   }, [quarterId, router, year]);
 

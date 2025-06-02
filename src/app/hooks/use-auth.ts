@@ -25,7 +25,7 @@ export function useAuth() {
         user,
       }),
     );
-    router.push("/quarters");
+    router.push("/home");
   };
 
   const register = async (
@@ -52,7 +52,7 @@ export function useAuth() {
         user,
       }),
     );
-    router.push("/quarters");
+    router.push("/home");
   };
 
   const logout = () => {

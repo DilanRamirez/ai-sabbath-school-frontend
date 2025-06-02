@@ -1,36 +1,57 @@
 "use client";
 
 import React from "react";
-import { Button, Stack, Typography } from "@mui/material";
-import Link from "next/link";
+import { Button, Container, Stack, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 
-export default function HomePage() {
+export default function StarterPage() {
+  const router = useRouter();
+
   return (
-    <Stack
-      spacing={3}
-      alignItems="center"
-      justifyContent="center"
-      sx={{ minHeight: "100vh", textAlign: "center" }}
+    <Container
+      maxWidth="xs"
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      <Typography variant="h4" align="center">
-        Bienvenido a Escuela Sabática Interactiva
-      </Typography>
-      <Typography variant="body1" align="center">
-        Comienza tu jornada espiritual diaria con nosotros.
-      </Typography>
+      <Stack spacing={4} alignItems="center" width="100%">
+        <Typography variant="h5" fontWeight="bold" align="center">
+          Welcome to Sabbath School
+        </Typography>
+        <Typography variant="body2" align="center" color="text.secondary">
+          Start your journey through the Bible — one day, one lesson, one
+          spiritual insight at a time — with the help of AI to guide your
+          understanding and deepen your study.
+        </Typography>
 
-      <Stack direction="row" spacing={2}>
-        <Link href="/login" passHref>
-          <Button variant="outlined" color="primary">
-            Iniciar Sesión
+        <Stack
+          spacing={{ xs: 2, md: 0 }}
+          direction={{ xs: "column", md: "row" }}
+          width="100%"
+          justifyContent="space-between"
+          gap={{ xs: 0, md: 3 }}
+        >
+          <Button
+            variant="contained"
+            fullWidth={true}
+            sx={{ maxWidth: { md: 200 } }}
+            onClick={() => router.push("/login")}
+          >
+            Login
           </Button>
-        </Link>
-        <Link href="/register" passHref>
-          <Button variant="contained" color="primary">
-            Registrarse
+          <Button
+            variant="outlined"
+            fullWidth={true}
+            sx={{ maxWidth: { md: 200 } }}
+            onClick={() => router.push("/register")}
+          >
+            Create Account
           </Button>
-        </Link>
+        </Stack>
       </Stack>
-    </Stack>
+    </Container>
   );
 }
