@@ -36,10 +36,12 @@ export function useStudyProgress({
       setLoading(true);
       const fetchedProgress = await getStudyProgress(userId, lessonId);
       setProgress(fetchedProgress);
+      console.log("Initial study progress fetched:", fetchedProgress);
     } catch (err: any) {
       const isNotFound =
         err.message?.includes("500") ||
-        err.message?.includes("Internal Server Error");
+        err.message?.includes("Internal Server Error") ||
+        err.message?.includes("404");
       if (isNotFound) {
         setProgress({
           lesson_id: lessonId,
@@ -98,6 +100,7 @@ export function useStudyProgress({
       cohort_id: cohortId,
       mark_studied: true,
       question_id: question_id || "",
+      content: "", // Optional content, can be empty
     };
     syncProgress(payload);
   }, [

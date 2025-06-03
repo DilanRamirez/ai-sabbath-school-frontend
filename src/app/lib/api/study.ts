@@ -20,8 +20,7 @@ export async function getStudyProgress(
       safeUserId,
     )}/${encodeURIComponent(lessonId)}`,
   );
-
-  if (response.status === 404) {
+  if (response.status === 404 || response.status === 500) {
     // Return default if no record exists
     return {
       lesson_id: lessonId,

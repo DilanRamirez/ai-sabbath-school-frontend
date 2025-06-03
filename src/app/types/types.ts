@@ -169,6 +169,7 @@ export interface StudyProgressPayload {
   cohort_id: string; // e.g. "COHORT#xyz"
   mark_studied: boolean; // true to mark the day as studied
   question_id: string; // optional question ID if applicable
+  content: string; // optional content for the note
 }
 
 export interface StudyProgressResponse {

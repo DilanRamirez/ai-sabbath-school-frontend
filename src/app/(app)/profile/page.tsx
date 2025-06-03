@@ -7,6 +7,7 @@ import { useAppSelector } from "@/app/store/hooks";
 interface StudyNote {
   day: string;
   note: string;
+  content?: string;
   question_id?: string;
   created_at?: string;
 }
@@ -101,11 +102,11 @@ export default function ProfilePage() {
                 <strong>Día:</strong> {note.day}
               </Typography>
               {note.question_id && (
-                <Typography variant="caption" color="text.secondary">
-                  Pregunta: {note.question_id}
+                <Typography variant="subtitle2">
+                  Pregunta: {note.content}
                 </Typography>
               )}
-              <Typography sx={{ mt: 1 }}>{note.note}</Typography>
+              <Typography sx={{ mt: 1 }}>Respuesta: {note.note}</Typography>
               {note.created_at && (
                 <Typography variant="caption" color="text.secondary">
                   Fecha: {new Date(note.created_at).toLocaleString()}

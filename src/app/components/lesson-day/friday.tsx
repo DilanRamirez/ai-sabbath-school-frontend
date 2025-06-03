@@ -110,8 +110,9 @@ export default function FridayDay({
               lessonId={lessonId}
               dayName={dayName}
               cohortId={cohortId}
-              questionId={`friday-q-${index}`}
+              questionId={`dialogue-q-${index}`}
               notes={notes}
+              content={q}
             />
             {openMap[`dialogue-q-${index}`] && (
               <Box mt={2}>

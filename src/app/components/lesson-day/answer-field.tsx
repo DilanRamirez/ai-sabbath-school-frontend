@@ -12,6 +12,7 @@ interface AnswerFieldProps {
   dayName: string;
   cohortId: string;
   notes: StudyNotes[];
+  content: string; // Optional content prop for initial value
   questionId?: string;
 }
 
@@ -25,6 +26,7 @@ export default function AnswerField({
   cohortId,
   questionId,
   notes,
+  content,
 }: AnswerFieldProps) {
   const initialNote =
     notes.find((n) => n.question_id === questionId && n.day === dayName)
@@ -45,6 +47,7 @@ export default function AnswerField({
         mark_studied: false,
         note: noteText.trim(),
         question_id: questionId,
+        content,
       });
       // Do not clear noteText after save, so it reflects saved content
     } catch (error) {

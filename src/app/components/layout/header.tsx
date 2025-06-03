@@ -35,6 +35,12 @@ const Header: React.FC = () => {
     logout();
   };
 
+  const handleProfile = () => {
+    // Navigate to profile page
+    router.push("/profile");
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="static" sx={{ borderRadius: 0 }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
@@ -68,6 +74,7 @@ const Header: React.FC = () => {
               horizontal: "right",
             }}
           >
+            <MenuItem onClick={handleProfile}>Perfil</MenuItem>
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
           </Menu>
         </Box>

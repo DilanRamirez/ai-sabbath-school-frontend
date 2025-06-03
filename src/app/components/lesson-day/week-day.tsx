@@ -83,6 +83,7 @@ export default function WeekDay({
             .replace(/\s+/g, "-")
             .toLowerCase()}`}
           notes={notes}
+          content={bibleQuestion.question}
         />
         <AiActions
           open={openMap[`bible-q-${0}`]}
@@ -120,10 +121,11 @@ export default function WeekDay({
           lessonId={lessonId}
           dayName={dayName}
           cohortId={cohortId}
-          questionId={`week-day-q-${bibleQuestion.question
+          questionId={`week-day-q-${reflection.question
             .replace(/\s+/g, "-")
             .toLowerCase()}`}
           notes={notes}
+          content={reflection.question}
         />
         {openMap[`reflection-${0}`] && (
           <Box mt={2}>
