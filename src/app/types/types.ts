@@ -215,6 +215,39 @@ export interface LLMAnswer {
   answer: string; // main response text
   refs: string[]; // optional array of references
 }
+
+/** The structure of a single user progress note */
+export interface UserStudyNote {
+  note: string;
+  created_at: string; // ISO date
+  day: string;
+  question_id: string;
+  content: string;
+}
+
+/** Structure of the last position the user studied */
+export interface LastPosition {
+  lesson_id: string;
+  day: string;
+  quarter: string;
+}
+
+/** Study progress record per lesson */
+export interface UserLessonProgress {
+  cohort_id: string;
+  notes: UserStudyNote[];
+  last_accessed: string; // ISO date
+  score: number;
+  lesson_id: string;
+  SK: string;
+  PK: string;
+  days_completed: string[];
+  last_position: LastPosition;
+}
+
+/** Entire response (array of progress records) */
+export type UserStudyProgressResponse = UserLessonProgress[];
+
 export enum LLMMode {
   EXPLAIN = "explain",
   REFLECT = "reflect",

@@ -106,7 +106,7 @@ export default function ProfilePage() {
                   Pregunta: {note.content}
                 </Typography>
               )}
-              <Typography sx={{ mt: 1 }}>Respuesta: {note.note}</Typography>
+              <Typography sx={{ mt: 1 }}>Respuesta:{note.note}</Typography>
               {note.created_at && (
                 <Typography variant="caption" color="text.secondary">
                   Fecha: {new Date(note.created_at).toLocaleString()}
