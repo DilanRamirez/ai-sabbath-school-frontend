@@ -59,12 +59,10 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
     const response = responses?.[mode]?.answer;
     if (loading)
       return <Typography variant="body1">Cargando respuesta...</Typography>;
-    if (showResponse && response)
-      return (
-        <Fade in={showResponse}>
-          <ReactMarkdown>{response}</ReactMarkdown>
-        </Fade>
-      );
+    if (showResponse && response) {
+      return <ReactMarkdown>{response}</ReactMarkdown>;
+    }
+
     if (showResponse && !response)
       return (
         <Typography variant="body2">
@@ -102,7 +100,13 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
             ))}
           </Tabs>
 
-          <Box mt={2} bgcolor="white" p={2} borderRadius={1}>
+          <Box
+            id="ai-response-container"
+            mt={2}
+            bgcolor="white"
+            p={2}
+            borderRadius={1}
+          >
             {activeTabMode === LLMMode.ASK ? (
               <Box>
                 <TextField

@@ -221,6 +221,8 @@ export interface UserStudyNote {
   note: string;
   created_at: string; // ISO date
   day: string;
+  lesson_id: string;
+  quarter: string;
   question_id: string;
   content: string;
 }
@@ -242,6 +244,24 @@ export interface UserLessonProgress {
   SK: string;
   PK: string;
   days_completed: string[];
+  last_position: LastPosition;
+}
+
+interface StudyNote {
+  day: string;
+  note: string;
+  content?: string;
+  question_id?: string;
+  created_at?: string;
+}
+
+export interface StudyProgress {
+  lesson_id: string;
+  cohort_id: string;
+  days_completed: string[];
+  score: number;
+  last_accessed: string;
+  notes: StudyNote[];
   last_position: LastPosition;
 }
 

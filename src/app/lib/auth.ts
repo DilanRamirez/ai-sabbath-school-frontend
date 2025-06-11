@@ -59,7 +59,16 @@ export async function getUserStudyData(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Failed to fetch user data");
+      // If no progress records are found, return an empty array instead of throwing
+      if (
+        errorData.detail &&
+        errorData.detail.includes("No progress records found for user")
+      ) {
+        return [];
+      }
+      throw new Error(
+        errorData.message || errorData.detail || "Failed to fetch user data",
+      );
     }
 
     const data: UserStudyProgressResponse = await response.json();
