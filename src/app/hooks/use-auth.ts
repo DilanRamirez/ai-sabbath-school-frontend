@@ -11,7 +11,7 @@ import { useCallback } from "react";
  * Save authentication data to cookies and localStorage.
  */
 function persistAuthData(token: string, user: User): void {
-  Cookies.set("token", token);
+  Cookies.set("token", token, { expires: 30, sameSite: "lax" });
   // eslint-disable-next-line no-undef
   localStorage.setItem("user", JSON.stringify(user));
 }
@@ -125,4 +125,36 @@ export function useAuth() {
   }, [dispatch, router]);
 
   return { login, register, logout };
+}
+
+// Hydrate Redux store from existing auth data on app startup
+import { useEffect } from "react";
+
+export function useHydrateAuth(): void {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    // eslint-disable-next-line no-undef
+    const stored = localStorage.getItem("user");
+    if (token && stored) {
+      try {
+        const user = JSON.parse(stored) as User;
+        dispatch(
+          loginAction({
+            access_token: token,
+            token_type: "bearer",
+            user,
+          }),
+        );
+      } catch {
+        // corrupted storage, clear it
+        Cookies.remove("token");
+        // eslint-disable-next-line no-undef
+        localStorage.removeItem("user");
+        router.push("/login");
+      }
+    }
+  }, [dispatch, router]);
 }
