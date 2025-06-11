@@ -33,12 +33,12 @@ export default function AnswerField({
       ?.note || "";
 
   const [noteText, setNoteText] = useState(initialNote);
-  const { update } = useUpdateStudyProgress();
+  const { updateProgress } = useUpdateStudyProgress();
 
   const handleSaveNote = async () => {
     if (!questionId || !noteText.trim()) return;
     try {
-      await update({
+      await updateProgress({
         user_id: userId,
         quarter: quarterSlug,
         lesson_id: lessonId,
