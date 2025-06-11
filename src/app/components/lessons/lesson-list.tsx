@@ -54,14 +54,29 @@ const LessonCard: React.FC<{
         >
           <Box flex={1} pr={2}>
             <Typography variant="caption" color="text.secondary">
-              Lección {index + 1}
+              Lección {lesson.lesson_id.replace("lesson-", "")}
             </Typography>
             <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
               {lesson.metadata.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {lesson.metadata.week_range.start} –{" "}
-              {lesson.metadata.week_range.end}
+              {new Date(lesson.metadata.week_range.start).toLocaleDateString(
+                "es-ES",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              )}{" "}
+              –{" "}
+              {new Date(lesson.metadata.week_range.end).toLocaleDateString(
+                "es-ES",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              )}
             </Typography>
           </Box>
           <Box
@@ -96,7 +111,13 @@ const LessonsList: React.FC<LessonsListProps> = ({
     if (!Array.isArray(lessons) || lessons.length === 0) {
       return [];
     }
-    return lessons.map((lesson, idx) => (
+    // Sort lessons by their numeric ID suffix
+    const sortedLessons = [...lessons].sort((a, b) => {
+      const aNum = parseInt(a.lesson_id.replace(/^\D+/g, ""), 10);
+      const bNum = parseInt(b.lesson_id.replace(/^\D+/g, ""), 10);
+      return aNum - bNum;
+    });
+    return sortedLessons.map((lesson, idx) => (
       <LessonCard
         key={lesson.lesson_id}
         lesson={lesson}

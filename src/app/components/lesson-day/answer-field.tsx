@@ -17,8 +17,6 @@ interface AnswerFieldProps {
 }
 
 export default function AnswerField({
-  placeholder = "Tu respuesta",
-  label = "Tu respuesta",
   userId,
   quarterSlug,
   lessonId,
@@ -62,11 +60,31 @@ export default function AnswerField({
         multiline
         minRows={3}
         variant="outlined"
-        placeholder={placeholder}
-        label={label}
         value={noteText}
         onChange={(e) => setNoteText(e.target.value)}
-        sx={{ backgroundColor: "white", mb: 1 }}
+        sx={{
+          backgroundColor: "white",
+          mb: 1,
+          // Notebook-style background lines
+          "& .MuiInputBase-root": {
+            background: `
+              repeating-linear-gradient(
+                to bottom,
+                white,
+                white 28px,
+                #f7f7f7 28px,
+                #f7f7f7 29px
+              )
+            `,
+            paddingLeft: "12px",
+            borderLeft: "3px solid rgb(182, 189, 199)",
+          },
+          // Make textarea resizable vertically
+          "& .MuiInputBase-inputMultiline": {
+            resize: "vertical",
+            overflow: "auto",
+          },
+        }}
       />
       <Button onClick={handleSaveNote} variant="outlined">
         Guardar

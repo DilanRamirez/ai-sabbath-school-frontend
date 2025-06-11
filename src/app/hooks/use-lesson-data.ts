@@ -74,6 +74,7 @@ export function useLessonData(selectedQuarter?: Quarter): UseLessonDataResult {
 
       try {
         const data = await getLessons(quarter.year, quarter.metadata.slug);
+        console.log("Fetched lessons for quarter:", quarterKey, data);
         setLessons(data);
         dispatch(loadLessons(data));
       } catch (err: any) {
