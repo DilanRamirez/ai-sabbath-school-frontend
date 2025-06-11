@@ -6,6 +6,8 @@ import React, { useMemo } from "react";
 import { Box, Typography, Paper, Stack } from "@mui/material";
 import { useAppSelector } from "@/app/store/hooks";
 import { useUserStudyData } from "@/app/hooks/use-user-data";
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface Note {
   quarter: string;
@@ -129,34 +131,42 @@ const NotesSection: React.FC<{
             Trimestre: {quarter.replace(/-/g, " ")}
           </Typography>
           {Object.entries(lessons).map(([lessonId, notes]) => (
-            <Box key={lessonId} sx={{ ml: 2, mb: 2 }}>
-              <Typography variant="subtitle1">Lección {lessonId}</Typography>
-              <Stack spacing={2}>
-                {notes.map((note, idx) => (
-                  <Paper
-                    key={`${lessonId}-${note.created_at}-${idx}`}
-                    sx={{ p: 2 }}
-                  >
-                    <Typography variant="subtitle2">
-                      <strong>Día:</strong> {note.day}
-                    </Typography>
-                    {note.question_id && (
+            <Accordion key={lessonId} sx={{ mb: 2 }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel-${lessonId}-content`}
+                id={`panel-${lessonId}-header`}
+              >
+                <Typography variant="subtitle1">Lección {lessonId}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack spacing={2}>
+                  {notes.map((note, idx) => (
+                    <Paper
+                      key={`${lessonId}-${note.created_at}-${idx}`}
+                      sx={{ p: 2 }}
+                    >
                       <Typography variant="subtitle2">
-                        Pregunta: {note.content}
+                        <strong>Día:</strong> {note.day}
                       </Typography>
-                    )}
-                    <Typography sx={{ mt: 1 }}>
-                      Respuesta: {note.note}
-                    </Typography>
-                    {note.created_at && (
-                      <Typography variant="caption" color="text.secondary">
-                        Fecha: {new Date(note.created_at).toLocaleString()}
+                      {note.question_id && (
+                        <Typography variant="subtitle2">
+                          Pregunta: {note.content}
+                        </Typography>
+                      )}
+                      <Typography sx={{ mt: 1 }}>
+                        Respuesta: {note.note}
                       </Typography>
-                    )}
-                  </Paper>
-                ))}
-              </Stack>
-            </Box>
+                      {note.created_at && (
+                        <Typography variant="caption" color="text.secondary">
+                          Fecha: {new Date(note.created_at).toLocaleString()}
+                        </Typography>
+                      )}
+                    </Paper>
+                  ))}
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
           ))}
         </Box>
       ))}
