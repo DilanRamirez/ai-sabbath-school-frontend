@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -16,26 +16,44 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/app/hooks/use-auth";
 
-const schema = z.object({
-  name: z.string().min(2, "Nombre requerido"),
-  email: z.string().email("Correo inválido"),
-  password: z.string().min(6, "Mínimo 6 caracteres"),
-  isTeacher: z.boolean().optional(),
-});
+// Validation schema for registration form
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .nonempty("El nombre es obligatorio")
+      .min(2, "Mínimo 2 caracteres"),
+    email: z
+      .string()
+      .nonempty("El correo es obligatorio")
+      .email("Correo inválido"),
+    password: z
+      .string()
+      .nonempty("La contraseña es obligatoria")
+      .min(6, "Mínimo 6 caracteres"),
+    isTeacher: z.boolean().optional(),
+  })
+  .required();
 
-type FormData = z.infer<typeof schema>;
+type RegisterFormInputs = z.infer<typeof registerSchema>;
 
+/**
+ * Registration page component.
+ */
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register: registerUser } = useAuth();
 
-  const [errorMessage, setErrorMessage] = React.useState("");
+  // UI state for loading and submission errors
+  const [loading, setLoading] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string>("");
 
+  // Initialize form with validation
   const {
-    handleSubmit,
     control,
+    handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  } = useForm<RegisterFormInputs>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -44,72 +62,98 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      await register(
-        data.name,
-        data.email,
-        data.password,
-        data.isTeacher ?? false,
-      );
-    } catch (err) {
-      console.error("Register error:", err);
-      setErrorMessage("Error al registrarse. Inténtalo de nuevo.");
-    }
-  };
+  /**
+   * Handles form submission.
+   */
+  const onSubmit = useCallback(
+    async (data: RegisterFormInputs) => {
+      setFormError("");
+      setLoading(true);
+      try {
+        // Trim text inputs
+        await registerUser(
+          data.name.trim(),
+          data.email.trim(),
+          data.password,
+          data.isTeacher ?? false,
+        );
+      } catch (err: any) {
+        console.error("Error de registro:", err);
+        setFormError(
+          err?.message || "Error al registrarse. Inténtalo de nuevo.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [registerUser],
+  );
 
   return (
     <Box
       component="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit(onSubmit)(e);
-      }}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
+      aria-busy={loading}
     >
+      {/* Name input field */}
       <Controller
         name="name"
         control={control}
         render={({ field }) => (
           <TextField
+            {...field}
             label="Nombre"
             fullWidth
             margin="normal"
-            {...field}
-            error={!!errors.name}
+            required
+            error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            aria-invalid={Boolean(errors.name)}
           />
         )}
       />
+
+      {/* Email input field */}
       <Controller
         name="email"
         control={control}
         render={({ field }) => (
           <TextField
+            {...field}
             label="Correo electrónico"
             fullWidth
             margin="normal"
-            {...field}
-            error={!!errors.email}
+            required
+            autoComplete="email"
+            error={Boolean(errors.email)}
             helperText={errors.email?.message}
+            aria-invalid={Boolean(errors.email)}
           />
         )}
       />
+
+      {/* Password input field */}
       <Controller
         name="password"
         control={control}
         render={({ field }) => (
           <TextField
+            {...field}
             label="Contraseña"
             type="password"
             fullWidth
             margin="normal"
-            {...field}
-            error={!!errors.password}
+            required
+            autoComplete="new-password"
+            error={Boolean(errors.password)}
             helperText={errors.password?.message}
+            aria-invalid={Boolean(errors.password)}
           />
         )}
       />
+
+      {/* Teacher checkbox */}
       <Controller
         name="isTeacher"
         control={control}
@@ -126,14 +170,26 @@ export default function RegisterPage() {
           />
         )}
       />
-      {errorMessage && (
+
+      {/* Display submission error */}
+      {formError && (
         <Typography color="error" align="center" sx={{ mt: 2 }}>
-          {errorMessage}
+          {formError}
         </Typography>
       )}
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-        Registrarse
+
+      {/* Submit button */}
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3 }}
+        disabled={loading}
+      >
+        {loading ? "Cargando..." : "Registrarse"}
       </Button>
+
+      {/* Link to login page */}
       <Typography variant="body2" align="center" sx={{ mt: 2 }}>
         ¿Ya tienes cuenta?{" "}
         <MuiLink component={Link} href="/login">

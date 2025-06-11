@@ -1,4 +1,8 @@
-import { LoginResponse, UserStudyProgressResponse } from "../types/types";
+import {
+  LoginResponse,
+  RegisterRequest,
+  UserStudyProgressResponse,
+} from "../types/types";
 
 // src/lib/api/auth.ts
 export async function loginUser(
@@ -22,12 +26,7 @@ export async function loginUser(
   return response.json(); // e.g., { token, user }
 }
 
-export async function registerUser(data: {
-  name: string;
-  email: string;
-  password: string;
-  role: "teacher" | "student";
-}) {
+export async function registerUser(data: RegisterRequest) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/signup`,
     {

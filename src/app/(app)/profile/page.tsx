@@ -93,7 +93,9 @@ export default function ProfilePage() {
       ) : (
         Object.entries(groupedNotes).map(([quarter, lessons]) => (
           <Box key={quarter} sx={{ mb: 3 }}>
-            <Typography variant="h6">Quarter {quarter}</Typography>
+            <Typography variant="h6" gutterBottom>
+              Trimestre: {quarter.replace(/-/g, " ")}
+            </Typography>
             {Object.entries(lessons).map(([lessonId, notes]) => (
               <Box key={lessonId} sx={{ ml: 2, mb: 2 }}>
                 <Typography variant="subtitle1">Lección {lessonId}</Typography>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -14,85 +14,118 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/app/hooks/use-auth";
 
-const schema = z.object({
-  email: z.string().email("Correo inválido"),
-  password: z.string().min(6, "Mínimo 6 caracteres"),
-});
+// Validation schema using Zod
+const loginSchema = z
+  .object({
+    email: z
+      .string()
+      .nonempty("El correo es obligatorio")
+      .email("Correo inválido"),
+    password: z
+      .string()
+      .nonempty("La contraseña es obligatoria")
+      .min(6, "Mínimo 6 caracteres"),
+  })
+  .required();
 
-type FormData = z.infer<typeof schema>;
+type LoginFormInputs = z.infer<typeof loginSchema>;
 
+/**
+ * Login page component.
+ */
 export default function LoginPage() {
   const { login } = useAuth();
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
 
+  // Local UI state for loading and form errors
+  const [loading, setLoading] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string>("");
+
+  // Initialize form handling with validation
   const {
-    handleSubmit,
     control,
+    handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async (data: FormData) => {
-    setLoading(true);
-    try {
-      await login(data.email, data.password);
-    } catch (err) {
-      console.error("Login error:", err);
-      setErrorMessage("Error al iniciar sesión. Verifica tus datos.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  /**
+   * Handles form submission.
+   */
+  const onSubmit = useCallback(
+    async (data: LoginFormInputs) => {
+      setFormError("");
+      setLoading(true);
+      try {
+        // Trim inputs to avoid validation issues
+        await login(data.email.trim(), data.password);
+      } catch (err: any) {
+        console.error("Error de login:", err);
+        setFormError(
+          err?.message || "Error al iniciar sesión. Inténtalo de nuevo.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [login],
+  );
 
   return (
     <Box
       component="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit(onSubmit)(e);
-      }}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
+      aria-busy={loading}
     >
+      {/* Email input field */}
       <Controller
         name="email"
         control={control}
         render={({ field }) => (
           <TextField
+            {...field}
             label="Correo electrónico"
             fullWidth
             margin="normal"
-            {...field}
-            error={!!errors.email}
+            required
+            autoComplete="email"
+            error={Boolean(errors.email)}
             helperText={errors.email?.message}
+            aria-invalid={Boolean(errors.email)}
           />
         )}
       />
+
+      {/* Password input field */}
       <Controller
         name="password"
         control={control}
         render={({ field }) => (
           <TextField
+            {...field}
             label="Contraseña"
             type="password"
             fullWidth
             margin="normal"
-            {...field}
-            error={!!errors.password}
+            required
+            autoComplete="current-password"
+            error={Boolean(errors.password)}
             helperText={errors.password?.message}
+            aria-invalid={Boolean(errors.password)}
           />
         )}
       />
-      {errorMessage && (
+
+      {/* Display submission error */}
+      {formError && (
         <Typography color="error" align="center" sx={{ mt: 2 }}>
-          {errorMessage}
+          {formError}
         </Typography>
       )}
+
+      {/* Submit button */}
       <Button
         type="submit"
         fullWidth
@@ -102,6 +135,8 @@ export default function LoginPage() {
       >
         {loading ? "Cargando..." : "Iniciar sesión"}
       </Button>
+
+      {/* Link to registration */}
       <Typography variant="body2" align="center" sx={{ mt: 2 }}>
         ¿No tienes cuenta?{" "}
         <MuiLink component={Link} href="/register">

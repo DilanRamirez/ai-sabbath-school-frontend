@@ -265,6 +265,13 @@ export interface StudyProgress {
   last_position: LastPosition;
 }
 
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+  role: "teacher" | "student";
+}
+
 /** Entire response (array of progress records) */
 export type UserStudyProgressResponse = UserLessonProgress[];
 
