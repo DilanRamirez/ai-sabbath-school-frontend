@@ -54,6 +54,19 @@ export async function updateStudyProgress(
   const safeUserId = payload.user_id
     .replace(/@/g, "-at-")
     .replace(/\./g, "-dot-");
+
+  const bodyPayload: any = {
+    user_id: safeUserId,
+    quarter: payload.quarter,
+    lesson_id: payload.lesson_id,
+    day: payload.day,
+    cohort_id: payload.cohort_id,
+    mark_studied: payload.mark_studied,
+    content: payload.content,
+    question_id: payload.question_id,
+    note: payload?.note?.trim() !== "" ? payload.note : null,
+  };
+
   const response = await fetch(`${BASE_URL}/study/progress`, {
     method: "POST",
     headers: {
@@ -61,10 +74,7 @@ export async function updateStudyProgress(
       // Add authorization here if needed:
       // Authorization: `Bearer ${authToken}`,
     },
-    body: JSON.stringify({
-      ...payload,
-      userId: safeUserId,
-    }),
+    body: JSON.stringify(bodyPayload),
   });
 
   if (!response.ok) {

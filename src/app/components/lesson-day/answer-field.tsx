@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { TextField, Button, Box } from "@mui/material";
 import { useUpdateStudyProgress } from "@/app/hooks/use-update-study";
 import { StudyNotes } from "@/app/types/types";
@@ -26,15 +27,20 @@ export default function AnswerField({
   notes,
   content,
 }: AnswerFieldProps) {
+  const router = useRouter();
   const initialNote =
     notes.find((n) => n.question_id === questionId && n.day === dayName)
       ?.note || "";
+
+  useEffect(() => {
+    setNoteText(initialNote);
+  }, [initialNote]);
 
   const [noteText, setNoteText] = useState(initialNote);
   const { updateProgress } = useUpdateStudyProgress();
 
   const handleSaveNote = async () => {
-    if (!questionId || !noteText.trim()) return;
+    if (!questionId) return;
     try {
       await updateProgress({
         user_id: userId,
@@ -47,7 +53,8 @@ export default function AnswerField({
         question_id: questionId,
         content,
       });
-      // Do not clear noteText after save, so it reflects saved content
+      router.refresh();
+      if (!noteText.trim()) setNoteText("");
     } catch (error) {
       console.error("Error saving note:", error);
     }

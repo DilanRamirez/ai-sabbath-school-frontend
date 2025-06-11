@@ -43,6 +43,7 @@ export function useUpdateStudyProgress(): UseUpdateStudyProgressResult {
         // Persist last position locally
         // eslint-disable-next-line no-undef
         localStorage.setItem("lastPosition", JSON.stringify(result));
+        console.log("Study progress updated:", result);
         return result;
       } catch (err: any) {
         // Surface user-friendly error message
