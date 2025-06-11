@@ -92,7 +92,7 @@ export function useStudyProgress({
         setError(err.message || "Unexpected error occurred");
       }
     },
-    [userId, lessonId, hasValidParams]
+    [userId, lessonId, hasValidParams],
   );
 
   /**

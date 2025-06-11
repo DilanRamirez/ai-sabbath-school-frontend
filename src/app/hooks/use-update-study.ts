@@ -7,7 +7,7 @@ import { StudyProgressPayload, StudyProgressResponse } from "../types/types";
 interface UseUpdateStudyProgressResult {
   updateProgress: (
     // eslint-disable-next-line no-unused-vars
-    payload: StudyProgressPayload
+    payload: StudyProgressPayload,
   ) => Promise<StudyProgressResponse | void>;
   isUpdating: boolean;
   error: string | null;
@@ -27,7 +27,7 @@ export function useUpdateStudyProgress(): UseUpdateStudyProgressResult {
    */
   const updateProgress = useCallback(
     async (
-      payload: StudyProgressPayload
+      payload: StudyProgressPayload,
     ): Promise<StudyProgressResponse | void> => {
       // Guard: ensure payload has required fields
       if (!payload.user_id || !payload.lesson_id) {
@@ -55,7 +55,7 @@ export function useUpdateStudyProgress(): UseUpdateStudyProgressResult {
         setIsUpdating(false);
       }
     },
-    []
+    [],
   );
 
   const resetError = useCallback(() => {
