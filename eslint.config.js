@@ -1,46 +1,64 @@
-module.exports = {
-  parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-  ],
-  settings: {
-    react: {
-      version: "detect",
+import js from "@eslint/js";
+import * as tseslint from "typescript-eslint";
+import eslintPluginReact from "eslint-plugin-react";
+import eslintPluginReactHooks from "eslint-plugin-react-hooks";
+
+export default [
+  // Ignored paths
+  {
+    ignores: [".next", "node_modules", "dist"],
+  },
+  // Base config
+  {
+    ...js.configs.recommended,
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
     },
   },
-  env: {
-    browser: true,
-    es6: true,
-    node: true,
-  },
-  plugins: ["@typescript-eslint", "react"],
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: "module", // Allows for the use of imports
-  },
-  rules: {
-    "no-prototype-builtins": "off",
-    "react/display-name": "off",
-    "react/prop-types": "off", // Disable prop-types as we use TypeScript for type checking
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-  },
-  settings: {
-    react: {
-      version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
+  {
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        window: "readonly",
+        console: "readonly",
+        document: "readonly",
+        fetch: "readonly",
+        process: "readonly",
+      },
     },
   },
-  overrides: [
-    // Override some TypeScript rules just for .js files
-    {
-      files: ["*.js"],
-      rules: {},
+
+  // TypeScript + React support
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: true,
+        sourceType: "module",
+      },
     },
-  ],
-};
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      react: eslintPluginReact,
+      "react-hooks": eslintPluginReactHooks,
+    },
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      ...eslintPluginReact.configs.recommended.rules,
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_", // allow underscore-prefixed
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
+];

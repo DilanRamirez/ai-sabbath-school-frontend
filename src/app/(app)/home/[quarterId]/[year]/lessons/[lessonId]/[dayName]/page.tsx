@@ -36,7 +36,7 @@ const DayView = () => {
   });
 
   const {
-    lesson,
+    dayData: lesson,
     loading: lessonLoading,
     error: lessonError,
   } = useLessonDay(getLessonDetails(lessonId as string));

@@ -1,3 +1,4 @@
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   Box,
   Collapse,
@@ -10,12 +11,12 @@ import {
   Grow,
   Fade,
 } from "@mui/material";
-import React, { FC, useCallback, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useLLM } from "@/app/hooks/use-llm";
 import { LLMMode } from "@/app/types/types";
 
-const actionOptions: LLMMode[] = [
+// Available AI action modes
+const ACTION_MODES: LLMMode[] = [
   LLMMode.SUMMARIZE,
   LLMMode.REFLECT,
   LLMMode.ASK,
@@ -23,54 +24,133 @@ const actionOptions: LLMMode[] = [
   LLMMode.EXPLAIN,
 ];
 
-interface AiActionsProps {
-  open: boolean;
-  context: string;
-}
+/**
+ * Tab panel for "Ask" mode, with question input.
+ */
+const AskTabPanel: FC<{
+  isLoading: boolean;
+  result?: string;
+  error?: string | null;
+  // eslint-disable-next-line no-unused-vars
+  onAsk: (question: string) => void;
+}> = ({ isLoading, result, error, onAsk }) => {
+  const [question, setQuestion] = useState("");
+
+  const handleAsk = () => {
+    const trimmed = question.trim();
+    if (trimmed) onAsk(trimmed);
+  };
+
+  return (
+    <Box>
+      <TextField
+        fullWidth
+        label="Haz tu pregunta"
+        variant="outlined"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+      <Box display="flex" justifyContent="center" mb={2}>
+        <Button
+          variant="contained"
+          onClick={handleAsk}
+          disabled={isLoading || !question.trim()}
+        >
+          Preguntar
+        </Button>
+      </Box>
+      {isLoading && (
+        <Typography variant="body1">Cargando respuesta...</Typography>
+      )}
+      {result && (
+        <Fade in>
+          <Box mt={2}>
+            <Divider sx={{ mb: 2 }} />
+            <Typography variant="subtitle2" gutterBottom>
+              Respuesta:
+            </Typography>
+            <ReactMarkdown>{result}</ReactMarkdown>
+          </Box>
+        </Fade>
+      )}
+      {error && (
+        <Typography color="error" variant="body2">
+          {error}
+        </Typography>
+      )}
+    </Box>
+  );
+};
 
 /**
- * Renders AI actions with collapsible tabbed interface.
+ * Tab panel for standard AI modes (summarize, reflect, etc.).
  */
-const AiActions: FC<AiActionsProps> = ({ open, context }) => {
+const StandardTabPanel: FC<{
+  mode: LLMMode;
+  isLoading: boolean;
+  result?: string;
+  error?: string | null;
+  onRequest: () => void;
+  showResponse: boolean;
+}> = ({ mode, isLoading, result, error, onRequest, showResponse }) => (
+  <Box>
+    <Box display="flex" justifyContent="center" mb={2}>
+      <Button variant="contained" onClick={onRequest} disabled={isLoading}>
+        Obtener respuesta
+      </Button>
+    </Box>
+    {isLoading && (
+      <Typography variant="body1">Cargando respuesta...</Typography>
+    )}
+    {result && <ReactMarkdown>{result}</ReactMarkdown>}
+    {showResponse && !isLoading && !result && (
+      <Typography variant="body2" color="text.secondary">
+        No hay respuesta para la acción {mode}
+      </Typography>
+    )}
+    {error && (
+      <Typography color="error" variant="body2">
+        {error}
+      </Typography>
+    )}
+  </Box>
+);
+
+/**
+ * AI Actions component: shows tabs for different LLM modes.
+ */
+const AiActions: FC<{ open: boolean; context: string }> = ({
+  open,
+  context,
+}) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [userQuestion, setUserQuestion] = useState("");
   const [showResponse, setShowResponse] = useState(false);
-  const { getLLMResponse, responses, loading, error } = useLLM();
+  const { fetchLLMResult, results, isLoading, error } = useLLM();
 
-  const activeTabMode = useMemo(() => actionOptions[activeTab], [activeTab]);
+  // Which mode is active
+  const activeMode = useMemo(() => ACTION_MODES[activeTab], [activeTab]);
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-    setShowResponse(false);
-  };
+  const handleTabChange = useCallback(
+    (_: React.SyntheticEvent, newIndex: number) => {
+      setActiveTab(newIndex);
+      setShowResponse(false);
+    },
+    [],
+  );
 
-  const handleAsk = useCallback(() => {
-    const question = userQuestion.trim();
-    if (!question) return;
-    getLLMResponse(LLMMode.ASK, `${context}\n\n${question}`);
-  }, [userQuestion, context, getLLMResponse]);
-
-  const handleStandardRequest = useCallback(() => {
-    getLLMResponse(activeTabMode, context);
+  // Handlers for each mode
+  const handleStandard = useCallback(() => {
+    fetchLLMResult(activeMode, context);
     setShowResponse(true);
-  }, [activeTabMode, context, getLLMResponse]);
+  }, [activeMode, context, fetchLLMResult]);
 
-  const renderResponse = (mode: LLMMode) => {
-    const response = responses?.[mode]?.answer;
-    if (loading)
-      return <Typography variant="body1">Cargando respuesta...</Typography>;
-    if (showResponse && response) {
-      return <ReactMarkdown>{response}</ReactMarkdown>;
-    }
-
-    if (showResponse && !response)
-      return (
-        <Typography variant="body2">
-          No hay respuesta para la acción {mode}
-        </Typography>
-      );
-    return null;
-  };
+  const handleAsk = useCallback(
+    (question: string) => {
+      fetchLLMResult(LLMMode.ASK, `${context}\n\n${question}`);
+    },
+    [context, fetchLLMResult],
+  );
 
   return (
     <Collapse in={open} timeout="auto" unmountOnExit>
@@ -83,6 +163,7 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
           borderRadius={2}
           borderColor="grey.300"
           bgcolor="grey.200"
+          aria-busy={isLoading}
         >
           <Tabs
             value={activeTab}
@@ -90,16 +171,20 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
             variant="fullWidth"
             textColor="primary"
             indicatorColor="primary"
+            aria-label="AI action tabs"
           >
-            {actionOptions.map((option) => (
+            {ACTION_MODES.map((mode) => (
               <Tab
-                key={option}
-                label={option.charAt(0).toUpperCase() + option.slice(1)}
+                key={mode}
+                label={
+                  mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()
+                }
                 sx={{ textTransform: "capitalize", fontWeight: 500 }}
+                id={`ai-tab-${mode}`}
+                aria-controls={`ai-tabpanel-${mode}`}
               />
             ))}
           </Tabs>
-
           <Box
             id="ai-response-container"
             mt={2}
@@ -107,57 +192,22 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
             p={2}
             borderRadius={1}
           >
-            {activeTabMode === LLMMode.ASK ? (
-              <Box>
-                <TextField
-                  fullWidth
-                  label="Haz tu pregunta"
-                  variant="outlined"
-                  value={userQuestion}
-                  onChange={(e) => setUserQuestion(e.target.value)}
-                  sx={{ mb: 2 }}
-                />
-                <Box display="flex" justifyContent="center" mb={2}>
-                  <Button
-                    variant="contained"
-                    onClick={handleAsk}
-                    disabled={loading || !userQuestion.trim()}
-                  >
-                    Preguntar
-                  </Button>
-                </Box>
-                {responses?.[LLMMode.ASK]?.answer && (
-                  <Fade in={true}>
-                    <Box mt={2}>
-                      <Divider sx={{ mb: 2 }} />
-                      <Typography variant="subtitle2" gutterBottom>
-                        Respuesta:
-                      </Typography>
-                      <ReactMarkdown>
-                        {responses[LLMMode.ASK].answer}
-                      </ReactMarkdown>
-                    </Box>
-                  </Fade>
-                )}
-              </Box>
+            {activeMode === LLMMode.ASK ? (
+              <AskTabPanel
+                isLoading={isLoading}
+                result={results[LLMMode.ASK]?.answer}
+                error={error}
+                onAsk={handleAsk}
+              />
             ) : (
-              <>
-                <Box display="flex" justifyContent="center" mb={2}>
-                  <Button
-                    variant="contained"
-                    onClick={handleStandardRequest}
-                    disabled={loading}
-                  >
-                    Obtener respuesta
-                  </Button>
-                </Box>
-                {renderResponse(activeTabMode)}
-              </>
-            )}
-            {error && (
-              <Typography color="error" variant="body2">
-                {error}
-              </Typography>
+              <StandardTabPanel
+                mode={activeMode}
+                isLoading={isLoading}
+                result={results[activeMode]?.answer}
+                error={error}
+                onRequest={handleStandard}
+                showResponse={showResponse}
+              />
             )}
           </Box>
         </Box>
@@ -166,4 +216,4 @@ const AiActions: FC<AiActionsProps> = ({ open, context }) => {
   );
 };
 
-export default AiActions;
+export default React.memo(AiActions);

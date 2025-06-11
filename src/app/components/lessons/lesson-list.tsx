@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { LessonsResponse } from "@/app/types/types";
@@ -90,29 +91,29 @@ const LessonsList: React.FC<LessonsListProps> = ({
   quarterId,
   year,
 }) => {
-  // Guard against invalid props
-  if (!Array.isArray(lessons) || lessons.length === 0) {
+  // Memoize lesson cards to avoid re-rendering on parent updates
+  const lessonItems = useMemo(() => {
+    if (!Array.isArray(lessons) || lessons.length === 0) {
+      return [];
+    }
+    return lessons.map((lesson, idx) => (
+      <LessonCard
+        key={lesson.lesson_id}
+        lesson={lesson}
+        index={idx}
+        quarterId={quarterId}
+        year={year}
+      />
+    ));
+  }, [lessons, quarterId, year]);
+
+  if (lessonItems.length === 0) {
     return (
       <Typography role="status" color="text.secondary">
         No hay lecciones disponibles.
       </Typography>
     );
   }
-
-  // Memoize lesson cards to avoid re-rendering on parent updates
-  const lessonItems = useMemo(
-    () =>
-      lessons.map((lesson, idx) => (
-        <LessonCard
-          key={lesson.lesson_id}
-          lesson={lesson}
-          index={idx}
-          quarterId={quarterId}
-          year={year}
-        />
-      )),
-    [lessons, quarterId, year],
-  );
 
   return (
     <Box
@@ -132,4 +133,4 @@ const LessonsList: React.FC<LessonsListProps> = ({
   );
 };
 
-export default React.memo(LessonsList);
+export default LessonsList;

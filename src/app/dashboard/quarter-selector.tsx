@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useMemo, KeyboardEvent } from "react";
 import {
   Grid,
@@ -39,6 +40,7 @@ EmptyState.displayName = "EmptyState";
 
 interface QuarterSelectorProps {
   quarters: Quarter[];
+  // eslint-disable-next-line no-unused-vars
   onSelect: (quarter: Quarter) => void;
 }
 
@@ -49,6 +51,7 @@ const QuarterCard: React.FC<{
   quarter: Quarter;
   // eslint-disable-next-line no-unused-vars
   onSelect: (quarter: Quarter) => void;
+  // eslint-disable-next-line react/prop-types
 }> = React.memo(({ quarter, onSelect }) => {
   const handleClick = () => onSelect(quarter);
 
@@ -105,21 +108,23 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
   quarters,
   onSelect,
 }) => {
-  if (!Array.isArray(quarters) || quarters.length === 0) {
-    return <EmptyState />;
-  }
-
   // Memoize rendered cards to avoid unnecessary recalculations
   const memoizedQuarterCards = useMemo(() => {
-    return quarters.map((quarter) => (
-      <Grid
-        key={`${quarter.metadata.slug}-${quarter.year}`}
-        sx={{ scrollSnapAlign: "start", minWidth: 220, px: 3 }}
-      >
-        <QuarterCard quarter={quarter} onSelect={onSelect} />
-      </Grid>
-    ));
+    return Array.isArray(quarters) && quarters.length > 0
+      ? quarters.map((quarter) => (
+          <Grid
+            key={`${quarter.metadata.slug}-${quarter.year}`}
+            sx={{ scrollSnapAlign: "start", minWidth: 220, px: 3 }}
+          >
+            <QuarterCard quarter={quarter} onSelect={onSelect} />
+          </Grid>
+        ))
+      : [];
   }, [quarters, onSelect]);
+
+  if (memoizedQuarterCards.length === 0) {
+    return <EmptyState />;
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 0 }}>

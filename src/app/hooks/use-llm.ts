@@ -1,41 +1,62 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { LLMMode } from "../types/types";
 import { callLLM } from "../lib/api/llm";
 
-type LLMResponsePayload = {
+interface LLMResult {
   answer: string;
   refs?: string[];
-};
+}
 
-type LLMResponses = {
-  // eslint-disable-next-line no-unused-vars
-  [key in LLMMode]?: LLMResponsePayload;
-};
+type LLMResultsMap = Record<LLMMode, LLMResult | undefined>;
 
+/**
+ * Custom hook for interacting with the LLM API.
+ * Provides loading state, result map by mode, and error handling.
+ */
 export function useLLM() {
-  const [loading, setLoading] = useState(false);
-  const [responses, setResponses] = useState<LLMResponses>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState<LLMResultsMap>({} as LLMResultsMap);
   const [error, setError] = useState<string | null>(null);
 
-  const getLLMResponse = async (mode: LLMMode, context: string) => {
-    setLoading(true);
+  /**
+   * Fetches the LLM response for a given mode and context.
+   * @param mode - LLMMode determines the prompt/behavior.
+   * @param context - Input text for the LLM.
+   */
+  const fetchLLMResult = useCallback(async (mode: LLMMode, context: string) => {
+    // Guard: non-empty context
+    if (!context || !context.trim()) {
+      setError("Input context cannot be empty.");
+      return;
+    }
+    setIsLoading(true);
     setError(null);
 
     try {
-      const response = await callLLM({ text: context, mode, lang: "es" });
-
-      if (response.result) {
-        setResponses((prev) => ({ ...prev, [mode]: response.result }));
-      } else {
-        setError("Unexpected response format");
+      const { result } = await callLLM({
+        text: context.trim(),
+        mode,
+        lang: "es",
+      });
+      if (!result || typeof result.answer !== "string") {
+        throw new Error("Unexpected response format from LLM.");
       }
+      // Append or replace result for this mode
+      setResults((prev) => ({ ...prev, [mode]: result }));
     } catch (err: any) {
       console.error("LLM API error:", err);
-      setError(err.message || "Unknown error");
+      setError(
+        err.message || "An unexpected error occurred while calling LLM.",
+      );
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  return { getLLMResponse, loading, responses, error };
+  return {
+    fetchLLMResult,
+    isLoading,
+    results,
+    error,
+  };
 }
