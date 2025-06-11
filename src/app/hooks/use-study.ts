@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { StudyProgressPayload, StudyProgressRecord } from "../types/types";
 import { getStudyProgress, updateStudyProgress } from "../lib/api/study";
 
@@ -23,26 +23,31 @@ export function useStudyProgress({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const initialFetchProgress = useCallback(async () => {
-    const hasParams = userId && quarterSlug && lessonId && dayName && cohortId;
+  const hasValidParams = useMemo(() => {
+    return Boolean(userId && quarterSlug && lessonId && dayName && cohortId);
+  }, [userId, quarterSlug, lessonId, dayName, cohortId]);
 
-    if (!hasParams) {
+  const lastSyncTimeRef = useRef<number>(0);
+
+  /**
+   * Loads the study progress for the current user and lesson.
+   */
+  const loadProgress = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    if (!hasValidParams) {
       setError("Missing required parameters");
       setLoading(false);
       return;
     }
 
     try {
-      setLoading(true);
       const fetchedProgress = await getStudyProgress(userId, lessonId);
       setProgress(fetchedProgress);
-      console.log("Initial study progress fetched:", fetchedProgress);
     } catch (err: any) {
-      const isNotFound =
-        err.message?.includes("500") ||
-        err.message?.includes("Internal Server Error") ||
-        err.message?.includes("404");
-      if (isNotFound) {
+      const status = err.response?.status;
+      if (status === 500 || status === 404) {
         setProgress({
           lesson_id: lessonId,
           days_completed: [],
@@ -53,44 +58,46 @@ export function useStudyProgress({
           quarter: quarterSlug,
         });
       } else {
-        console.error("Initial fetch error:", err);
         setError(err.message || "Unexpected error occurred");
       }
     } finally {
       setLoading(false);
     }
-  }, [userId, quarterSlug, lessonId, dayName, cohortId]);
+  }, [userId, quarterSlug, lessonId, cohortId, hasValidParams]);
 
+  /**
+   * Synchronizes the study progress with the server.
+   * Debounced to prevent excessive calls within 500ms.
+   * @param payload The study progress payload to update.
+   */
   const syncProgress = useCallback(
     async (payload: StudyProgressPayload) => {
-      const hasParams =
-        userId && quarterSlug && lessonId && dayName && cohortId;
-      if (!hasParams) {
-        console.warn("Missing required parameters for syncProgress", {
-          userId,
-          quarterSlug,
-          lessonId,
-          dayName,
-          cohortId,
-        });
+      const now = Date.now();
+      if (now - lastSyncTimeRef.current < 500) {
+        return;
+      }
+      lastSyncTimeRef.current = now;
+
+      if (!hasValidParams) {
         return;
       }
 
       try {
         const updated = await updateStudyProgress(payload);
-        console.log("Study progress updated:", updated);
         // eslint-disable-next-line no-undef
         localStorage.setItem("lastPosition", JSON.stringify(updated));
         const fetchedProgress = await getStudyProgress(userId, lessonId);
         setProgress(fetchedProgress);
-      } catch (err) {
-        console.error("Study progress error:", err);
-        setError((err as Error).message || "Unexpected error occurred");
+      } catch (err: any) {
+        setError(err.message || "Unexpected error occurred");
       }
     },
-    [userId, quarterSlug, lessonId, dayName, cohortId],
+    [userId, lessonId, hasValidParams]
   );
 
+  /**
+   * Marks the current day as studied.
+   */
   const markDayAsStudied = useCallback(() => {
     const payload: StudyProgressPayload = {
       user_id: userId,
@@ -113,11 +120,18 @@ export function useStudyProgress({
     syncProgress,
   ]);
 
+  /**
+   * Clears the current error state.
+   */
+  const resetError = useCallback(() => {
+    setError(null);
+  }, []);
+
   useEffect(() => {
-    if (userId && quarterSlug && lessonId && dayName && cohortId) {
-      initialFetchProgress();
+    if (hasValidParams) {
+      loadProgress();
     }
-  }, [userId, quarterSlug, lessonId, dayName, cohortId, initialFetchProgress]);
+  }, [hasValidParams, loadProgress]);
 
   return {
     progress,
@@ -125,5 +139,6 @@ export function useStudyProgress({
     error,
     refetch: syncProgress,
     markDayAsStudied,
+    resetError,
   };
 }
