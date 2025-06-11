@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { LessonsResponse } from "@/app/types/types";
 import { Box, Paper, Typography } from "@mui/material";
@@ -7,20 +7,39 @@ import salmos2 from "@/app/assets/salmos2.png";
 import salmos3 from "@/app/assets/salmos3.png";
 import salmos4 from "@/app/assets/salmos4.png";
 
-interface Props {
+/**
+ * Array of lesson cover images to cycle through.
+ */
+const lessonImages = [salmos1, salmos2, salmos3, salmos4];
+
+/**
+ * Props for LessonsList component.
+ */
+interface LessonsListProps {
   lessons: LessonsResponse[];
   quarterId: string;
   year: string;
 }
 
-const LessonsList: React.FC<Props> = ({ lessons, quarterId, year }) => {
+/**
+ * Single lesson card component.
+ */
+const LessonCard: React.FC<{
+  lesson: LessonsResponse;
+  index: number;
+  quarterId: string;
+  year: string;
+}> = React.memo(({ lesson, index, quarterId, year }) => {
+  const imageSrc = lessonImages[index % lessonImages.length].src;
+
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
-      {lessons.map((lesson, index) => (
+    <li key={lesson.lesson_id}>
+      <Link
+        href={`/home/${quarterId}/${year}/lessons/${lesson.lesson_id}`}
+        passHref
+      >
         <Paper
-          key={lesson.lesson_id}
-          component={Link}
-          href={`/home/${quarterId}/${year}/lessons/${lesson.lesson_id}`}
+          role="listitem"
           sx={{
             display: "flex",
             justifyContent: "space-between",
@@ -34,20 +53,21 @@ const LessonsList: React.FC<Props> = ({ lessons, quarterId, year }) => {
         >
           <Box flex={1} pr={2}>
             <Typography variant="caption" color="text.secondary">
-              Lesson {index + 1}
+              Lección {index + 1}
             </Typography>
             <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
               {lesson.metadata.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {lesson.metadata.week_range.start} -{" "}
+              {lesson.metadata.week_range.start} –{" "}
               {lesson.metadata.week_range.end}
             </Typography>
           </Box>
           <Box
             component="img"
-            src={[salmos1, salmos2, salmos3, salmos4][index % 4].src}
-            alt={`lesson-${index + 1}`}
+            src={imageSrc}
+            alt={`Lección ${index + 1} portada`}
+            loading="lazy"
             sx={{
               width: 80,
               height: 80,
@@ -56,9 +76,60 @@ const LessonsList: React.FC<Props> = ({ lessons, quarterId, year }) => {
             }}
           />
         </Paper>
-      ))}
+      </Link>
+    </li>
+  );
+});
+LessonCard.displayName = "LessonCard";
+
+/**
+ * List of lessons with proper states and accessibility.
+ */
+const LessonsList: React.FC<LessonsListProps> = ({
+  lessons,
+  quarterId,
+  year,
+}) => {
+  // Guard against invalid props
+  if (!Array.isArray(lessons) || lessons.length === 0) {
+    return (
+      <Typography role="status" color="text.secondary">
+        No hay lecciones disponibles.
+      </Typography>
+    );
+  }
+
+  // Memoize lesson cards to avoid re-rendering on parent updates
+  const lessonItems = useMemo(
+    () =>
+      lessons.map((lesson, idx) => (
+        <LessonCard
+          key={lesson.lesson_id}
+          lesson={lesson}
+          index={idx}
+          quarterId={quarterId}
+          year={year}
+        />
+      )),
+    [lessons, quarterId, year],
+  );
+
+  return (
+    <Box
+      component="ul"
+      role="list"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        p: 0,
+        m: 0,
+        listStyle: "none",
+      }}
+    >
+      {lessonItems}
     </Box>
   );
 };
 
-export default LessonsList;
+export default React.memo(LessonsList);

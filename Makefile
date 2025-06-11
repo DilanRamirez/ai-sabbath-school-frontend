@@ -10,10 +10,11 @@ format:
 check-format:
 	npx prettier . --check --ignore-path .gitignore
 
-lint:
-	npx eslint . --ext .js,.jsx,.ts,.tsx
+.PHONY: test-lint
+test-lint: node_modules/eslint
+	npm run test:lint
 
 types:
 	npx tsc --noEmit
 
-test-all: format check-format lint types
+test-all: format check-format types
