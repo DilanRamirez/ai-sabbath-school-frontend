@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Typography, Alert, Button, Box } from "@mui/material";
+import { Typography, Alert, Button, Box, IconButton } from "@mui/material";
 import { useStudyProgress } from "@/app/hooks/use-study";
 import { useAppSelector } from "@/app/store/hooks";
 import { useLessonDay } from "@/app/hooks/use-lesson-day";
@@ -11,6 +11,7 @@ import SabbathDay from "@/app/components/lesson-day/sabbath";
 import FridayDay from "@/app/components/lesson-day/friday";
 import WeekDay from "@/app/components/lesson-day/week-day";
 import LessonDaySkeleton from "@/app/components/skeletons/lesson-day-skeleton";
+import { Calendar1Icon } from "lucide-react";
 
 const DayView = () => {
   const { lessonId, dayName, quarterId } = useParams();
@@ -76,10 +77,18 @@ const DayView = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Typography variant="h4">{decodedDayName}</Typography>
-        <Button
-          variant="outlined"
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h4">
+          {currentDayData?.title ?? "No Title"}
+        </Typography>
+        <IconButton
           sx={{ ml: 2 }}
           onClick={() => {
             const year = lesson?.week_range?.start?.slice(0, 4);
@@ -88,17 +97,20 @@ const DayView = () => {
             }
           }}
         >
-          <Typography>Select Another Day</Typography>
-        </Button>
+          <Calendar1Icon />
+        </IconButton>
       </Box>
 
       {progress && (
         <>
           <Typography>
-            <strong>Score:</strong> {Math.round(progress.score * 100)}%
+            <strong>Puntuación:</strong> {Math.round(progress.score * 100)}%
           </Typography>
           <Typography>
-            <strong>Days Completed:</strong>{" "}
+            <strong>Día:</strong> {decodeURIComponent(decodedDayName)}
+          </Typography>
+          <Typography>
+            <strong>Días completados:</strong>{" "}
             {progress.days_completed
               .map((day) => decodeURIComponent(day))
               .join(", ")}
@@ -109,9 +121,6 @@ const DayView = () => {
         <>
           {currentDayData && (
             <>
-              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-                {currentDayData.title}
-              </Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 {new Date(currentDayData.date).toLocaleDateString()}
               </Typography>
@@ -212,9 +221,19 @@ const DayView = () => {
             ← {prevDay.day}
           </Button>
         )}
-        <Button variant="outlined" onClick={markDayAsStudied}>
-          Mark as Studied
-        </Button>
+
+        {progress?.days_completed &&
+        progress.days_completed.some(
+          (day) => decodeURIComponent(day) === decodedDayName,
+        ) ? (
+          <Button variant="contained" disabled>
+            <Typography variant="button">Estudiado</Typography>
+          </Button>
+        ) : (
+          <Button onClick={markDayAsStudied} variant="outlined" color="primary">
+            <Typography variant="button">Marcar como estudiado</Typography>
+          </Button>
+        )}
         {nextDay && (
           <Button variant="text" onClick={() => handleNavigate(nextDay.day)}>
             {nextDay.day} →

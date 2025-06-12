@@ -1,5 +1,11 @@
+import { Card, CardContent, Box, Divider } from "@mui/material";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import BookIcon from "@mui/icons-material/Book";
+import StarIcon from "@mui/icons-material/Star";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { AiDaySummary } from "@/app/types/types";
-import { List, ListItem, Paper, Typography } from "@mui/material";
+import { List, ListItem, Typography } from "@mui/material";
 import React, { FC } from "react";
 
 interface AiSummaryProps {
@@ -7,64 +13,85 @@ interface AiSummaryProps {
 }
 const AiSummary: FC<AiSummaryProps> = ({ aiSummary }) => {
   return (
-    <Paper
-      elevation={0}
+    <Card
       sx={{
-        bgcolor: "#F9FAFB",
-        p: 2,
         mb: 4,
-        borderLeft: 4,
-        borderColor: "primary.light",
       }}
+      elevation={0}
     >
-      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-        {aiSummary.day} — {aiSummary.date}
-      </Typography>
-      <Typography variant="body1" paragraph>
-        {aiSummary.summary}
-      </Typography>
-      <List dense disablePadding>
-        {aiSummary.keyPoints.map((pt, idx) => (
-          <ListItem key={idx} sx={{ display: "list-item", pl: 2 }}>
-            <Typography variant="body2">{pt}</Typography>
-          </ListItem>
-        ))}
-      </List>
-
-      {/* Glossary */}
-      {aiSummary.glossary && Object.keys(aiSummary.glossary).length > 0 && (
-        <>
-          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Glosario
+      <CardContent sx={{ p: 2 }}>
+        {/* Header Row */}
+        <Box display="flex" alignItems="center" mb={1}>
+          <CalendarTodayIcon fontSize="small" color="disabled" />
+          <Typography variant="subtitle2" color="text.secondary" ml={1}>
+            {aiSummary.day} — {aiSummary.date}
           </Typography>
-          <List dense disablePadding>
-            {Object.entries(aiSummary.glossary).map(([term, def]) => (
-              <ListItem key={term} sx={{ display: "list-item", pl: 2 }}>
-                <Typography variant="body2">
-                  <strong>{term}:</strong> {def}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </>
-      )}
-
-      {/* Citations */}
-      {aiSummary.citations && aiSummary.citations.length > 0 && (
-        <>
-          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Citas bíblicas
+        </Box>
+        {/* Summary Section */}
+        <Box display="flex" alignItems="flex-start" mb={2}>
+          <BookIcon
+            fontSize="small"
+            sx={{ color: "primary.main", mr: 1, mt: "2px" }}
+          />
+          <Typography variant="body1">{aiSummary.summary}</Typography>
+        </Box>
+        {/* Key Points */}
+        <Divider sx={{ my: 1 }} />
+        <Box display="flex" alignItems="center" mb={1}>
+          <StarIcon fontSize="small" color="disabled" />
+          <Typography variant="subtitle2" ml={1}>
+            Puntos clave
           </Typography>
-          <List dense disablePadding>
-            {aiSummary.citations.map((cite, idx) => (
-              <ListItem key={idx} sx={{ display: "list-item", pl: 2 }}>
-                <Typography variant="body2">{cite.reference}</Typography>
-              </ListItem>
-            ))}
-          </List>
-        </>
-      )}
-    </Paper>
+        </Box>
+        <List dense disablePadding>
+          {aiSummary.keyPoints.map((pt, idx) => (
+            <ListItem key={idx} sx={{ display: "list-item", pl: 2 }}>
+              <Typography variant="body2">{pt}</Typography>
+            </ListItem>
+          ))}
+        </List>
+        {/* Glossary */}
+        {aiSummary.glossary && Object.keys(aiSummary.glossary).length > 0 && (
+          <>
+            <Divider sx={{ my: 1 }} />
+            <Box display="flex" alignItems="center" mb={1}>
+              <MenuBookIcon fontSize="small" color="disabled" />
+              <Typography variant="subtitle2" ml={1}>
+                Glosario
+              </Typography>
+            </Box>
+            <List dense disablePadding>
+              {Object.entries(aiSummary.glossary).map(([term, def]) => (
+                <ListItem key={term} sx={{ display: "list-item", pl: 2 }}>
+                  <Typography variant="body2">
+                    <strong>{term}:</strong> {def}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
+        {/* Citations */}
+        {aiSummary.citations && aiSummary.citations.length > 0 && (
+          <>
+            <Divider sx={{ my: 1 }} />
+            <Box display="flex" alignItems="center" mb={1}>
+              <FormatQuoteIcon fontSize="small" color="disabled" />
+              <Typography variant="subtitle2" ml={1}>
+                Citas bíblicas
+              </Typography>
+            </Box>
+            <List dense disablePadding>
+              {aiSummary.citations.map((cite, idx) => (
+                <ListItem key={idx} sx={{ display: "list-item", pl: 2 }}>
+                  <Typography variant="body2">{cite.reference}</Typography>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
