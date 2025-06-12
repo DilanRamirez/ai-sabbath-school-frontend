@@ -34,7 +34,7 @@ export default function LessonOverviewPage() {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      minHeight="100vh"
+      minHeight="calc(90vh - 80px)"
     >
       <Typography variant="h4" gutterBottom>
         Días del Estudio
