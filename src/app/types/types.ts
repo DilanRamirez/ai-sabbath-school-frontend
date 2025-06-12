@@ -74,6 +74,7 @@ export type LessonSection =
   | QuoteSection
   | DiscussionQuestionsSection
   | ReflectionSection;
+
 /** One day’s worth of lesson content */
 export interface LessonDay {
   day: string; // e.g. "Sábado", "Domingo", …
@@ -85,6 +86,7 @@ export interface LessonDay {
     | LessonDayTypes.REVIEW; // Viernes
   title: string; // e.g. "Introducción" or devotional title
   sections: LessonSection[];
+  daySummary: AiDaySummary; // optional summary for the day
 }
 
 /** Full lesson for one week */
@@ -274,6 +276,16 @@ export interface RegisterRequest {
 
 /** Entire response (array of progress records) */
 export type UserStudyProgressResponse = UserLessonProgress[];
+
+// Interface for the summary structure returned by the LLM
+export interface AiDaySummary {
+  day: string;
+  date: string;
+  summary: string;
+  keyPoints: string[];
+  glossary: Record<string, string>;
+  citations: { reference: string }[];
+}
 
 export enum LLMMode {
   EXPLAIN = "explain",

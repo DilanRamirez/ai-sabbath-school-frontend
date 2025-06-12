@@ -127,6 +127,7 @@ const DayView = () => {
                   paragraphs={currentDayData.sections
                     .filter((s) => s.type === SectionType.PARAGRAPH)
                     .map((s) => s.content)}
+                  aiSummary={currentDayData.daySummary}
                 />
               )}
 
@@ -163,6 +164,7 @@ const DayView = () => {
                   dayName={decodedDayName}
                   cohortId={cohortId}
                   notes={progress?.notes || []}
+                  aiSummary={currentDayData.daySummary}
                 />
               )}
 
@@ -174,6 +176,7 @@ const DayView = () => {
                   dayName={decodedDayName}
                   cohortId={cohortId}
                   notes={progress?.notes || []}
+                  aiSummary={currentDayData.daySummary}
                   paragraphs={currentDayData.sections
                     .filter((s) => s.type === SectionType.PARAGRAPH)
                     .map((s) => s.content)}

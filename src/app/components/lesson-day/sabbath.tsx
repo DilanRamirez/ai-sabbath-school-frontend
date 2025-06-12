@@ -4,6 +4,8 @@ import { Box, Typography } from "@mui/material";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
 import { generateContext } from "@/app/lib/utils";
+import { AiDaySummary } from "@/app/types/types";
+import AiSummary from "./ai-summary";
 
 interface SabbathProps {
   reading: string;
@@ -12,20 +14,27 @@ interface SabbathProps {
     reference: string;
   };
   paragraphs: string[];
+  aiSummary: AiDaySummary;
 }
 
 export default function SabbathDay({
   reading,
   memoryVerse,
   paragraphs,
+  aiSummary,
 }: SabbathProps) {
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
   const toggleSection = (id: string) =>
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
   const dayContent = paragraphs.join(" ");
 
+  console.log("SabbathDay component rendered", aiSummary);
+
   return (
     <Box px={2} py={4}>
+      {/* AI-generated day summary */}
+      <AiSummary aiSummary={aiSummary} />
+
       {/* Reading Section */}
       <Box mb={4} sx={style.passageWrapper}>
         <Box>

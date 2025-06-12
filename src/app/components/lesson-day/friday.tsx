@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AnswerField from "./answer-field";
-import { StudyNotes } from "@/app/types/types";
+import { AiDaySummary, StudyNotes } from "@/app/types/types";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
 import { generateContext } from "@/app/lib/utils";
+import AiSummary from "./ai-summary";
 
 interface FridayProps {
   paragraph: string;
@@ -19,6 +20,7 @@ interface FridayProps {
   dayName: string;
   cohortId: string;
   notes: StudyNotes[]; // Optional prop for study progress record
+  aiSummary: AiDaySummary;
 }
 
 export default function FridayDay({
@@ -33,6 +35,7 @@ export default function FridayDay({
   dayName,
   cohortId,
   notes,
+  aiSummary,
 }: FridayProps) {
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
   const toggleSection = (id: string) =>
@@ -42,6 +45,8 @@ export default function FridayDay({
   return (
     <Box px={2} py={4}>
       {/* Paragraph Section */}
+      <AiSummary aiSummary={aiSummary} />
+
       <Box mb={4}>
         <Box sx={{ display: "flex" }}>
           <AiButton toggleActions={() => toggleSection(`para-${0}`)} />

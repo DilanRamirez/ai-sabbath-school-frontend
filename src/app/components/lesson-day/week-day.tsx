@@ -8,8 +8,9 @@ import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
 import AnswerField from "./answer-field";
 import { generateContext } from "@/app/lib/utils";
-import { StudyNotes } from "@/app/types/types";
+import { AiDaySummary, StudyNotes } from "@/app/types/types";
 import NotesButton from "./notes-button";
+import AiSummary from "./ai-summary";
 
 interface WeekDayProps {
   paragraphs: string[];
@@ -21,6 +22,7 @@ interface WeekDayProps {
   lessonId: string;
   dayName: string;
   cohortId: string;
+  aiSummary: AiDaySummary;
 }
 
 // Generic Section Wrapper with Notes toggle
@@ -30,8 +32,7 @@ const SectionWrapper: FC<{
   children: React.ReactNode;
 }> = React.memo(({ highlight, children }) => (
   <Box
-    mb={4}
-    p={2}
+    p={1}
     bgcolor={highlight ? "rgba(144,202,249,0.1)" : "transparent"}
     borderRadius={2}
   >
@@ -204,6 +205,7 @@ export default function WeekDay({
   lessonId,
   dayName,
   cohortId,
+  aiSummary,
 }: WeekDayProps) {
   // Tracks open/closed state of each section
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
@@ -222,6 +224,7 @@ export default function WeekDay({
 
   return (
     <Box px={2} py={4}>
+      <AiSummary aiSummary={aiSummary} />
       <ParagraphSection
         idx={0}
         text={paragraphs[0]}
