@@ -18,7 +18,7 @@ export default function LessonsPage() {
   const { lessons, loading, error } = useLessonData();
   const renderedLessons = useMemo(
     () => <LessonsList lessons={lessons} quarterId={quarterId} year={year} />,
-    [lessons, quarterId, year],
+    [lessons, quarterId, year]
   );
 
   // Validate URL parameters
@@ -54,7 +54,7 @@ export default function LessonsPage() {
   if (!Array.isArray(lessons) || lessons.length === 0) {
     return (
       <Container maxWidth="sm" sx={{ py: 4 }}>
-        <Typography>No hay lecciones disponibles.</Typography>
+        <Typography>No hay lecciones disponibles</Typography>
       </Container>
     );
   }
