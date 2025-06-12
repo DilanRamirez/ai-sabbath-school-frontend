@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import AiButton from "./ai-button";
 import AiActions from "./ai-actions";
 import { generateContext } from "@/app/lib/utils";
 import { AiDaySummary } from "@/app/types/types";
 import AiSummary from "./ai-summary";
+import BibleReferenceModal from "./shared/bible-reference-modal";
 
 interface SabbathProps {
   reading: string;
@@ -24,9 +25,21 @@ export default function SabbathDay({
   aiSummary,
 }: SabbathProps) {
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalReference, setModalReference] = useState<string | null>(null);
+
   const toggleSection = (id: string) =>
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
   const dayContent = paragraphs.join(" ");
+
+  const handleOpenModal = (ref: string) => {
+    setModalReference(ref);
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setModalReference(null);
+  };
 
   return (
     <Box px={2} py={4}>
@@ -39,7 +52,29 @@ export default function SabbathDay({
           <Typography variant="subtitle2" color="primary" gutterBottom>
             LEE PARA EL ESTUDIO DE ESTA SEMANA
           </Typography>
-          <Typography variant="body1">{reading}</Typography>
+          <Typography variant="body1" component="div">
+            {reading.split(",").map((ref, idx) => {
+              const trimmedRef = ref.trim();
+              return (
+                <React.Fragment key={idx}>
+                  <Button
+                    variant="text"
+                    onClick={() => handleOpenModal(trimmedRef)}
+                    sx={{ padding: 0, textTransform: "none", mr: 1 }}
+                  >
+                    <Typography variant="body1" color="primary">
+                      {trimmedRef}
+                    </Typography>
+                  </Button>
+                  {idx < reading.split(",").length - 1 && (
+                    <Typography variant="body1" component="span">
+                      ,{" "}
+                    </Typography>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </Typography>
         </Box>
       </Box>
 
@@ -53,14 +88,27 @@ export default function SabbathDay({
           <Typography variant="body1" fontWeight="bold">
             {memoryVerse.text}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {memoryVerse.reference}
-          </Typography>
+          <Button
+            variant="text"
+            onClick={() => handleOpenModal(memoryVerse.reference)}
+            sx={{ padding: 0, textTransform: "none" }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              {memoryVerse.reference}
+            </Typography>
+          </Button>
         </Box>
       </Box>
       <AiActions
         open={openMap["memory"]}
         context={generateContext(memoryVerse.text, dayContent)}
+      />
+
+      {/* Bible Reference Modal */}
+      <BibleReferenceModal
+        open={modalOpen}
+        reference={modalReference}
+        onClose={handleCloseModal}
       />
 
       {/* Paragraphs */}

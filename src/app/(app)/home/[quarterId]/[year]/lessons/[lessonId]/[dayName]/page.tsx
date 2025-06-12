@@ -12,6 +12,7 @@ import FridayDay from "@/app/components/lesson-day/friday";
 import WeekDay from "@/app/components/lesson-day/week-day";
 import LessonDaySkeleton from "@/app/components/skeletons/lesson-day-skeleton";
 import { Calendar1Icon } from "lucide-react";
+import BibleChat from "@/app/components/lesson-day/shared/bible-chat";
 
 const DayView = () => {
   const { lessonId, dayName, quarterId } = useParams();
@@ -99,6 +100,7 @@ const DayView = () => {
         >
           <Calendar1Icon />
         </IconButton>
+        <BibleChat />
       </Box>
 
       {progress && (
