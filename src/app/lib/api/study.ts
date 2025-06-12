@@ -4,7 +4,7 @@ import {
   StudyProgressResponse,
 } from "@/app/types/types";
 
-const BASE_URL =
+export const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 /**
@@ -38,7 +38,6 @@ export async function getStudyProgress(
   }
 
   const data: StudyProgressRecord = await response.json();
-  console.log("Study progress updated:", data);
   // save in local storage for quick access
   // eslint-disable-next-line no-undef
   localStorage.setItem("studyProgress", JSON.stringify(data));

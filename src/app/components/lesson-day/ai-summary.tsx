@@ -7,11 +7,27 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { AiDaySummary } from "@/app/types/types";
 import { List, ListItem, Typography } from "@mui/material";
 import React, { FC } from "react";
+import BibleReferenceModal from "@/app/components/lesson-day/shared/bible-reference-modal";
+import { Button } from "@mui/material";
 
 interface AiSummaryProps {
   aiSummary: AiDaySummary;
 }
 const AiSummary: FC<AiSummaryProps> = ({ aiSummary }) => {
+  const [openModal, setOpenModal] = React.useState(false);
+  const [selectedReference, setSelectedReference] = React.useState<
+    string | null
+  >(null);
+
+  const handleOpenModal = (ref: string) => {
+    setSelectedReference(ref);
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedReference(null);
+  };
+
   return (
     <Card
       sx={{
@@ -83,11 +99,24 @@ const AiSummary: FC<AiSummaryProps> = ({ aiSummary }) => {
             </Box>
             <List dense disablePadding>
               {aiSummary.citations.map((cite, idx) => (
-                <ListItem key={idx} sx={{ display: "list-item", pl: 2 }}>
-                  <Typography variant="body2">{cite.reference}</Typography>
-                </ListItem>
+                <Box key={idx} sx={{ pl: 2, mb: 1 }}>
+                  <Button
+                    variant="text"
+                    onClick={() => handleOpenModal(cite.reference)}
+                    sx={{ textTransform: "none", p: 0 }}
+                  >
+                    <Typography variant="body2" color="primary">
+                      {cite.reference}
+                    </Typography>
+                  </Button>
+                </Box>
               ))}
             </List>
+            <BibleReferenceModal
+              open={openModal}
+              reference={selectedReference}
+              onClose={handleCloseModal}
+            />
           </>
         )}
       </CardContent>

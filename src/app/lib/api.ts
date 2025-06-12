@@ -1,7 +1,10 @@
 import axios from "axios";
 
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+
 const api = axios.create({
-  baseURL: "https://ai-sabbath-school-backend-production.up.railway.app/api/v1",
+  baseURL: BASE_URL,
 });
 
 export default api;

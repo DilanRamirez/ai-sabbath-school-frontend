@@ -28,8 +28,6 @@ export default function SabbathDay({
     setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
   const dayContent = paragraphs.join(" ");
 
-  console.log("SabbathDay component rendered", aiSummary);
-
   return (
     <Box px={2} py={4}>
       {/* AI-generated day summary */}
