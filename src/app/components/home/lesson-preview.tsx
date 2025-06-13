@@ -54,14 +54,16 @@ export default function LessonPreviewHome() {
   const weeklyProgressPercent = 43;
 
   return (
-    <Paper elevation={2} sx={{ p: 3, mt: 2, borderRadius: 3 }}>
+    <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, mt: 2, borderRadius: 3 }}>
       {/* Header section with icon and lesson info */}
       <Box
         sx={{
           display: "flex",
-          alignItems: "start",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "flex-start", sm: "center" },
           justifyContent: "space-between",
           mb: 3,
+          gap: 2,
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -74,6 +76,8 @@ export default function LessonPreviewHome() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              minWidth: 48,
+              minHeight: 48,
             }}
             aria-label="Lesson icon"
           >
@@ -88,7 +92,11 @@ export default function LessonPreviewHome() {
             </Typography>
           </Box>
         </Box>
-        <Button variant="outlined" size="small">
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{ alignSelf: { xs: "flex-start", sm: "center" } }}
+        >
           Ver Todo
         </Button>
       </Box>

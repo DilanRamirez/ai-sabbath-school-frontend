@@ -73,8 +73,21 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 0 }}>
-      <Box sx={{ mt: 4 }}>
+    <Container
+      maxWidth="lg"
+      sx={{
+        py: { xs: 2, sm: 3, md: 4 },
+        px: { xs: 2, sm: 3 },
+      }}
+    >
+      <Box
+        sx={{
+          mt: { xs: 2, sm: 3, md: 4 },
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 2, sm: 3, md: 4 },
+        }}
+      >
         <WelcomeHeader user={user} />
         <QuarterSelector quarters={quarters} onSelect={handleQuarterSelect} />
 

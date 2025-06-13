@@ -17,8 +17,10 @@ export default function TodayHighlight() {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "center" },
             justifyContent: "space-between",
+            gap: { xs: 3, sm: 0 },
           }}
         >
           <Box sx={{ flex: 1 }}>
@@ -41,8 +43,15 @@ export default function TodayHighlight() {
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ ml: 4 }}>
+          <Box
+            sx={{
+              ml: { sm: 4 },
+              alignSelf: { xs: "stretch", sm: "center" },
+              textAlign: { xs: "center", sm: "right" },
+            }}
+          >
             <Button
+              fullWidth={true}
               variant="contained"
               size="large"
               endIcon={<ArrowForward />}
