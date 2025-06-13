@@ -7,24 +7,9 @@ import {
   Typography,
   CardMedia,
   Box,
-  Container,
+  Paper,
 } from "@mui/material";
 import { Quarter } from "../types/types";
-
-/**
- * Header component displaying the title and subtitle.
- */
-const Header: React.FC = React.memo(() => (
-  <Box sx={{ px: 3, py: 2 }}>
-    <Typography variant="h3" fontWeight="bold" gutterBottom>
-      Escuela Sabática
-    </Typography>
-    <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-      Edición para adultos
-    </Typography>
-  </Box>
-));
-Header.displayName = "Header";
 
 /**
  * Component shown when no quarters are available.
@@ -51,7 +36,6 @@ const QuarterCard: React.FC<{
   quarter: Quarter;
   // eslint-disable-next-line no-unused-vars
   onSelect: (quarter: Quarter) => void;
-  // eslint-disable-next-line react/prop-types
 }> = React.memo(({ quarter, onSelect }) => {
   const handleClick = () => onSelect(quarter);
 
@@ -127,21 +111,41 @@ const QuarterSelector: React.FC<QuarterSelectorProps> = ({
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 0 }}>
-      <Header />
-      <Grid
-        container
-        spacing={2}
-        wrap="nowrap"
+    <Paper elevation={1} sx={{ p: 3, borderRadius: 3, mt: 2 }}>
+      <Box
         sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h3" color="text.primary">
+          Trimestres de Estudio
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
           overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
+          pb: 1,
+          "&::-webkit-scrollbar": {
+            height: 6,
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f1f1f1",
+            borderRadius: 3,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#c1c1c1",
+            borderRadius: 3,
+          },
         }}
       >
         {memoizedQuarterCards}
-      </Grid>
-    </Container>
+      </Box>
+    </Paper>
   );
 };
 

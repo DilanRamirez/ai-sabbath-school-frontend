@@ -6,12 +6,19 @@ import { Box, Container, CircularProgress, Typography } from "@mui/material";
 import QuarterSelector from "@/app/dashboard/quarter-selector";
 import { useLessonData } from "@/app/hooks/use-lesson-data";
 import { Quarter } from "@/app/types/types";
+import WelcomeHeader from "@/app/components/home/welcome-header";
+import { useAppSelector } from "@/app/store/hooks";
+import LessonPreviewHome from "@/app/components/home/lesson-preview";
+import ProgressSummary from "@/app/components/home/progress-summary";
+import TodayHighlight from "@/app/components/home/today-card";
+import MotivationalCard from "@/app/components/home/motivational-card";
 
 /**
  * Home page component displays available quarters for selection and navigation.
  */
 const HomePage: React.FC = () => {
   const [selectedQuarter, setSelectedQuarter] = useState<Quarter>();
+  const { user } = useAppSelector((state) => state.user);
   const { quarters, loading, error } = useLessonData(selectedQuarter);
   const router = useRouter();
 
@@ -68,7 +75,13 @@ const HomePage: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 0 }}>
       <Box sx={{ mt: 4 }}>
+        <WelcomeHeader user={user} />
         <QuarterSelector quarters={quarters} onSelect={handleQuarterSelect} />
+
+        <TodayHighlight />
+        <LessonPreviewHome />
+        <ProgressSummary />
+        <MotivationalCard />
       </Box>
     </Container>
   );
