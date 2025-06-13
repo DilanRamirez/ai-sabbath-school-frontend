@@ -321,6 +321,7 @@ export interface HomeLessonMetadata {
 export interface HomeLastPosition {
   position: LastPosition;
   metadata: HomeLessonMetadata;
+  aiSummaryDay: AiDaySummary | null; // optional summary for the day
 }
 export interface UseHomeStudyData {
   progressSummary: ProgressSummary | null;

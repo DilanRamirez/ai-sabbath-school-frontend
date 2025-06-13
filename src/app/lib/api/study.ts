@@ -1,4 +1,5 @@
 import {
+  HomeLastPosition,
   StudyProgressPayload,
   StudyProgressRecord,
   StudyProgressResponse,
@@ -63,7 +64,9 @@ export async function getProgressSummary(userId: string) {
 /**
  * Get the user's last accessed lesson/day.
  */
-export async function getLastPosition(userId: string) {
+export async function getLastPosition(
+  userId: string,
+): Promise<HomeLastPosition> {
   const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
   const response = await fetch(`${BASE_URL}/study/last-position/${safeUserId}`);
 

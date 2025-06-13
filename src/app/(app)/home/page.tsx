@@ -8,8 +8,9 @@ import { useLessonData } from "@/app/hooks/use-lesson-data";
 import { Quarter } from "@/app/types/types";
 import WelcomeHeader from "@/app/components/home/welcome-header";
 import { useAppSelector } from "@/app/store/hooks";
-import TodayHighlight from "@/app/components/home/today-card";
+import TodayCard from "@/app/components/home/today-card";
 import { useHomeStudyData } from "@/app/hooks/use-home-study";
+import LessonPreviewHome from "@/app/components/home/lesson-preview";
 
 /**
  * Home page component displays available quarters for selection and navigation.
@@ -21,6 +22,7 @@ const HomePage: React.FC = () => {
   const { quarters, loading, error } = useLessonData(selectedQuarter);
   const {
     lastPosition,
+    lessonProgress,
     loading: userDataLoading,
     error: userDataError,
   } = useHomeStudyData(email);
@@ -98,7 +100,7 @@ const HomePage: React.FC = () => {
     );
   }
 
-  console.log("Last position:", lastPosition);
+  console.log("Lesson Progress:", lessonProgress);
 
   return (
     <Container
@@ -118,9 +120,12 @@ const HomePage: React.FC = () => {
       >
         <WelcomeHeader user={user} />
         <QuarterSelector quarters={quarters} onSelect={handleQuarterSelect} />
-        {lastPosition && <TodayHighlight lastPosition={lastPosition} />}
-        {/* <LessonPreviewHome lastPosition={lastPosition} />
-        <ProgressSummary summary={progressSummary} />
+        {lastPosition && <TodayCard lastPosition={lastPosition} />}
+        <LessonPreviewHome
+          lessonProgress={lessonProgress}
+          lessonMetadata={lastPosition?.metadata}
+        />
+        {/* <ProgressSummary summary={progressSummary} />
         <MotivationalCard /> */}
       </Box>
     </Container>

@@ -36,8 +36,12 @@ export const useHomeStudyData = (userId: string): UseHomeStudyData => {
         setProgressSummary(summary);
         setLastPosition(lastPos);
 
-        if (lastPos?.lesson_id) {
-          const lessonProg = await getLessonProgress(userId, lastPos.lesson_id);
+        if (lastPos?.position.lesson_id) {
+          const lessonProg = await getLessonProgress(
+            userId,
+            lastPos.position.lesson_id,
+          );
+          console.log("Fetched lesson progress:", lessonProg);
           setLessonProgress(lessonProg);
         }
       } catch (err: any) {
