@@ -148,6 +148,58 @@ export const SPANISH_BOOK_MAP: Record<string, string> = {
   "Apoc.": "Apocalipsis",
 };
 
+export const DAILY_BIBLE_STUDY_VERSES: string[] = [
+  "Salmos 119:105", // Lámpara es a mis pies tu palabra
+  "2 Timoteo 3:16-17", // Toda la Escritura es inspirada por Dios
+  "Josué 1:8", // Medita en ella de día y de noche
+  "Salmos 1:2-3", // En su ley medita de día y de noche
+  "Proverbios 4:20-22", // Atentos a mis palabras
+  "Deuteronomio 6:6-7", // Enseña diligentemente a tus hijos
+  "Hebreos 4:12", // La palabra de Dios es viva y eficaz
+  "Romanos 10:17", // La fe viene por el oír
+  "S. Mateo 4:4", // No solo de pan vivirá el hombre
+  "Colosenses 3:16", // La palabra de Cristo more en abundancia
+  "Santiago 1:22", // Sean hacedores de la palabra
+  "Isaías 55:11", // Mi palabra no volverá vacía
+  "Proverbios 2:1-6", // Si recibes mis palabras...
+  "S. Juan 5:39", // Escudriñad las Escrituras
+  "Hechos 17:11", // Examinaban cada día las Escrituras
+  "2 Pedro 1:20-21", // Ninguna profecía es de interpretación privada
+  "S. Mateo 7:24-25", // El que oye y hace es como hombre prudente
+  "Salmos 19:7-11", // La ley de Jehová es perfecta
+  "1 Pedro 2:2", // Como niños desead la leche espiritual
+  "Isaías 34:16", // Buscad en el libro de Jehová y leed
+  "Proverbios 3:5-6", // Confía en el Señor y no te apoyes en tu prudencia
+  "Efesios 6:17", // La espada del Espíritu, que es la palabra de Dios
+  "Filipenses 4:8-9", // Todo lo bueno, en esto pensad
+  "S. Juan 17:17", // Santifícalos en tu verdad
+  "Apocalipsis 1:3", // Bienaventurado el que lee y oye
+  "Job 23:12", // Más que mi comida he guardado las palabras de su boca
+  "Lucas 24:27", // Les interpretaba lo que de él decía la Escritura
+  "Romanos 15:4", // Lo escrito para nuestra enseñanza
+  "Salmos 119:11", // En mi corazón he guardado tus dichos
+  "Isaías 30:21", // Oirás una voz detrás de ti
+  "2 Corintios 4:6", // La luz del conocimiento de la gloria de Dios
+  "S. Juan 8:31-32", // Permaneced en mi palabra
+  "Hebreos 5:13-14", // El alimento sólido es para los maduros
+  "Salmos 119:97", // ¡Cuánto amo tu ley!
+  "S. Juan 6:63", // Las palabras que yo os he hablado son espíritu
+  "Proverbios 6:20-23", // Ata tus palabras a tu corazón
+  "1 Tesalonicenses 2:13", // Recibisteis la palabra como de Dios
+  "Jeremías 15:16", // Fueron halladas tus palabras y yo las comí
+  "Nehemías 8:8", // Leían claramente el libro de la ley
+  "1 Crónicas 16:11", // Buscad al Señor y su poder
+  "Isaías 66:2", // Aquel que tiembla a mi palabra
+  "Lucas 11:28", // Bienaventurados los que oyen y guardan
+  "Santiago 1:5", // Si alguno tiene falta de sabiduría
+  "Proverbios 1:7", // El principio de la sabiduría es el temor de Jehová
+  "1 Corintios 2:10", // Dios nos lo reveló por el Espíritu
+  "S. Juan 14:26", // El Espíritu Santo os recordará todo
+  "2 Timoteo 2:15", // Procura presentarte aprobado
+  "Apocalipsis 3:20", // Estoy a la puerta y llamo
+  "Salmos 143:8", // Hazme oír por la mañana tu misericordia
+];
+
 export async function fetchBibleText(ref: string): Promise<string> {
   if (!ref || typeof ref !== "string" || !ref.trim()) {
     console.warn("Invalid Bible reference input.");

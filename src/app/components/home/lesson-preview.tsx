@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Paper,
   Box,
@@ -19,16 +19,23 @@ interface LessonPreviewHomeProps {
 }
 
 /**
- * Displays an overview of the current lesson and memory verse progress.
+ * LessonPreviewHome component displays lesson progress and memory verse.
  */
 const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
   ({ lessonProgress, lessonMetadata }) => {
-    const completedDays = lessonProgress?.days_completed?.length ?? 0;
-    const weeklyProgressPercent = Math.round((completedDays / 7) * 100);
+    const completedDays = useMemo(
+      () => lessonProgress?.days_completed?.length ?? 0,
+      [lessonProgress?.days_completed],
+    );
+
+    const weeklyProgressPercent = useMemo(
+      () => Math.round((completedDays / 7) * 100),
+      [completedDays],
+    );
 
     return (
       <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, mt: 2, borderRadius: 3 }}>
-        {/* Header with icon and metadata */}
+        {/* Lesson Header */}
         <Box
           sx={{
             display: "flex",
@@ -68,7 +75,7 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
           </Box>
         </Box>
 
-        {/* Weekly progress display */}
+        {/* Weekly Progress */}
         <Box sx={{ mb: 3 }}>
           <Box
             sx={{
@@ -104,8 +111,8 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
           />
         </Box>
 
-        {/* Memory verse card */}
-        <MemoryVerseCard lessonMetadata={lessonMetadata} />
+        {/* Memory Verse */}
+        <LessonMemoryVerse metadata={lessonMetadata} />
       </Paper>
     );
   },
@@ -114,13 +121,16 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
 export default LessonPreviewHome;
 
 /**
- * MemoryVerseCard
- * Displays the weekly memory verse.
+ * LessonMemoryVerse
+ * Shows the memory verse from metadata.
  */
-interface MemoryVerseCardProps {
-  lessonMetadata: HomeLessonMetadata | undefined;
+interface LessonMemoryVerseProps {
+  metadata?: HomeLessonMetadata;
 }
-function MemoryVerseCard({ lessonMetadata }: MemoryVerseCardProps) {
+const LessonMemoryVerse: React.FC<LessonMemoryVerseProps> = ({ metadata }) => {
+  const verseText = metadata?.memory_verse?.text ?? "Versículo no disponible.";
+  const verseRef = metadata?.memory_verse?.reference ?? "";
+
   return (
     <Card
       role="region"
@@ -131,7 +141,7 @@ function MemoryVerseCard({ lessonMetadata }: MemoryVerseCardProps) {
         <Typography
           variant="h6"
           id="memory-verse-title"
-          sx={{ mb: 2 }}
+          sx={{ mb: 1 }}
           color="text.primary"
         >
           Versículo para Memorizar
@@ -141,12 +151,12 @@ function MemoryVerseCard({ lessonMetadata }: MemoryVerseCardProps) {
           sx={{ fontStyle: "italic", mb: 1 }}
           color="text.primary"
         >
-          {lessonMetadata?.memory_verse.text}
+          {verseText}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          - {lessonMetadata?.memory_verse.reference}
+          - {verseRef}
         </Typography>
       </CardContent>
     </Card>
   );
-}
+};
