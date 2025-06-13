@@ -18,7 +18,7 @@ export default function LessonsPage() {
   const { lessons, loading, error } = useLessonData();
   const renderedLessons = useMemo(
     () => <LessonsList lessons={lessons} quarterId={quarterId} year={year} />,
-    [lessons, quarterId, year]
+    [lessons, quarterId, year],
   );
 
   // Validate URL parameters
