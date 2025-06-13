@@ -4,9 +4,7 @@ import {
   StudyProgressRecord,
   StudyProgressResponse,
 } from "@/app/types/types";
-
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import api from "../api";
 
 /**
  * Fetch a user's existing progress for a specific lesson.
@@ -16,30 +14,11 @@ export async function getStudyProgress(
   lessonId: string,
 ): Promise<StudyProgressRecord> {
   const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
-  const response = await fetch(
-    `${BASE_URL}/study/progress/${encodeURIComponent(
-      safeUserId,
-    )}/${encodeURIComponent(lessonId)}`,
+  const { data } = await api.get<StudyProgressRecord>(
+    `/study/progress/${encodeURIComponent(safeUserId)}/${encodeURIComponent(
+      lessonId,
+    )}`,
   );
-  if (response.status === 404 || response.status === 500) {
-    // Return default if no record exists
-    return {
-      lesson_id: lessonId,
-      days_completed: [],
-      notes: [],
-      last_accessed: new Date().toISOString(),
-      cohort_id: "",
-      score: 0,
-      quarter: "",
-    };
-  }
-
-  if (!response.ok) {
-    throw new Error(`Error fetching progress: ${response.statusText}`);
-  }
-
-  const data: StudyProgressRecord = await response.json();
-  // save in local storage for quick access
   // eslint-disable-next-line no-undef
   localStorage.setItem("studyProgress", JSON.stringify(data));
   return data;
@@ -50,15 +29,8 @@ export async function getStudyProgress(
  */
 export async function getProgressSummary(userId: string) {
   const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
-  const response = await fetch(
-    `${BASE_URL}/study/progress-summary/${safeUserId}`,
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch progress summary");
-  }
-
-  return response.json();
+  const { data } = await api.get(`/study/progress-summary/${safeUserId}`);
+  return data;
 }
 
 /**
@@ -68,13 +40,10 @@ export async function getLastPosition(
   userId: string,
 ): Promise<HomeLastPosition> {
   const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
-  const response = await fetch(`${BASE_URL}/study/last-position/${safeUserId}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch last position");
-  }
-
-  return response.json();
+  const { data } = await api.get<HomeLastPosition>(
+    `/study/last-position/${safeUserId}`,
+  );
+  return data;
 }
 
 /**
@@ -82,15 +51,8 @@ export async function getLastPosition(
  */
 export async function getLessonProgress(userId: string, lessonId: string) {
   const safeUserId = userId.replace(/@/g, "-at-").replace(/\./g, "-dot-");
-  const response = await fetch(
-    `${BASE_URL}/study/progress/${safeUserId}/${lessonId}`,
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch lesson progress");
-  }
-
-  return response.json();
+  const { data } = await api.get(`/study/progress/${safeUserId}/${lessonId}`);
+  return data;
 }
 
 /**
@@ -104,16 +66,10 @@ export async function getLessonMetadata(
   quarter: string,
   lessonId: string,
 ): Promise<any> {
-  const response = await fetch(
-    `${BASE_URL}/lessons/${year}/${quarter}/${lessonId}/metadata`,
+  const { data } = await api.get(
+    `/lessons/${year}/${quarter}/${lessonId}/metadata`,
   );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch metadata for ${lessonId}`);
-  }
-
-  const metadata = await response.json();
-  return metadata;
+  return data;
 }
 
 /**
@@ -139,24 +95,9 @@ export async function updateStudyProgress(
     note: payload?.note?.trim() !== "" ? payload.note : null,
   };
 
-  const response = await fetch(`${BASE_URL}/study/progress`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Add authorization here if needed:
-      // Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify(bodyPayload),
-  });
-
-  if (!response.ok) {
-    const errJson = await response.json().catch(() => null);
-    throw new Error(
-      errJson?.detail || `Error updating progress: ${response.statusText}`,
-    );
-  }
-
-  const data: StudyProgressResponse = await response.json();
-
+  const { data } = await api.post<StudyProgressResponse>(
+    "/study/progress",
+    bodyPayload,
+  );
   return data;
 }

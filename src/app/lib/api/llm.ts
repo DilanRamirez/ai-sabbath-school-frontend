@@ -1,21 +1,10 @@
 import { LLMRequest, LLMResponse } from "@/app/types/types";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import api from "../api";
 
 export async function callLLM(request: LLMRequest): Promise<LLMResponse> {
   try {
-    const response = await fetch(`${BASE_URL}/llm`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "LLM request failed");
-    }
-
-    return response.json();
+    const { data } = await api.post("/llm", request);
+    return data;
   } catch (error: any) {
     return {
       result: {
@@ -23,7 +12,7 @@ export async function callLLM(request: LLMRequest): Promise<LLMResponse> {
         refs: [],
       },
       status: "error",
-      error: error.message,
+      error: error.response?.data?.message || error.message,
     };
   }
 }
