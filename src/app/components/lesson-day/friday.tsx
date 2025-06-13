@@ -20,6 +20,7 @@ interface FridayProps {
   dayName: string;
   cohortId: string;
   notes: StudyNotes[]; // Optional prop for study progress record
+  year: string; // Optional year prop for updateStudyProgress
   aiSummary: AiDaySummary;
 }
 
@@ -35,6 +36,7 @@ export default function FridayDay({
   dayName,
   cohortId,
   notes,
+  year,
   aiSummary,
 }: FridayProps) {
   const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({});
@@ -110,6 +112,7 @@ export default function FridayDay({
               <Typography variant="body1">{q}</Typography>
             </Box>
             <AnswerField
+              year={year}
               userId={userId}
               quarterSlug={quarterSlug}
               lessonId={lessonId}

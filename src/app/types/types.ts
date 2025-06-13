@@ -164,6 +164,7 @@ export interface LessonsResponse {
 
 export interface StudyProgressPayload {
   user_id: string;
+  year: string; // e.g. "2025"
   quarter: string; // e.g. "2025-Q2"
   lesson_id: string; // e.g. "lesson-07"
   day: string; // e.g. "saturday", "sunday", etc.
@@ -234,6 +235,7 @@ export interface LastPosition {
   lesson_id: string;
   day: string;
   quarter: string;
+  year?: string; // e.g. "2025"
 }
 
 /** Study progress record per lesson */
@@ -285,6 +287,47 @@ export interface AiDaySummary {
   keyPoints: string[];
   glossary: Record<string, string>;
   citations: { reference: string }[];
+}
+
+export interface ProgressSummary {
+  daysThisWeek: number;
+  totalWeekDays: number;
+  notesThisWeek: number;
+  lessonsCompleted: number;
+  totalLessons: number;
+}
+
+export interface HomeStudyProgress {
+  cohort_id: string;
+  notes: StudyNotes[];
+  last_accessed: string;
+  score: number;
+  lesson_id: string;
+  SK: string;
+  PK: string;
+  days_completed: string[];
+  last_position: LastPosition;
+}
+
+export interface HomeLessonMetadata {
+  id: string;
+  lesson_number: number;
+  title: string;
+  quarter: string;
+  year: number;
+  week_range: WeekRange;
+  memory_verse: MemoryVerse;
+}
+export interface HomeLastPosition {
+  position: LastPosition;
+  metadata: HomeLessonMetadata;
+}
+export interface UseHomeStudyData {
+  progressSummary: ProgressSummary | null;
+  lastPosition: HomeLastPosition | null;
+  lessonProgress: HomeStudyProgress | null;
+  loading: boolean;
+  error: string | null;
 }
 
 export enum LLMMode {

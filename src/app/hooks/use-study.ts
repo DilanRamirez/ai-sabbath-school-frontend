@@ -4,6 +4,7 @@ import { getStudyProgress, updateStudyProgress } from "../lib/api/study";
 
 interface UseStudyProgressProps {
   userId: string;
+  year: string; // e.g. "2025"
   quarterSlug: string;
   lessonId: string;
   dayName: string;
@@ -13,6 +14,7 @@ interface UseStudyProgressProps {
 
 export function useStudyProgress({
   userId,
+  year, // e.g. "2025"
   quarterSlug,
   lessonId,
   dayName,
@@ -108,6 +110,7 @@ export function useStudyProgress({
       mark_studied: true,
       question_id: question_id || "",
       content: "", // Optional content, can be empty
+      year: year,
     };
     syncProgress(payload);
   }, [
@@ -118,6 +121,7 @@ export function useStudyProgress({
     cohortId,
     question_id,
     syncProgress,
+    year,
   ]);
 
   /**

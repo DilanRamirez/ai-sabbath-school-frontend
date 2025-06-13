@@ -12,6 +12,7 @@ interface AnswerFieldProps {
   lessonId: string;
   dayName: string;
   cohortId: string;
+  year: string; // Optional year prop for updateStudyProgress
   notes: StudyNotes[];
   content: string; // Optional content prop for initial value
   questionId?: string;
@@ -26,6 +27,7 @@ export default function AnswerField({
   questionId,
   notes,
   content,
+  year,
 }: AnswerFieldProps) {
   const router = useRouter();
   const initialNote =
@@ -43,6 +45,7 @@ export default function AnswerField({
     if (!questionId) return;
     try {
       await updateProgress({
+        year: year,
         user_id: userId,
         quarter: quarterSlug,
         lesson_id: lessonId,

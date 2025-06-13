@@ -14,6 +14,7 @@ interface SabbathProps {
     text: string;
     reference: string;
   };
+  year?: string; // Optional year prop for updateStudyProgress
   paragraphs: string[];
   aiSummary: AiDaySummary;
 }

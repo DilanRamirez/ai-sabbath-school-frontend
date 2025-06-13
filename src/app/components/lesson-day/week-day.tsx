@@ -22,6 +22,7 @@ interface WeekDayProps {
   lessonId: string;
   dayName: string;
   cohortId: string;
+  year: string;
   aiSummary: AiDaySummary;
 }
 
@@ -53,6 +54,7 @@ const ParagraphSection: FC<{
     lessonId: string;
     dayName: string;
     cohortId: string;
+    year: string;
     notes: StudyNotes[];
   };
 }> = React.memo(
@@ -104,6 +106,7 @@ const BibleQuestionSection: FC<{
     lessonId: string;
     dayName: string;
     cohortId: string;
+    year: string;
     notes: StudyNotes[];
   };
 }> = React.memo(
@@ -160,6 +163,7 @@ const ReflectionSection: FC<{
     lessonId: string;
     dayName: string;
     cohortId: string;
+    year: string;
     notes: StudyNotes[];
   };
 }> = React.memo(
@@ -206,6 +210,7 @@ export default function WeekDay({
   dayName,
   cohortId,
   aiSummary,
+  year,
 }: WeekDayProps) {
   // Tracks open/closed state of each section
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
@@ -218,8 +223,8 @@ export default function WeekDay({
   const dayContent = useMemo(() => paragraphs.join(" "), [paragraphs]);
 
   const contextProps = useMemo(
-    () => ({ userId, quarterSlug, lessonId, dayName, cohortId, notes }),
-    [userId, quarterSlug, lessonId, dayName, cohortId, notes],
+    () => ({ userId, quarterSlug, lessonId, dayName, cohortId, notes, year }),
+    [userId, quarterSlug, lessonId, dayName, cohortId, notes, year],
   );
 
   return (

@@ -1,8 +1,24 @@
+"use client";
 import React from "react";
 import { CardContent, Box, Typography, Button, Card } from "@mui/material";
 import { CalendarToday, AccessTime, ArrowForward } from "@mui/icons-material";
+import { HomeLastPosition } from "@/app/types/types";
+import { useRouter } from "next/navigation";
 
-export default function TodayHighlight() {
+interface TodayHighlightProps {
+  lastPosition: HomeLastPosition;
+}
+
+export default function TodayHighlight({ lastPosition }: TodayHighlightProps) {
+  const router = useRouter();
+
+  const { quarter, year, lesson_id, day } = lastPosition.position;
+  const { title, memory_verse } = lastPosition.metadata;
+
+  const handleClick = () => {
+    router.push(`/home/${quarter}/${year}/lessons/${lesson_id}/${day}`);
+  };
+
   return (
     <Card
       sx={{
@@ -27,19 +43,19 @@ export default function TodayHighlight() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
               <CalendarToday sx={{ fontSize: 20 }} />
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                Hoy, 13 de Junio
+                {day}
               </Typography>
             </Box>
             <Typography variant="h2" sx={{ mb: 2, color: "white" }}>
-              Lección 11: La Ira de Dios
+              {title}
             </Typography>
             <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-              Explora cómo la ira de Dios se revela contra toda impiedad
+              {memory_verse.text}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <AccessTime sx={{ fontSize: 16 }} />
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                15-20 minutos de estudio
+                {memory_verse.reference}
               </Typography>
             </Box>
           </Box>
@@ -65,6 +81,7 @@ export default function TodayHighlight() {
                   bgcolor: "rgba(255,255,255,0.9)",
                 },
               }}
+              onClick={handleClick}
             >
               Estudiar Ahora
             </Button>

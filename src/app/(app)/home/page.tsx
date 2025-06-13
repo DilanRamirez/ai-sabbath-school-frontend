@@ -8,10 +8,8 @@ import { useLessonData } from "@/app/hooks/use-lesson-data";
 import { Quarter } from "@/app/types/types";
 import WelcomeHeader from "@/app/components/home/welcome-header";
 import { useAppSelector } from "@/app/store/hooks";
-import LessonPreviewHome from "@/app/components/home/lesson-preview";
-import ProgressSummary from "@/app/components/home/progress-summary";
 import TodayHighlight from "@/app/components/home/today-card";
-import MotivationalCard from "@/app/components/home/motivational-card";
+import { useHomeStudyData } from "@/app/hooks/use-home-study";
 
 /**
  * Home page component displays available quarters for selection and navigation.
@@ -19,7 +17,13 @@ import MotivationalCard from "@/app/components/home/motivational-card";
 const HomePage: React.FC = () => {
   const [selectedQuarter, setSelectedQuarter] = useState<Quarter>();
   const { user } = useAppSelector((state) => state.user);
+  const email = user?.email;
   const { quarters, loading, error } = useLessonData(selectedQuarter);
+  const {
+    lastPosition,
+    loading: userDataLoading,
+    error: userDataError,
+  } = useHomeStudyData(email);
   const router = useRouter();
 
   /**
@@ -72,6 +76,30 @@ const HomePage: React.FC = () => {
     );
   }
 
+  if (userDataLoading) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (userDataError) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ mt: 4 }}>
+          <Typography color="error">
+            Error cargando progreso: {userDataError}
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  console.log("Last position:", lastPosition);
+
   return (
     <Container
       maxWidth="lg"
@@ -90,11 +118,10 @@ const HomePage: React.FC = () => {
       >
         <WelcomeHeader user={user} />
         <QuarterSelector quarters={quarters} onSelect={handleQuarterSelect} />
-
-        <TodayHighlight />
-        <LessonPreviewHome />
-        <ProgressSummary />
-        <MotivationalCard />
+        {lastPosition && <TodayHighlight lastPosition={lastPosition} />}
+        {/* <LessonPreviewHome lastPosition={lastPosition} />
+        <ProgressSummary summary={progressSummary} />
+        <MotivationalCard /> */}
       </Box>
     </Container>
   );

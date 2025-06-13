@@ -15,7 +15,7 @@ import { Calendar1Icon } from "lucide-react";
 import BibleChat from "@/app/components/lesson-day/shared/bible-chat";
 
 const DayView = () => {
-  const { lessonId, dayName, quarterId } = useParams();
+  const { lessonId, dayName, quarterId, year } = useParams();
   const { user } = useAppSelector((state) => state.user);
   const { lessons } = useAppSelector((state) => state.lessons);
 
@@ -31,6 +31,7 @@ const DayView = () => {
 
   const { progress, loading, error, markDayAsStudied } = useStudyProgress({
     userId,
+    year: year as string,
     quarterSlug,
     lessonId: lessonId as string,
     dayName: decodedDayName,
@@ -138,6 +139,7 @@ const DayView = () => {
                   paragraphs={currentDayData.sections
                     .filter((s) => s.type === SectionType.PARAGRAPH)
                     .map((s) => s.content)}
+                  year={year as string}
                   aiSummary={currentDayData.daySummary}
                 />
               )}
@@ -170,6 +172,7 @@ const DayView = () => {
                     )?.questions || []
                   }
                   userId={userId}
+                  year={year as string}
                   quarterSlug={quarterSlug}
                   lessonId={lessonId as string}
                   dayName={decodedDayName}
@@ -186,6 +189,7 @@ const DayView = () => {
                   lessonId={lessonId as string}
                   dayName={decodedDayName}
                   cohortId={cohortId}
+                  year={year as string}
                   notes={progress?.notes || []}
                   aiSummary={currentDayData.daySummary}
                   paragraphs={currentDayData.sections
