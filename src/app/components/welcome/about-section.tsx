@@ -58,10 +58,10 @@ export default function AboutSection() {
             mx: "auto",
           }}
         >
-          AI Sabbath+ es una aplicación diseñada para estudiantes y maestros de
-          la Escuela Sabática. Ofrece una experiencia de estudio diaria con
-          herramientas inteligentes que te ayudan a comprender, reflexionar y
-          aplicar la Palabra de Dios en tu vida diaria.
+          AI Intelligent Sabbath+ es una aplicación diseñada para estudiantes y
+          maestros de la Escuela Sabática. Ofrece una experiencia de estudio
+          diaria con herramientas inteligentes que te ayudan a comprender,
+          reflexionar y aplicar la Palabra de Dios en tu vida diaria.
         </Typography>
       </Paper>
     </Container>

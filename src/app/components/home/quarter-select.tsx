@@ -7,6 +7,7 @@ import {
   CardContent,
   IconButton,
   Chip,
+  Button,
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { LastPosition, Quarter } from "@/app/types/types";
@@ -95,17 +96,41 @@ export default function QuarterSelect({
                 <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
                   {quarter.metadata.displayName}
                 </Typography>
-                {isActive && (
-                  <Chip
-                    label="Activo"
+
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  {isActive && (
+                    <Chip
+                      label="Activo"
+                      size="small"
+                      sx={{
+                        bgcolor: "rgba(255,255,255,0.2)",
+                        color: "white",
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  )}
+                  <Button
+                    variant="contained"
                     size="small"
-                    sx={{
-                      bgcolor: "rgba(255,255,255,0.2)",
-                      color: "white",
-                      fontSize: "0.75rem",
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect(quarter);
                     }}
-                  />
-                )}
+                    sx={{
+                      bgcolor: "#fff",
+                      color: isActive ? "primary.main" : "text.primary",
+                    }}
+                  >
+                    {isActive ? "Continuar" : "Estudiar ahora"}
+                  </Button>
+                </Box>
               </CardContent>
             </Card>
           );

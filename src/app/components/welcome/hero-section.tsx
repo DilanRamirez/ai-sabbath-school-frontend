@@ -2,8 +2,11 @@
 import React from "react";
 import { Box, Typography, Button, Container, Stack } from "@mui/material";
 import { Login, PersonAdd } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
+
   return (
     <Container
       maxWidth="lg"
@@ -91,6 +94,7 @@ export default function HeroSection() {
                   },
                   transition: "all 0.3s ease",
                 }}
+                onClick={() => router.push("/login")}
               >
                 Iniciar Sesión
               </Button>
@@ -113,6 +117,7 @@ export default function HeroSection() {
                   },
                   transition: "all 0.3s ease",
                 }}
+                onClick={() => router.push("/register")}
               >
                 Crear Cuenta
               </Button>

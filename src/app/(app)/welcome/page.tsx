@@ -4,7 +4,6 @@ import HeroSection from "@/app/components/welcome/hero-section";
 import AboutSection from "@/app/components/welcome/about-section";
 import FeaturesSection from "@/app/components/welcome/features-section";
 import TrustSection from "@/app/components/welcome/trust-section";
-import CallToActionSection from "@/app/components/welcome/call-to-action";
 
 export default function WelcomePage() {
   return (
@@ -15,7 +14,6 @@ export default function WelcomePage() {
           <AboutSection />
           <FeaturesSection />
           <TrustSection />
-          <CallToActionSection />
         </Box>
       </Container>
     </Box>

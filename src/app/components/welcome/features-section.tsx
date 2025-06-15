@@ -76,7 +76,7 @@ export default function FeaturesSection() {
             px: { xs: 1, sm: 0 },
           }}
         >
-          ⚙️ ¿Qué Puedes Hacer con AI Sabbath+?
+          ⚙️ ¿Qué Puedes Hacer con Intelligent Sabbath+?
         </Typography>
       </Box>
 

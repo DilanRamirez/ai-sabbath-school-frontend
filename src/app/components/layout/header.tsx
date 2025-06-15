@@ -53,7 +53,7 @@ const Header: React.FC = () => {
           >
             <Home />
           </IconButton>
-          <Typography variant="h6">Sabbath+ (Beta)</Typography>
+          <Typography variant="h6">Intelligent Sabbath+</Typography>
         </Box>
 
         <Box display="flex" alignItems="center">

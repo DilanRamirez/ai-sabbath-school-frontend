@@ -70,9 +70,9 @@ export default function TrustSection() {
           }}
         >
           Aunque usamos inteligencia artificial para ayudarte a estudiar, AI
-          Sabbath+ nunca reemplaza el estudio personal de la Biblia. Todo lo que
-          ves es un recurso para profundizar tu comunión con Dios, no una fuente
-          doctrinal definitiva.{" "}
+          Intelligent Sabbath+ nunca reemplaza el estudio personal de la Biblia.
+          Todo lo que ves es un recurso para profundizar tu comunión con Dios,
+          no una fuente doctrinal definitiva.{" "}
           <Box component="span" sx={{ fontWeight: 600, color: "#27AE60" }}>
             Siempre verifica con la Palabra.
           </Box>

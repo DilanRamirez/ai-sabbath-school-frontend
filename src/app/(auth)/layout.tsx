@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       }}
     >
       <Typography variant="h4" align="center" gutterBottom>
-        Sabbath+
+        Intelligent Sabbath+
       </Typography>
       <Box sx={{ mt: 2 }}>{children}</Box>
     </Container>
