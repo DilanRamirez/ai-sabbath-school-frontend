@@ -63,6 +63,7 @@ const features = [
 export default function FeaturesSection() {
   return (
     <Container
+      id="funciones"
       maxWidth="lg"
       sx={{ mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3 } }}
     >

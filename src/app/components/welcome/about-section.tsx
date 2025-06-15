@@ -5,6 +5,7 @@ import { MenuBook } from "@mui/icons-material";
 export default function AboutSection() {
   return (
     <Container
+      id="acerca"
       maxWidth="lg"
       sx={{ mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3 } }}
     >

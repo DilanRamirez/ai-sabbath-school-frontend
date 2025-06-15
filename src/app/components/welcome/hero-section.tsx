@@ -9,8 +9,9 @@ export default function HeroSection() {
 
   return (
     <Container
+      id="inicio"
       maxWidth="lg"
-      sx={{ mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3 } }}
+      sx={{ mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3 }, mt: 6 }}
     >
       <Box
         sx={{

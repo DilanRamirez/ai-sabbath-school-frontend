@@ -5,6 +5,7 @@ import { Lightbulb, VerifiedUser } from "@mui/icons-material";
 export default function TrustSection() {
   return (
     <Container
+      id="confianza"
       maxWidth="lg"
       sx={{ mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3 } }}
     >

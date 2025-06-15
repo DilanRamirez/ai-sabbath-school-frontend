@@ -3,6 +3,59 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { bible_api } from "./api";
 
+export const disclaimer: string = `## Descargo de responsabilidad
+
+Esta aplicación está diseñada con fines educativos y espirituales, especialmente para el estudio de la Escuela Sabática. La información proporcionada por la aplicación —incluyendo explicaciones generadas por IA, referencias bíblicas y comentarios— debe usarse como apoyo para el estudio personal o en grupo, pero **no reemplaza** el estudio profundo de la Biblia, la oración ni la guía del Espíritu Santo.
+
+Las interpretaciones ofrecidas pueden variar y **no deben considerarse** como una autoridad doctrinal oficial. Al usar esta aplicación, aceptas que es una herramienta complementaria y **no un sustituto** de la comunión con Dios ni de la dirección espiritual pastoral.
+
+> **Importante:**  
+> - Siempre verifica lo que dice la inteligencia artificial con la Biblia.  
+> - No des por sentado nada.  
+> - Este recurso te ayuda a entender mejor la lección y pasajes difíciles, pero **nunca debe sustituir** el estudio personal de la Palabra de Dios.`;
+
+export const politicaPrivacidad: string = `# Política de Privacidad de Intelligent Sabbath+
+
+## 1. Información que recopilamos  
+Recopilamos los datos que nos proporcionas directamente al registrarte o usar la aplicación, como tu nombre, correo electrónico y credenciales de acceso. También registramos tu actividad dentro de la plataforma (lecciones vistas, progreso, preferencias).
+
+## 2. Finalidad del tratamiento  
+Utilizamos tu información para:  
+- Proveer y mejorar nuestros servicios.  
+- Personalizar tu experiencia de estudio.  
+- Gestionar tu autenticación y seguridad de cuenta.  
+- Enviarte notificaciones sobre tu progreso y novedades relevantes.  
+- Realizar análisis internos y métricas de uso para optimizar la aplicación.
+
+## 3. Compartir y divulgar información  
+No vendemos, alquilamos ni comercializamos tu información personal. Podemos compartir datos con proveedores de servicios que actúan en nuestro nombre (por ejemplo, alojamiento de datos en la nube), siempre bajo estrictos acuerdos de confidencialidad y únicamente para los fines descritos aquí.
+
+## 4. Seguridad de los datos  
+Empleamos medidas de seguridad razonables, como cifrado TLS para proteger la información en tránsito y entornos seguros para su almacenamiento. Sin embargo, ningún sistema es infalible; por lo tanto, no podemos garantizar seguridad absoluta.
+
+## 5. Cookies y tecnologías similares  
+Usamos cookies y almacenamiento local para mantener tu sesión activa, recordar tus preferencias y recopilar datos de uso anónimos. Puedes configurar tu navegador para rechazarlas o eliminarlas, aunque algunas funciones de la aplicación podrían verse afectadas.
+
+## 6. Retención de datos  
+Conservamos tu información mientras tu cuenta esté activa y según sea necesario para cumplir con las finalidades descritas o para cumplir obligaciones legales. Podrás solicitar la eliminación de tus datos en cualquier momento (ver sección “Tus derechos”).
+
+## 7. Tus derechos  
+Tienes derecho a:  
+1. Acceder a los datos personales que almacenamos sobre ti.  
+2. Rectificar información inexacta o incompleta.  
+3. Solicitar la supresión de tus datos personales.  
+4. Oponerte al tratamiento de tus datos o solicitar su limitación.  
+5. Solicitar la portabilidad de tus datos a otro responsable.  
+
+Para ejercer estos derechos, por favor escribe a [soporte@intelligentsabbath.com](mailto:soporte@intelligentsabbath.com) o utiliza el formulario de contacto disponible en la aplicación.
+
+## 8. Cambios a esta Política  
+Podemos actualizar esta política de vez en cuando. Te notificaremos sobre cambios significativos mediante un aviso en la aplicación o por correo electrónico. La versión más reciente siempre estará disponible aquí.
+
+## 9. Contacto  
+Si tienes dudas o inquietudes sobre esta Política de Privacidad, contáctanos en:  
+**Correo:** [soporte@intelligentsabbath.com](mailto:soporte@intelligentsabbath.com)  
+**© 2025 Intelligent Sabbath+**`;
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
