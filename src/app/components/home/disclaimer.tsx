@@ -43,13 +43,13 @@ const Disclaimer: React.FC = () => {
       <DialogContent dividers>
         <Typography variant="body2">
           Esta aplicación está diseñada con fines educativos y espirituales,
-          especialmente para el estudio de la Intelligent Sabbath+. La
-          información proporcionada por la aplicación, incluyendo explicaciones
-          generadasz`` por IA, referencias bíblicas y comentarios, debe ser
-          usada como apoyo para el estudio personal o en grupo, pero no
-          reemplaza el estudio profundo de la Biblia, la oración ni la guía del
-          Espíritu Santo. Las interpretaciones ofrecidas pueden variar y no
-          deben considerarse como una autoridad doctrinal oficial. <br /> <br />
+          especialmente para el estudio de la Escuela Sabatica. La información
+          proporcionada por la aplicación, incluyendo explicaciones generadasz``
+          por IA, referencias bíblicas y comentarios, debe ser usada como apoyo
+          para el estudio personal o en grupo, pero no reemplaza el estudio
+          profundo de la Biblia, la oración ni la guía del Espíritu Santo. Las
+          interpretaciones ofrecidas pueden variar y no deben considerarse como
+          una autoridad doctrinal oficial. <br /> <br />
           Al usar esta aplicación, aceptas que es una herramienta complementaria
           y no un sustituto de la comunión con Dios ni de la dirección
           espiritual pastoral. Siempre verifica lo que dice la inteligencia
