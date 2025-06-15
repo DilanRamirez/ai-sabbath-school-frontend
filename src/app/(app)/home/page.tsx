@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Container, CircularProgress, Typography } from "@mui/material";
 import QuarterSelector from "@/app/dashboard/quarter-selector";
 import { useLessonData } from "@/app/hooks/use-lesson-data";
 import { Quarter } from "@/app/types/types";
 import WelcomeHeader from "@/app/components/home/welcome-header";
+import Disclaimer from "@/app/components/home/disclaimer";
 import { useAppSelector } from "@/app/store/hooks";
 import TodayCard from "@/app/components/home/today-card";
 import { useHomeStudyData } from "@/app/hooks/use-home-study";
@@ -29,6 +30,10 @@ const HomePage: React.FC = () => {
     error: userDataError,
   } = useHomeStudyData(email);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("loading state changed:", loading);
+  }, [loading]);
 
   /**
    * Handle selection of a quarter:
@@ -147,6 +152,7 @@ const HomePage: React.FC = () => {
           gap: { xs: 2, sm: 3, md: 4 },
         }}
       >
+        <Disclaimer />
         <WelcomeHeader user={user} />
         <QuarterSelect
           lastPosition={lastPosition?.position}

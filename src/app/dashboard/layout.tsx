@@ -17,7 +17,7 @@ export default function DashboardLayout({
       <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Escuela Sabática</Typography>
+          <Typography variant="h6">Sabbath+</Typography>
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ py: 4 }}>
