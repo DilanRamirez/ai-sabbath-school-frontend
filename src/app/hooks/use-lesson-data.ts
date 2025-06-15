@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { getLessons, getQuarters } from "../lib/api/lessons";
-import { LessonsResponse, Quarter } from "../types/types";
+import type { LessonsResponse, Quarter } from "../types/types";
 import {
   loadLessons,
   loadLessonsLoading,
@@ -24,60 +24,70 @@ interface UseLessonDataResult {
   fetchLessons: (quarter: Quarter) => Promise<void>;
 }
 
-/**
- * Custom hook to load quarters and lessons data.
- * @param selectedQuarter Optional externally selected quarter.
- */
-export function useLessonData(selectedQuarter?: Quarter): UseLessonDataResult {
+// Hook to fetch quarters once
+function useFetchQuarters(): {
+  quarters: Quarter[];
+  loading: boolean;
+  error: string | null;
+} {
   const dispatch = useAppDispatch();
-  const params = useParams();
-  const quarterSlug =
-    typeof params?.quarterId === "string" ? params.quarterId : "";
-
   const [quarters, setQuarters] = useState<Quarter[]>([]);
-  const [lessons, setLessons] = useState<LessonsResponse[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasFetched = useRef(false);
 
-  const hasFetchedQuarters = useRef(false);
-  const fetchedLessons = useRef<Set<string>>(new Set());
-
-  // Fetch quarters on mount
-  const fetchQuarters = useCallback(async () => {
-    if (hasFetchedQuarters.current) return;
-    hasFetchedQuarters.current = true;
+  const fetch = useCallback(async () => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    setLoading(true);
     dispatch(loadQuartersLoading());
-    setError(null);
     try {
       const data = await getQuarters();
       setQuarters(data);
       dispatch(loadQuarters(data));
-    } catch (err: any) {
-      console.error("Failed to load quarters:", err);
+    } catch {
       const msg = "Error al cargar trimestres";
       setError(msg);
       dispatch(loadQuartersError(msg));
+    } finally {
+      setLoading(false);
     }
   }, [dispatch]);
 
-  // Fetch lessons for a given quarter
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
+
+  return { quarters, loading, error };
+}
+
+// Hook to fetch lessons per quarter with caching
+function useFetchLessons(): {
+  lessons: LessonsResponse[];
+  loading: boolean;
+  error: string | null;
+  // eslint-disable-next-line no-unused-vars
+  fetchLessons: (quarter: Quarter) => Promise<void>;
+} {
+  const dispatch = useAppDispatch();
+  const [lessons, setLessons] = useState<LessonsResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const cache = useRef<Record<string, boolean>>({});
+
   const fetchLessons = useCallback(
     async (quarter: Quarter) => {
-      const quarterKey = `${quarter.metadata.slug}-${quarter.year}`;
-      if (fetchedLessons.current.has(quarterKey)) return;
-      fetchedLessons.current.add(quarterKey);
       if (!quarter) return;
-      dispatch(loadLessonsLoading({ loading: true }));
+      const key = `${quarter.metadata.slug}-${quarter.year}`;
+      if (cache.current[key]) return;
+      cache.current[key] = true;
       setLoading(true);
-      setError(null);
-      setLessons([]);
-
+      dispatch(loadLessonsLoading({ loading: true }));
       try {
         const data = await getLessons(quarter.year, quarter.metadata.slug);
         setLessons(data);
         dispatch(loadLessons(data));
-      } catch (err: any) {
-        console.error("Failed to load lessons:", err);
+      } catch {
         const msg = "Error al cargar lecciones";
         setError(msg);
         dispatch(loadLessonsError(msg));
@@ -89,27 +99,40 @@ export function useLessonData(selectedQuarter?: Quarter): UseLessonDataResult {
     [dispatch],
   );
 
-  // Load quarters on initial render
-  useEffect(() => {
-    fetchQuarters();
-  }, [fetchQuarters]);
+  return { lessons, loading, error, fetchLessons };
+}
 
-  // When an external quarter is selected, load its lessons
+// Main hook combining both
+export function useLessonData(externalQuarter?: Quarter): UseLessonDataResult {
+  const { quarters, loading: qLoading, error: qError } = useFetchQuarters();
+  const {
+    lessons,
+    loading: lLoading,
+    error: lError,
+    fetchLessons,
+  } = useFetchLessons();
+  const params = useParams();
+  const slug = typeof params?.quarterId === "string" ? params.quarterId : "";
+
+  // Determine the selected quarter: external prop or URL slug match
+  const selectedQuarter = useMemo<Quarter | undefined>(() => {
+    if (externalQuarter) return externalQuarter;
+    if (slug && quarters.length) {
+      return quarters.find((q) => q.metadata.slug === slug);
+    }
+    return undefined;
+  }, [externalQuarter, slug, quarters]);
+
+  // Trigger lesson fetch when selected quarter changes
   useEffect(() => {
     if (selectedQuarter) {
       fetchLessons(selectedQuarter);
     }
   }, [selectedQuarter, fetchLessons]);
 
-  // If no external quarter, but slug present, map slug to quarter and load
-  useEffect(() => {
-    if (!selectedQuarter && quarterSlug && quarters.length > 0) {
-      const matched = quarters.find((q) => q.metadata.slug === quarterSlug);
-      if (matched) {
-        fetchLessons(matched);
-      }
-    }
-  }, [selectedQuarter, quarterSlug, quarters, fetchLessons]);
+  // Consolidated loading and error states
+  const loading = qLoading || lLoading;
+  const error = qError || lError;
 
   return {
     quarters,

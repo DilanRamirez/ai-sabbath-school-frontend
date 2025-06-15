@@ -79,7 +79,11 @@ const HomePage: React.FC = () => {
     return (
       <Container maxWidth="lg">
         <Box sx={{ mt: 4 }}>
-          <Typography>No hay trimestres disponibles.</Typography>
+          <Typography>
+            {loading
+              ? "Cargando contenido..."
+              : "No hay trimestres disponibles."}
+          </Typography>
         </Box>
       </Container>
     );
