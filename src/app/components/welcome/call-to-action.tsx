@@ -60,7 +60,7 @@ export default function CallToActionSection() {
               px: { xs: 1, sm: 0 },
             }}
           >
-            No importa si eres nuevo o llevas años estudiando. AI Intelligent
+            No importa si eres nuevo o llevas años estudiando. Intelligent
             Sabbath+ está aquí para acompañarte cada día. Explora la lección,
             conecta con otros y deja que el Espíritu Santo hable a tu corazón.
           </Typography>

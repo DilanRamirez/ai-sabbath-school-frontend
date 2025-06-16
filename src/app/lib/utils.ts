@@ -2,6 +2,9 @@ import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { bible_api } from "./api";
+import { LessonDay, UserStudyNote } from "../types/types";
+import MarkdownIt from "markdown-it";
+import html2pdf from "html2pdf.js";
 
 export const disclaimer: string = `## Descargo de responsabilidad
 
@@ -319,3 +322,101 @@ export const generateContext = (
 ): string => {
   return `Having the following content: ${dayContent}\n  focus on the day part: ${passage}\n`;
 };
+
+/**
+ * Maps an array of AI-generated daily summaries to their corresponding user notes.
+ * @param aiSummaries - The array of daily summary objects, each with a `day` field.
+ * @param userNotes - The array of user notes, each with a `day` field matching summaries.
+ * @returns A new array where each summary object is extended with a `notes` array.
+ */
+export function mapNotesToDays(
+  aiSummaries: LessonDay[],
+  userNotes: UserStudyNote[],
+): string {
+  // Group notes by their 'day' property for efficient lookup
+  const notesByDay: Record<string, UserStudyNote[]> = userNotes.reduce(
+    (acc, note) => {
+      const key = note.day;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(note);
+      return acc;
+    },
+    {} as Record<string, UserStudyNote[]>,
+  );
+
+  const htmlReport = formatReportForPdf(
+    aiSummaries.map((summary) => ({
+      ...summary,
+      notes: notesByDay[summary.day] ?? [],
+    })),
+  );
+
+  // Attach the array of notes (or empty) to each AI summary by matching day
+  return htmlReport;
+}
+
+/**
+ * Generates a Markdown string of the report, with day summaries and user notes,
+ * ready to feed into a PDF renderer or Markdown viewer.
+ */
+export function formatReportForPdf(
+  days: (LessonDay & { notes: UserStudyNote[] })[],
+): string {
+  return days
+    .map((day) => {
+      let md = `### ${day.day} - ${day.date}\n\n`;
+      if (day.title) {
+        md += `# ${day.title}\n\n`;
+      }
+      // Insert the lesson content (assumed to be Markdown)
+      md += `${day.rawMarkdown}\n\n`;
+      // Append user notes if any
+      if (day.notes?.length) {
+        md += `  ### Notas del usuario\n`;
+        day.notes.forEach((note) => {
+          md += `  - ${note.content}\n`;
+          md += `  - ${note.note}\n`;
+        });
+        md += `\n`;
+      }
+      return md;
+    })
+    .join("\n");
+}
+
+/**
+ * Converts a Markdown string into a styled PDF and triggers a download.
+ * @param markdown - The Markdown content to convert.
+ * @param fileName - The desired PDF file name (default: "report.pdf").
+ */
+export async function downloadMarkdownAsPdf(
+  markdown: string,
+  fileName: string = "report.pdf",
+): Promise<void> {
+  // Render Markdown to HTML
+  const mdParser = new MarkdownIt();
+  const htmlContent = mdParser.render(markdown);
+
+  // Create a container element for PDF generation
+  const container = document.createElement("div");
+  container.innerHTML = htmlContent;
+  container.style.padding = "20px";
+  container.style.fontFamily = "Arial, sans-serif";
+  document.body.appendChild(container);
+
+  // Generate and save PDF
+  await html2pdf()
+    .from(container)
+    .set({
+      margin: 10,
+      filename: fileName,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    })
+    .save();
+
+  // Clean up
+  document.body.removeChild(container);
+}

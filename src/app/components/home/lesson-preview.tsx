@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Paper,
   Box,
@@ -8,13 +9,27 @@ import {
   LinearProgress,
   Card,
   CardContent,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { MenuBook } from "@mui/icons-material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import { Download, MenuBook } from "@mui/icons-material";
+import ReactMarkdown from "react-markdown";
 
-import { HomeLessonMetadata, HomeStudyProgress } from "@/app/types/types";
+import { HomeLessonMetadata, HomeStudyProgress, User } from "@/app/types/types";
+import { useReport } from "@/app/hooks/use-report";
+import { downloadMarkdownAsPdf } from "@/app/lib/utils";
 
 interface LessonPreviewHomeProps {
   lessonProgress: HomeStudyProgress | null;
+  user: User;
   lessonMetadata?: HomeLessonMetadata;
 }
 
@@ -22,7 +37,7 @@ interface LessonPreviewHomeProps {
  * LessonPreviewHome component displays lesson progress and memory verse.
  */
 const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
-  ({ lessonProgress, lessonMetadata }) => {
+  ({ lessonProgress, lessonMetadata, user }) => {
     const completedDays = useMemo(
       () => lessonProgress?.days_completed?.length ?? 0,
       [lessonProgress?.days_completed],
@@ -32,6 +47,18 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
       () => Math.round((completedDays / 7) * 100),
       [completedDays],
     );
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const { loading, error, mappedDays, refetch } = useReport(
+      lessonProgress?.last_position,
+      user,
+    );
+
+    useEffect(() => {
+      if (!loading && mappedDays) {
+        setModalOpen(true);
+      }
+    }, [loading, mappedDays]);
 
     return (
       <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, mt: 2, borderRadius: 3 }}>
@@ -64,9 +91,24 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
               <MenuBook />
             </Box>
             <Box>
-              <Typography variant="h3" color="text.primary">
-                Lección en Progreso
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="h3" color="text.primary">
+                  Lección en Progreso
+                </Typography>
+                <Tooltip title="Descargar reporte de lección" arrow>
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      setModalOpen(false);
+                      refetch();
+                    }}
+                  >
+                    <Download />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+
               <Typography variant="body1" color="text.secondary">
                 {lessonMetadata?.title ?? "Título no disponible"} - Lección{" "}
                 {lessonMetadata?.lesson_number ?? "N/D"}
@@ -113,6 +155,62 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
 
         {/* Memory Verse */}
         <LessonMemoryVerse metadata={lessonMetadata} />
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Reporte de la Lección</DialogTitle>
+          <DialogContent dividers>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                <CircularProgress />
+              </Box>
+            ) : error ? (
+              <Typography color="error" sx={{ p: 2 }}>
+                {error}
+              </Typography>
+            ) : mappedDays ? (
+              <Box
+                component="pre"
+                sx={{ whiteSpace: "pre-wrap", fontSize: 14 }}
+              >
+                <ReactMarkdown
+                  components={{
+                    h1: ({ node, ...props }) => (
+                      <Typography variant="h4" gutterBottom {...props} />
+                    ),
+                    h2: ({ node, ...props }) => (
+                      <Typography variant="h5" gutterBottom {...props} />
+                    ),
+                    h3: ({ node, ...props }) => (
+                      <Typography variant="h6" gutterBottom {...props} />
+                    ),
+                    // You can add more heading levels if needed
+                  }}
+                >
+                  {mappedDays}
+                </ReactMarkdown>
+              </Box>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                // Generate markdown and download as PDF
+                downloadMarkdownAsPdf(
+                  mappedDays,
+                  `Reporte_Leccion_${lessonMetadata?.lesson_number || "N"}.pdf`,
+                );
+              }}
+            >
+              Descargar PDF
+            </Button>
+            <Button onClick={() => setModalOpen(false)}>Cerrar</Button>
+          </DialogActions>
+        </Dialog>
       </Paper>
     );
   },

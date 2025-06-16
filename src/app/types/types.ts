@@ -331,6 +331,17 @@ export interface UseHomeStudyData {
   error: string | null;
 }
 
+export interface LessonReport {
+  aiSummaries: LessonDay[];
+  metadata: HomeLessonMetadata;
+  userProgress: {
+    days_completed: string[];
+    notes: UserStudyNote[];
+    lastPosition: LastPosition;
+    score: number;
+  };
+}
+
 export enum LLMMode {
   EXPLAIN = "explain",
   REFLECT = "reflect",

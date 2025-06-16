@@ -1,5 +1,6 @@
 import {
   HomeLastPosition,
+  LessonReport,
   StudyProgressPayload,
   StudyProgressRecord,
   StudyProgressResponse,
@@ -68,6 +69,18 @@ export async function getLessonMetadata(
 ): Promise<any> {
   const { data } = await api.get(
     `/lessons/${year}/${quarter}/${lessonId}/metadata`,
+  );
+  return data;
+}
+
+export async function getReport(
+  year: string,
+  quarter: string,
+  lessonId: string,
+  userId: string,
+): Promise<LessonReport> {
+  const { data } = await api.get(
+    `/study/report/${year}/${quarter}/${lessonId}/${userId}`,
   );
   return data;
 }

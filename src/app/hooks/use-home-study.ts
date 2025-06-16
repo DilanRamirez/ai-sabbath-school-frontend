@@ -41,7 +41,6 @@ export const useHomeStudyData = (userId: string): UseHomeStudyData => {
             userId,
             lastPos.position.lesson_id,
           );
-          console.log("Fetched lesson progress:", lessonProg);
           setLessonProgress(lessonProg);
         }
       } catch (err: any) {

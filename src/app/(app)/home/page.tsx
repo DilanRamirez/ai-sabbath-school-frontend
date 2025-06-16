@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Container, CircularProgress, Typography } from "@mui/material";
 import QuarterSelector from "@/app/dashboard/quarter-selector";
@@ -30,10 +30,6 @@ const HomePage: React.FC = () => {
     error: userDataError,
   } = useHomeStudyData(email);
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("loading state changed:", loading);
-  }, [loading]);
 
   /**
    * Handle selection of a quarter:
@@ -138,8 +134,6 @@ const HomePage: React.FC = () => {
     );
   }
 
-  console.log("Lesson Progress:", lessonProgress);
-
   return (
     <Container
       maxWidth="lg"
@@ -168,6 +162,7 @@ const HomePage: React.FC = () => {
           <LessonPreviewHome
             lessonProgress={lessonProgress}
             lessonMetadata={lastPosition?.metadata}
+            user={user}
           />
         )}
 
