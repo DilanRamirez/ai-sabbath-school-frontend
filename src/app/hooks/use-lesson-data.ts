@@ -25,7 +25,7 @@ interface UseLessonDataResult {
 }
 
 // Hook to fetch quarters once
-function useFetchQuarters(): {
+export function useFetchQuarters(): {
   quarters: Quarter[];
   loading: boolean;
   error: string | null;
@@ -62,7 +62,7 @@ function useFetchQuarters(): {
 }
 
 // Hook to fetch lessons per quarter with caching
-function useFetchLessons(): {
+export function useFetchLessons(): {
   lessons: LessonsResponse[];
   loading: boolean;
   error: string | null;
@@ -96,7 +96,7 @@ function useFetchLessons(): {
         dispatch(loadLessonsLoading({ loading: false }));
       }
     },
-    [dispatch],
+    [dispatch]
   );
 
   return { lessons, loading, error, fetchLessons };

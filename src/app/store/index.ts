@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/user/user-slice";
 import lessonReducer from "./slices/lesson/lesson-slice";
 import lessonsReducer from "./slices/lessons/lessons-slice";
+import quarterReducer from "./slices/quarters/quarters-slice";
 import themeReducer from "./slices/theme/theme-slice";
 import { logger } from "./logger";
 
@@ -18,6 +19,7 @@ export const store = configureStore({
     user: userReducer,
     lesson: lessonReducer,
     lessons: lessonsReducer,
+    quarters: quarterReducer,
     theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>

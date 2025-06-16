@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   getLastPosition,
   getLessonProgress,
@@ -10,50 +10,110 @@ import {
   ProgressSummary,
   UseHomeStudyData,
 } from "../types/types";
+import { useAppDispatch } from "../store/hooks";
+import {
+  setRecordsLoading,
+  setProgressSummary as setSummaryAction,
+  setLastPosition as setLastPositionAction,
+  setLessonProgress as setLessonProgressAction,
+  setRecordsError,
+} from "../store/slices/user/user-slice";
+import {
+  setLessonAction,
+  setLessonErrorAction,
+  setLessonLoadingAction,
+} from "../store/slices/lesson/lesson-slice";
 
+/**
+ * Custom hook to load and manage the user's home study data:
+ * - Progress summary
+ * - Last accessed position
+ * - Detailed lesson progress
+ */
 export const useHomeStudyData = (userId: string): UseHomeStudyData => {
+  const dispatch = useAppDispatch();
+
+  // Local state for immediate UI feedback
   const [progressSummary, setProgressSummary] =
     useState<ProgressSummary | null>(null);
   const [lastPosition, setLastPosition] = useState<HomeLastPosition | null>(
-    null,
+    null
   );
   const [lessonProgress, setLessonProgress] =
     useState<HomeStudyProgress | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!userId) return;
+  /**
+   * Fetch summary, position, and lesson progress.
+   * Uses Promise.all for summary + position, then conditional detailed fetch.
+   */
+  const fetchData = useCallback(async () => {
+    // Guard: no user ID provided
+    if (!userId) {
+      const msg = "Usuario no proporcionado";
+      setError(msg);
+      dispatch(setRecordsError(msg));
+      dispatch(setRecordsLoading(false));
+      setLoading(false);
+      return;
+    }
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [summary, lastPos] = await Promise.all([
-          getProgressSummary(userId),
-          getLastPosition(userId),
-        ]);
+    // Reset prior error and signal loading
+    setError(null);
+    dispatch(setRecordsLoading(true));
+    setLoading(true);
 
-        setProgressSummary(summary);
-        setLastPosition(lastPos);
+    try {
+      // Parallel fetch for summary and last position
+      const [summaryResult, positionResult] = await Promise.all([
+        getProgressSummary(userId),
+        getLastPosition(userId),
+      ]);
 
-        if (lastPos?.position.lesson_id) {
-          const lessonProg = await getLessonProgress(
-            userId,
-            lastPos.position.lesson_id,
-          );
-          console.log("Fetched lesson progress:", lessonProg);
-          setLessonProgress(lessonProg);
-        }
-      } catch (err: any) {
-        console.error("Failed to fetch home study data:", err);
-        setError(err.message || "Unknown error");
-      } finally {
-        setLoading(false);
+      // Update summary
+      setProgressSummary(summaryResult);
+      dispatch(setSummaryAction(summaryResult));
+
+      // Update last position
+      setLastPosition(positionResult);
+      dispatch(setLastPositionAction(positionResult));
+      dispatch(setLessonAction(positionResult?.position));
+
+      // Conditional fetch for detailed lesson progress
+      const lessonId = positionResult?.position.lesson_id;
+      if (lessonId) {
+        const lessonResult = await getLessonProgress(userId, lessonId);
+        setLessonProgress(lessonResult);
+        dispatch(setLessonProgressAction(lessonResult));
+      } else {
+        // Clear any stale lesson progress
+        setLessonProgress(null);
+        dispatch(setLessonProgressAction(null));
       }
-    };
+    } catch (err: any) {
+      const msg = err?.message ?? "Error desconocido al cargar datos";
+      setError(msg);
+      dispatch(setRecordsError(msg));
+      dispatch(setLessonErrorAction(msg));
+    } finally {
+      // Clear loading states
+      setLoading(false);
+      dispatch(setRecordsLoading(false));
+      dispatch(setLessonLoadingAction(false));
+    }
+  }, [
+    userId,
+    dispatch,
+    setProgressSummary,
+    setLastPosition,
+    setLessonProgress,
+  ]);
 
+  // Trigger fetch when userId changes
+  useEffect(() => {
     fetchData();
-  }, [userId]);
+  }, [fetchData]);
 
   return {
     progressSummary,

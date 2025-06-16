@@ -1,10 +1,23 @@
-import { LoginResponse, User } from "@/app/types/types";
+import {
+  HomeLastPosition,
+  HomeStudyProgress,
+  LoginResponse,
+  ProgressSummary,
+  User,
+} from "@/app/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserState {
   user: User;
   access_token: string | null;
   token_type: "bearer" | null;
+  records: {
+    progress: ProgressSummary | null;
+    lastPosition: HomeLastPosition | null;
+    lessonProgress: HomeStudyProgress | null;
+  };
+  recordsLoading: boolean;
+  recordsError: string | null;
 }
 
 const initialState: UserState = {
@@ -17,6 +30,13 @@ const initialState: UserState = {
   },
   access_token: null,
   token_type: null,
+  records: {
+    progress: null,
+    lastPosition: null,
+    lessonProgress: null,
+  },
+  recordsLoading: false,
+  recordsError: null,
 };
 
 const userSlice = createSlice({
@@ -50,7 +70,7 @@ const userSlice = createSlice({
         user: User;
         access_token: string;
         token_type: "bearer";
-      }>,
+      }>
     ) {
       const { user, access_token, token_type } = action.payload;
       state.access_token = access_token;
@@ -61,8 +81,32 @@ const userSlice = createSlice({
         isLoggedIn: true, // Add isLoggedIn property
       };
     },
+    setRecordsLoading(state, action: PayloadAction<boolean>) {
+      state.recordsLoading = action.payload;
+    },
+    setProgressSummary(state, action: PayloadAction<ProgressSummary | null>) {
+      state.records.progress = action.payload;
+    },
+    setLastPosition(state, action: PayloadAction<HomeLastPosition | null>) {
+      state.records.lastPosition = action.payload;
+    },
+    setLessonProgress(state, action: PayloadAction<HomeStudyProgress | null>) {
+      state.records.lessonProgress = action.payload;
+    },
+    setRecordsError(state, action: PayloadAction<string | null>) {
+      state.recordsError = action.payload;
+    },
   },
 });
 
-export const { login, logout, signup } = userSlice.actions;
+export const {
+  login,
+  logout,
+  signup,
+  setRecordsLoading,
+  setProgressSummary,
+  setLastPosition,
+  setLessonProgress,
+  setRecordsError,
+} = userSlice.actions;
 export default userSlice.reducer;
