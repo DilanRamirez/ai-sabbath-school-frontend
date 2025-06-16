@@ -17,3 +17,9 @@ types:
 	npx tsc --noEmit
 
 test-all: format check-format lint types
+
+# Build Docker image for dev (macOS/arm64 platform)
+IMAGE_NAME=ai-sabbath-school-frontend
+build-dev:
+	docker build --platform linux/arm64/v8 \
+		-t $(IMAGE_NAME):dev .

@@ -3,8 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { bible_api } from "./api";
 import { LessonDay, UserStudyNote } from "../types/types";
-import MarkdownIt from "markdown-it";
-import html2pdf from "html2pdf.js";
+// Removed unused @react-pdf/renderer import
 
 export const disclaimer: string = `## Descargo de responsabilidad
 
@@ -426,35 +425,173 @@ export function formatReportForPdf(
 
 /**
  * Converts a Markdown string into a styled PDF and triggers a download.
- * @param markdown - The Markdown content to convert.
- * @param fileName - The desired PDF file name (default: "report.pdf").
+ * Uses html2canvas + jsPDF to avoid SSR issues.
+ */
+/**
+ * Triggers a download of the report as a plain-text file, formatting the Markdown
+ * into clean, organized text.
+ * @param markdown - The report content in Markdown format.
+ * @param fileName - Desired file name (will use .txt extension).
  */
 export async function downloadMarkdownAsPdf(
   markdown: string,
   fileName: string = "report.pdf",
 ): Promise<void> {
-  // Render Markdown to HTML
-  const mdParser = new MarkdownIt();
-  const htmlContent = mdParser.render(markdown);
+  if (typeof window === "undefined") {
+    console.error("downloadMarkdownAsPdf can only run in the browser");
+    return;
+  }
 
-  // Create a container element for PDF generation
-  const container = document.createElement("div");
-  container.innerHTML = htmlContent;
-  container.style.padding = "20px";
-  container.style.fontFamily = "Arial, sans-serif";
-  document.body.appendChild(container);
+  // Convert Markdown to plain text with previous formatting rules
+  let text = markdown
+    // Headings: convert Markdown headings to uppercase titles with separators
+    .replace(
+      /^###### (.*$)/gim,
+      (_, m1) => `====== ${m1.toUpperCase()} ======\n`,
+    )
+    .replace(/^##### (.*$)/gim, (_, m1) => `==== ${m1.toUpperCase()} ====\n`)
+    .replace(/^#### (.*$)/gim, (_, m1) => `=== ${m1.toUpperCase()} ===\n`)
+    .replace(/^### (.*$)/gim, (_, m1) => `== ${m1.toUpperCase()} ==\n`)
+    .replace(/^## (.*$)/gim, (_, m1) => `= ${m1.toUpperCase()} =\n`)
+    .replace(
+      /^# (.*$)/gim,
+      (_, m1) => `${m1.toUpperCase()}\n${"-".repeat(m1.length)}\n`,
+    )
+    // Bold/italic
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    // Links/images
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+    // Lists
+    .replace(/^\s*-\s+/gm, "• ")
+    // Blockquotes
+    .replace(/^> (.*$)/gm, "> $1")
+    // Horizontal rules
+    .replace(/^---+$/gm, "────────────────────────")
+    .replace(/^[% ]+\n/gm, "") // remove lines of '%' only
+    // Collapse blank lines
+    .replace(/\n{3,}/g, "\n\n");
 
-  // Generate and save PDF
-  await html2pdf()
-    .from(container)
-    .set({
-      margin: 10,
-      filename: fileName,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    })
-    .save();
+  // Prepend header
+  text = `REPORTE DE ESTUDIO\n\n${text.trim()}\n`;
 
-  // Clean up
-  document.body.removeChild(container);
+  // Lazy-load jsPDF
+  const { default: JsPDF } = await import("jspdf");
+
+  // Create PDF document in points
+  const pdf = new JsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  pdf.setFont("Helvetica");
+  pdf.setFontSize(12);
+
+  // Split text into lines that fit within margins (20pt each side)
+  const margin = 40;
+  const maxLineWidth = pageWidth - margin * 2;
+  const lines = pdf.splitTextToSize(text, maxLineWidth);
+
+  // Add lines to PDF with manual page breaks
+  let cursorY = margin;
+  const lineHeight = 14;
+  for (const line of lines) {
+    if (cursorY + lineHeight > pageHeight - margin) {
+      pdf.addPage();
+      cursorY = margin;
+    }
+    pdf.text(line, margin, cursorY);
+    cursorY += lineHeight;
+  }
+
+  // Save PDF
+  pdf.save(fileName);
+}
+
+/**
+ * Generates a plain-text report string with clear headings and sections,
+ * based on an array of lesson days (with summaries and notes).
+ */
+export function formatReportAsText(
+  days: (LessonDay & {
+    notes: UserStudyNote[];
+    daySummary?: {
+      summary: string;
+      keyPoints?: string[];
+      glossary?: Record<string, string>;
+      citations?: { reference: string }[];
+    };
+  })[],
+): string {
+  let text = "";
+  days.forEach((day) => {
+    text += `=== ${day.day} — ${day.date} ===\n`;
+    if (day.title) {
+      text += `${day.title}\n`;
+    }
+    text += "\n";
+
+    // Day summary
+    const s = day.daySummary;
+    if (s) {
+      text += `Resumen del día:\n${s.summary}\n\n`;
+      if (s.keyPoints?.length) {
+        text += "Puntos clave:\n";
+        s.keyPoints.forEach((pt, i) => {
+          text += `  ${i + 1}. ${pt}\n`;
+        });
+        text += "\n";
+      }
+      if (s.glossary) {
+        text += "Glosario:\n";
+        Object.entries(s.glossary).forEach(([term, def]) => {
+          text += `  - ${term}: ${def}\n`;
+        });
+        text += "\n";
+      }
+      if (s.citations?.length) {
+        text += "Citaciones:\n";
+        s.citations.forEach((c, i) => {
+          text += `  ${i + 1}. ${c.reference}\n`;
+        });
+        text += "\n";
+      }
+    }
+
+    // Main lesson content
+    text += `${day.rawMarkdown.trim()}\n\n`;
+
+    // User notes
+    if (day.notes?.length) {
+      text += "Notas del usuario:\n";
+      day.notes.forEach((note, i) => {
+        text += `  ${i + 1}. Pregunta: ${note.content}\n`;
+        text += `     Nota: ${note.note}\n`;
+      });
+      text += "\n";
+    }
+
+    text += "────────────────────────────────────────\n\n";
+  });
+  return text.trim();
+}
+
+/**
+ * Triggers a download of the report as a plain-text file in the browser.
+ */
+export function downloadReportAsText(
+  days: (LessonDay & { notes: UserStudyNote[]; daySummary?: object })[],
+  fileName: string = "reporte.txt",
+): void {
+  if (typeof window === "undefined") {
+    console.error("downloadReportAsText can only run in the browser");
+    return;
+  }
+  const content = formatReportAsText(days);
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

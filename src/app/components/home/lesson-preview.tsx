@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
+"use client";
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Paper,
