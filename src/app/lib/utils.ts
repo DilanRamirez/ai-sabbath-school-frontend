@@ -346,12 +346,12 @@ export function mapNotesToDays(
     {} as Record<string, UserStudyNote[]>,
   );
 
-  const htmlReport = formatReportForPdf(
-    aiSummaries.map((summary) => ({
-      ...summary,
-      notes: notesByDay[summary.day] ?? [],
-    })),
-  );
+  const report = aiSummaries.map((summary) => ({
+    ...summary,
+    notes: notesByDay[summary.day] ?? [],
+  }));
+  console.log("Mapped report with notes:", report);
+  const htmlReport = formatReportForPdf(report);
 
   // Attach the array of notes (or empty) to each AI summary by matching day
   return htmlReport;
@@ -366,21 +366,59 @@ export function formatReportForPdf(
 ): string {
   return days
     .map((day) => {
-      let md = `### ${day.day} - ${day.date}\n\n`;
+      let md = "";
+      // Lesson title if available
       if (day.title) {
-        md += `# ${day.title}\n\n`;
+        md += `# ${day.title}\n`;
       }
-      // Insert the lesson content (assumed to be Markdown)
+      md += `#### ${day.day} - ${day.date}\n\n`;
+
+      // Day summary section
+      const summary = day.daySummary;
+      if (summary) {
+        md += `### Resumen del día\n\n${summary.summary}\n\n`;
+
+        // Key points
+        if (summary.keyPoints?.length) {
+          md += `### Puntos clave\n\n`;
+          summary.keyPoints.forEach((point) => {
+            md += `- ${point}\n`;
+          });
+          md += `\n`;
+        }
+
+        // Glossary terms
+        if (summary.glossary) {
+          md += `### Glosario\n\n`;
+          Object.entries(summary.glossary).forEach(([term, definition]) => {
+            md += `- **${term}**: ${definition}\n`;
+          });
+          md += `\n`;
+        }
+
+        // Citations
+        if (summary.citations?.length) {
+          md += `### Citaciones\n\n`;
+          summary.citations.forEach((cit) => {
+            md += `- ${cit.reference}\n`;
+          });
+          md += `\n`;
+        }
+      }
+
+      // Main lesson content (raw Markdown)
       md += `${day.rawMarkdown}\n\n`;
-      // Append user notes if any
+
+      // User notes
       if (day.notes?.length) {
-        md += `  ### Notas del usuario\n`;
+        md += `### Notas del usuario\n\n`;
         day.notes.forEach((note) => {
-          md += `  - ${note.content}\n`;
-          md += `  - ${note.note}\n`;
+          md += `Pregunta: ${note.content}\n`;
+          md += `Respuesta: ${note.note}\n`;
         });
         md += `\n`;
       }
+      md += `---\n\n`; // Separator for each day
       return md;
     })
     .join("\n");
