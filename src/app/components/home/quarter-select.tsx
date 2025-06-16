@@ -25,7 +25,7 @@ export default function QuarterSelect({
   onSelect,
 }: QuarterSelectorProps) {
   return (
-    <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+    <Paper elevation={2} sx={{ p: 4, borderRadius: 3 }}>
       <Box
         sx={{
           display: "flex",

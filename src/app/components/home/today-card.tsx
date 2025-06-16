@@ -119,35 +119,36 @@ const TodayCard: React.FC<TodayCardProps> = ({ lastPosition }) => {
               </Typography>
             </Box>
           </Box>
-          <Box
+        </Box>
+        <Box
+          sx={{
+            ml: { sm: 4 },
+            alignSelf: { xs: "stretch", sm: "center" },
+            textAlign: { xs: "center", sm: "right" },
+            mt: 2,
+          }}
+        >
+          {/* Action Button with proper ARIA label for accessibility */}
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            endIcon={<ArrowForward />}
             sx={{
-              ml: { sm: 4 },
-              alignSelf: { xs: "stretch", sm: "center" },
-              textAlign: { xs: "center", sm: "right" },
+              bgcolor: "white",
+              color: "primary.main",
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.9)",
+              },
             }}
+            onClick={handleNavigate}
+            aria-label="Estudiar Ahora"
           >
-            {/* Action Button with proper ARIA label for accessibility */}
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              endIcon={<ArrowForward />}
-              sx={{
-                bgcolor: "white",
-                color: "primary.main",
-                fontWeight: 600,
-                px: 3,
-                py: 1.5,
-                "&:hover": {
-                  bgcolor: "rgba(255,255,255,0.9)",
-                },
-              }}
-              onClick={handleNavigate}
-              aria-label="Estudiar Ahora"
-            >
-              Estudiar Ahora
-            </Button>
-          </Box>
+            Estudiar Ahora
+          </Button>
         </Box>
       </CardContent>
     </Card>

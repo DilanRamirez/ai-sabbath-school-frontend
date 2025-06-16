@@ -16,7 +16,7 @@ const WelcomeHeader: FC<WelcomeHeaderProps> = ({ user }) => (
   <Paper
     elevation={1}
     sx={{
-      p: 3,
+      p: 4,
       borderRadius: 3,
     }}
   >

@@ -9,8 +9,6 @@ import {
   LinearProgress,
   Card,
   CardContent,
-  IconButton,
-  Tooltip,
 } from "@mui/material";
 import {
   Dialog,
@@ -61,7 +59,8 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
     }, [loading, mappedDays]);
 
     return (
-      <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, mt: 2, borderRadius: 3 }}>
+      <Paper elevation={2} sx={{ p: { xs: 4, sm: 4 }, mt: 2, borderRadius: 3 }}>
+        <Box sx={{ flex: 1 }}></Box>
         {/* Lesson Header */}
         <Box
           sx={{
@@ -91,23 +90,9 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
               <MenuBook />
             </Box>
             <Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="h3" color="text.primary">
-                  Lección en Progreso
-                </Typography>
-                <Tooltip title="Descargar reporte de lección" arrow>
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    onClick={() => {
-                      setModalOpen(false);
-                      refetch();
-                    }}
-                  >
-                    <Download />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+              <Typography variant="h3" color="text.primary">
+                Lección en Progreso
+              </Typography>
 
               <Typography variant="body1" color="text.secondary">
                 {lessonMetadata?.title ?? "Título no disponible"} - Lección{" "}
@@ -155,6 +140,39 @@ const LessonPreviewHome: React.FC<LessonPreviewHomeProps> = React.memo(
 
         {/* Memory Verse */}
         <LessonMemoryVerse metadata={lessonMetadata} />
+        <Box
+          sx={{
+            ml: { sm: 4 },
+            alignSelf: { xs: "stretch", sm: "center" },
+            textAlign: { xs: "center", sm: "center" },
+          }}
+        >
+          {/* Action Button with proper ARIA label for accessibility */}
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            endIcon={<Download />}
+            sx={{
+              bgcolor: "#2C3E50",
+              color: "#fff",
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              mt: 2,
+              "&:hover": {
+                bgcolor: "#2C3E50",
+              },
+            }}
+            onClick={() => {
+              setModalOpen(false);
+              refetch();
+            }}
+            aria-label="Estudiar Ahora"
+          >
+            Reporte de Lección
+          </Button>
+        </Box>
         <Dialog
           open={modalOpen}
           onClose={() => setModalOpen(false)}

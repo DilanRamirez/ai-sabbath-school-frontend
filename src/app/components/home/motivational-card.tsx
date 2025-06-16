@@ -71,7 +71,7 @@ export default function DailyInspirationCard() {
 
   return (
     <Card sx={styles.cardWrapper}>
-      <CardContent sx={{ p: 3 }}>
+      <CardContent sx={{ p: 4 }}>
         <Box sx={{ display: "flex", alignItems: "start", gap: 2, mb: 3 }}>
           <Box sx={styles.quoteIconBox}>
             <FormatQuote />
