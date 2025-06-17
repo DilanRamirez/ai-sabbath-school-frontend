@@ -349,7 +349,6 @@ export function mapNotesToDays(
     ...summary,
     notes: notesByDay[summary.day] ?? [],
   }));
-  console.log("Mapped report with notes:", report);
   const htmlReport = formatReportForPdf(report);
 
   // Attach the array of notes (or empty) to each AI summary by matching day
