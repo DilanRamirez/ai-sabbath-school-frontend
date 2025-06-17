@@ -9,6 +9,7 @@ import React, {
   useMemo,
   useEffect,
   memo,
+  useRef,
 } from "react";
 import {
   Box,
@@ -181,9 +182,9 @@ const ChatToggleButton: FC<{ onClick: () => void }> = ({ onClick }) => (
  */
 const MessageList = memo(({ messages }: { messages: ChatMessage[] }) => (
   <List role="log" aria-live="polite" aria-relevant="additions">
-    {messages.map((msg) => (
+    {messages.map((msg, i) => (
       <ListItem
-        key={msg.id}
+        key={i}
         sx={{
           justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
         }}
@@ -295,60 +296,77 @@ const ChatWindow: FC<{
   setInputRefText,
   sendReference,
   handleKeyDown,
-}) => (
-  <Box
-    sx={{
-      position: "fixed",
-      bottom: 16,
-      right: 16,
-      width: 360,
-      zIndex: 1300,
-    }}
-  >
-    <Paper
-      elevation={2}
-      sx={{ p: 2, height: 500, display: "flex", flexDirection: "column" }}
+}) => {
+  // ref to scrollable container
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // scroll to bottom whenever messages change
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  return (
+    <Box
+      sx={{
+        position: "fixed",
+        bottom: 16,
+        right: 16,
+        width: 360,
+        zIndex: 1300,
+      }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+      <Paper
+        elevation={2}
+        sx={{ p: 2, height: 500, display: "flex", flexDirection: "column" }}
       >
-        <Typography variant="h6">Bible Chat</Typography>
-        <IconButton
-          size="small"
-          onClick={onClose}
-          aria-label="Close Bible chat"
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </Box>
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflowY: "auto",
-          border: "1px solid #ccc",
-          borderRadius: 1,
-          p: 1,
-          my: 2,
-          backgroundColor: "#fafafa",
-        }}
-      >
-        <MessageList messages={messages} />
-      </Box>
-      <MessageInput
-        inputRefText={inputRefText}
-        setInputRefText={setInputRefText}
-        loading={loading}
-        error={error}
-        sendReference={sendReference}
-        handleKeyDown={handleKeyDown}
-      />
-    </Paper>
-  </Box>
-);
+          <Typography variant="h6">Biblia Chat</Typography>
+          <Typography variant="subtitle2" color="secondary">
+            Reina Valera 1960
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={onClose}
+            aria-label="Close Bible chat"
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Box>
+        {/* Scrollable messages container with ref */}
+        <Box
+          ref={containerRef}
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto",
+            border: "1px solid #ccc",
+            borderRadius: 1,
+            p: 1,
+            my: 2,
+            backgroundColor: "#fafafa",
+          }}
+        >
+          <MessageList messages={messages} />
+        </Box>
+        <MessageInput
+          inputRefText={inputRefText}
+          setInputRefText={setInputRefText}
+          loading={loading}
+          error={error}
+          sendReference={sendReference}
+          handleKeyDown={handleKeyDown}
+        />
+      </Paper>
+    </Box>
+  );
+};
 
 /**
  * BibleChat component allows users to enter a verse reference,

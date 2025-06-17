@@ -84,7 +84,12 @@ const BibleReferenceModal: React.FC<BibleReferenceModalProps> = React.memo(
         fullWidth
         aria-labelledby="bible-reference-title"
       >
-        <DialogTitle id="bible-reference-title">{`Cita bíblica: ${reference}`}</DialogTitle>
+        <DialogTitle id="bible-reference-title">
+          {`Cita bíblica: ${reference}`}
+          <Typography variant="subtitle2" color="secondary">
+            Reina Valera 1960
+          </Typography>
+        </DialogTitle>
         <DialogContent dividers>{renderContent}</DialogContent>
         <DialogActions>
           <Button onClick={onClose} aria-label="Close bible reference modal">

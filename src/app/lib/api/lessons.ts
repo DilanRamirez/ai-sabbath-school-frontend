@@ -1,11 +1,15 @@
 import { LessonsResponse, LessonWeek } from "@/app/types/types";
+import { getAuthToken } from "../auth";
 
 export async function getQuarters() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/quarters`,
     {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthToken() || "",
+      },
     },
   );
 
@@ -28,7 +32,10 @@ export async function getLessons(
 
   const response = await fetch(url.toString(), {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthToken() || "",
+    },
   });
 
   if (!response.ok) {
@@ -48,7 +55,10 @@ export async function getLesson(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons/${year}/${quarter}/${lessonId}`,
     {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthToken() || "",
+      },
     },
   );
 
