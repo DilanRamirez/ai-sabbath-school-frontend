@@ -17,12 +17,24 @@ import { LLMMode } from "@/app/types/types";
 
 // Available AI action modes
 const ACTION_MODES: LLMMode[] = [
+  LLMMode.ASK,
+  LLMMode.EXPLAIN,
   LLMMode.SUMMARIZE,
   LLMMode.REFLECT,
-  LLMMode.ASK,
   LLMMode.APPLY,
-  LLMMode.EXPLAIN,
 ];
+
+// Converts LLMMode values into their Spanish labels
+const modeToSpanish = (mode: LLMMode): string => {
+  const labels: Record<LLMMode, string> = {
+    [LLMMode.SUMMARIZE]: "Resumir",
+    [LLMMode.REFLECT]: "Reflexionar",
+    [LLMMode.ASK]: "Preguntar",
+    [LLMMode.APPLY]: "Aplicar",
+    [LLMMode.EXPLAIN]: "Explicar",
+  };
+  return labels[mode] ?? mode;
+};
 
 /**
  * Tab panel for "Ask" mode, with question input.
@@ -168,7 +180,9 @@ const AiActions: FC<{ open: boolean; context: string }> = ({
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
-            variant="fullWidth"
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             textColor="primary"
             indicatorColor="primary"
             aria-label="AI action tabs"
@@ -176,9 +190,7 @@ const AiActions: FC<{ open: boolean; context: string }> = ({
             {ACTION_MODES.map((mode) => (
               <Tab
                 key={mode}
-                label={
-                  mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()
-                }
+                label={modeToSpanish(mode) || mode}
                 sx={{ textTransform: "capitalize", fontWeight: 500 }}
                 id={`ai-tab-${mode}`}
                 aria-controls={`ai-tabpanel-${mode}`}
