@@ -175,6 +175,7 @@ const AiActions: FC<{ open: boolean; context: string }> = ({
           borderRadius={2}
           borderColor="grey.300"
           bgcolor="grey.200"
+          sx={{ width: "100%" }}
           aria-busy={isLoading}
         >
           <Tabs
@@ -191,7 +192,11 @@ const AiActions: FC<{ open: boolean; context: string }> = ({
               <Tab
                 key={mode}
                 label={modeToSpanish(mode) || mode}
-                sx={{ textTransform: "capitalize", fontWeight: 500 }}
+                sx={{
+                  textTransform: "capitalize",
+                  width: "20%",
+                  fontWeight: 500,
+                }}
                 id={`ai-tab-${mode}`}
                 aria-controls={`ai-tabpanel-${mode}`}
               />
