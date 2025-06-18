@@ -13,6 +13,10 @@ import WeekDay from "@/app/components/lesson-day/week-day";
 import LessonDaySkeleton from "@/app/components/skeletons/lesson-day-skeleton";
 import { Calendar1Icon } from "lucide-react";
 import BibleChat from "@/app/components/lesson-day/shared/bible-chat";
+import { useState } from "react";
+import TeachersPage from "@/app/components/teaching/teaching-index";
+import { School } from "@mui/icons-material";
+import Tooltip from "@mui/material/Tooltip";
 
 const DayView = () => {
   const { lessonId, dayName, quarterId, year } = useParams();
@@ -71,6 +75,8 @@ const DayView = () => {
     );
   };
 
+  const [teachingMode, setTeachingMode] = useState(false);
+
   if (loading || lessonLoading) {
     return <LessonDaySkeleton />;
   }
@@ -90,18 +96,40 @@ const DayView = () => {
         <Typography variant="h4">
           {currentDayData?.title ?? "No Title"}
         </Typography>
-        <IconButton
-          sx={{ ml: 2 }}
-          onClick={() => {
-            const year = lesson?.week_range?.start?.slice(0, 4);
-            if (lessonId && quarterSlug && year) {
-              router.push(`/home/${quarterSlug}/${year}/lessons/${lessonId}`);
-            }
-          }}
-        >
-          <Calendar1Icon />
-        </IconButton>
-        <BibleChat />
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            sx={{ ml: 2 }}
+            onClick={() => {
+              const year = lesson?.week_range?.start?.slice(0, 4);
+              if (lessonId && quarterSlug && year) {
+                router.push(`/home/${quarterSlug}/${year}/lessons/${lessonId}`);
+              }
+            }}
+          >
+            <Calendar1Icon />
+          </IconButton>
+
+          <BibleChat />
+
+          {/* ... */}
+          <Tooltip
+            title={teachingMode ? "Exit teaching mode" : "Enter teaching mode"}
+            arrow
+          >
+            <IconButton
+              color="primary"
+              sx={{
+                ml: 2,
+                bgcolor: teachingMode ? "primary.main" : "default",
+                color: teachingMode ? "white" : "inherit",
+              }}
+              onClick={() => setTeachingMode((prev) => !prev)}
+            >
+              <School />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
 
       {progress && (
@@ -120,105 +148,112 @@ const DayView = () => {
           </Typography>
         </>
       )}
-      {lesson && (
-        <>
-          {currentDayData && (
-            <>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                {new Date(currentDayData.date).toLocaleDateString()}
-              </Typography>
+      {lesson &&
+        (teachingMode ? (
+          <TeachersPage
+            teaching_guide={currentDayData?.daySummary.teaching_guide}
+            currentDayData={currentDayData}
+          />
+        ) : (
+          <>
+            {currentDayData && (
+              <>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {new Date(currentDayData.date).toLocaleDateString()}
+                </Typography>
 
-              {decodedDayName === "Sábado" && (
-                <SabbathDay
-                  reading={
-                    currentDayData.sections
-                      .find((s) => s.type === SectionType.READING)
-                      ?.references?.join(", ") || ""
-                  }
-                  memoryVerse={lesson.memory_verse}
-                  paragraphs={currentDayData.sections
-                    .filter((s) => s.type === SectionType.PARAGRAPH)
-                    .map((s) => s.content)}
-                  year={year as string}
-                  aiSummary={currentDayData.daySummary}
-                />
-              )}
+                {decodedDayName === "Sábado" && (
+                  <SabbathDay
+                    reading={
+                      currentDayData.sections
+                        .find((s) => s.type === SectionType.READING)
+                        ?.references?.join(", ") || ""
+                    }
+                    memoryVerse={lesson.memory_verse}
+                    paragraphs={currentDayData.sections
+                      .filter((s) => s.type === SectionType.PARAGRAPH)
+                      .map((s) => s.content)}
+                    year={year as string}
+                    aiSummary={currentDayData.daySummary}
+                  />
+                )}
 
-              {decodedDayName === "Viernes" && (
-                <FridayDay
-                  paragraph={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.PARAGRAPH,
-                    )?.content || ""
-                  }
-                  quote={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.QUOTE,
-                    )?.content || ""
-                  }
-                  author={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.QUOTE,
-                    )?.author || ""
-                  }
-                  source={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.QUOTE,
-                    )?.source || ""
-                  }
-                  questions={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.DISCUSSION_QUESTIONS,
-                    )?.questions || []
-                  }
-                  userId={userId}
-                  year={year as string}
-                  quarterSlug={quarterSlug}
-                  lessonId={lessonId as string}
-                  dayName={decodedDayName}
-                  cohortId={cohortId}
-                  notes={progress?.notes || []}
-                  aiSummary={currentDayData.daySummary}
-                />
-              )}
+                {decodedDayName === "Viernes" && (
+                  <FridayDay
+                    paragraph={
+                      currentDayData.sections.find(
+                        (s) => s.type === SectionType.PARAGRAPH,
+                      )?.content || ""
+                    }
+                    quote={
+                      currentDayData.sections.find(
+                        (s) => s.type === SectionType.QUOTE,
+                      )?.content || ""
+                    }
+                    author={
+                      currentDayData.sections.find(
+                        (s) => s.type === SectionType.QUOTE,
+                      )?.author || ""
+                    }
+                    source={
+                      currentDayData.sections.find(
+                        (s) => s.type === SectionType.QUOTE,
+                      )?.source || ""
+                    }
+                    questions={
+                      currentDayData.sections.find(
+                        (s) => s.type === SectionType.DISCUSSION_QUESTIONS,
+                      )?.questions || []
+                    }
+                    userId={userId}
+                    year={year as string}
+                    quarterSlug={quarterSlug}
+                    lessonId={lessonId as string}
+                    dayName={decodedDayName}
+                    cohortId={cohortId}
+                    notes={progress?.notes || []}
+                    aiSummary={currentDayData.daySummary}
+                  />
+                )}
 
-              {decodedDayName !== "Sábado" && decodedDayName !== "Viernes" && (
-                <WeekDay
-                  userId={userId}
-                  quarterSlug={quarterSlug}
-                  lessonId={lessonId as string}
-                  dayName={decodedDayName}
-                  cohortId={cohortId}
-                  year={year as string}
-                  notes={progress?.notes || []}
-                  aiSummary={currentDayData.daySummary}
-                  paragraphs={currentDayData.sections
-                    .filter((s) => s.type === SectionType.PARAGRAPH)
-                    .map((s) => s.content)}
-                  bibleQuestion={
-                    currentDayData.sections.find(
-                      (s) => s.type === SectionType.BIBLE_QUESTION,
-                    ) || { question: "" }
-                  }
-                  reflection={(() => {
-                    const reflectionSection = currentDayData.sections.find(
-                      (s) => s.type === SectionType.REFLECTION,
-                    );
-                    return reflectionSection
-                      ? {
-                          label: reflectionSection.label,
-                          question: Array.isArray(reflectionSection.content)
-                            ? reflectionSection.content.join(", ")
-                            : reflectionSection.content || "",
-                        }
-                      : { question: "" };
-                  })()}
-                />
-              )}
-            </>
-          )}
-        </>
-      )}
+                {decodedDayName !== "Sábado" &&
+                  decodedDayName !== "Viernes" && (
+                    <WeekDay
+                      userId={userId}
+                      quarterSlug={quarterSlug}
+                      lessonId={lessonId as string}
+                      dayName={decodedDayName}
+                      cohortId={cohortId}
+                      year={year as string}
+                      notes={progress?.notes || []}
+                      aiSummary={currentDayData.daySummary}
+                      paragraphs={currentDayData.sections
+                        .filter((s) => s.type === SectionType.PARAGRAPH)
+                        .map((s) => s.content)}
+                      bibleQuestion={
+                        currentDayData.sections.find(
+                          (s) => s.type === SectionType.BIBLE_QUESTION,
+                        ) || { question: "" }
+                      }
+                      reflection={(() => {
+                        const reflectionSection = currentDayData.sections.find(
+                          (s) => s.type === SectionType.REFLECTION,
+                        );
+                        return reflectionSection
+                          ? {
+                              label: reflectionSection.label,
+                              question: Array.isArray(reflectionSection.content)
+                                ? reflectionSection.content.join(", ")
+                                : reflectionSection.content || "",
+                            }
+                          : { question: "" };
+                      })()}
+                    />
+                  )}
+              </>
+            )}
+          </>
+        ))}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 2 }}
       >
