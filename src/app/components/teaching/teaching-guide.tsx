@@ -6,7 +6,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Chip,
   Divider,
 } from "@mui/material";
 import {
@@ -30,7 +29,16 @@ interface TeachingGuideProps {
 
 export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
   return (
-    <Paper elevation={2} sx={{ p: 4, borderRadius: 3 }}>
+    <Paper
+      elevation={2}
+      sx={{
+        p: 4,
+        borderRadius: 3,
+        width: "100%",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+      }}
+    >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
         <Box
           sx={{
@@ -50,18 +58,41 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         {keyPoints.map((point, index) => (
-          <Accordion key={index} sx={{ "&:before": { display: "none" } }}>
+          <Accordion
+            key={index}
+            sx={{ "&:before": { display: "none", padding: 0 } }}
+          >
             <AccordionSummary
               expandIcon={<ExpandMore sx={{ color: "#fff" }} />}
               sx={{
                 bgcolor: "primary.main",
                 color: "background.paper",
                 borderRadius: 2,
+                pr: 2,
+                pl: 2,
+                // force a smaller, consistent header height on all devices
+                minHeight: 10,
                 "&.Mui-expanded": {
                   borderBottomLeftRadius: 0,
                   borderBottomRightRadius: 0,
+                  minHeight: 48,
+                },
+                // adjust the internal content margins so text centers vertically
+                "& .MuiAccordionSummary-content": {
+                  margin: "12px 0",
+                },
+                "& .MuiAccordionSummary-content.Mui-expanded": {
+                  margin: "12px 0",
                 },
               }}
             >
@@ -73,18 +104,10 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                   width: "100%",
                 }}
               >
-                <Chip
-                  label={point.title}
-                  size="small"
-                  sx={{
-                    bgcolor: "primary.main",
-                    color: "background.paper",
-                    fontWeight: 600,
-                  }}
-                />
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600, color: "text.primary" }}
+                  variant="body2"
+                  fontWeight={600}
+                  sx={{ color: "#fff" }}
                 >
                   {point.title}
                 </Typography>

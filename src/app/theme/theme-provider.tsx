@@ -143,18 +143,6 @@ let theme = createTheme({
         },
       },
     },
-    MuiAccordion: {
-      styleOverrides: {
-        root: {
-          borderRadius: BORDER_RADIUS,
-          padding: "0px",
-          boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-          "&.Mui-expanded": {
-            margin: "16px 0",
-          },
-        },
-      },
-    },
   },
 });
 theme = responsiveFontSizes(theme);

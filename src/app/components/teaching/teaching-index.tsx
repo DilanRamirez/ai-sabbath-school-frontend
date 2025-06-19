@@ -22,14 +22,34 @@ export default function TeachersPage({
     return null;
   }
   return (
-    <Box sx={{ bgcolor: "background.default", minHeight: "100vh", py: 3 }}>
+    <Box
+      sx={{
+        bgcolor: "background.default",
+        minHeight: "100vh",
+        py: 3,
+        mt: 2,
+        overflowX: "hidden",
+      }}
+    >
       <Container maxWidth="xl">
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" },
+              width: "100%", // ← force the grid container to fill its parent
+              maxWidth: "100%", // ← never exceed the parent’s inner width
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "minmax(0, 1fr) minmax(0, 2fr)",
+                md: "minmax(0, 1fr) minmax(0, 2fr)",
+                lg: "minmax(0, 2fr) minmax(0, 1fr)",
+              },
               gap: 3,
+              boxSizing: "border-box",
+              // make *all* direct children allowed to shrink below their content width
+              "& > *": {
+                minWidth: 0,
+              },
             }}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
