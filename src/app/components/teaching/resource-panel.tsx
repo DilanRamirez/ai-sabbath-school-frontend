@@ -1,25 +1,58 @@
 import React from "react";
 import { Paper, Box, Typography, Card, CardContent } from "@mui/material";
 import { Public, Group, Campaign } from "@mui/icons-material";
+import { MenuBook } from "@mui/icons-material";
 
 interface ResourcesPanelProps {
   missionMoment: string | undefined;
   communityActivity: string | undefined;
   callToAction: string | undefined;
+  glossary: Record<string, string> | undefined;
 }
 
 export default function ResourcesPanel({
   missionMoment,
   communityActivity,
   callToAction,
+  glossary,
 }: ResourcesPanelProps) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      {/* Glossary */}
+      {glossary && (
+        <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+            <MenuBook sx={{ color: "primary.main" }} />
+            <Typography
+              variant="h6"
+              sx={{ color: "primary.main", fontWeight: 600 }}
+            >
+              Glosario
+            </Typography>
+          </Box>
+          <Box component="ul" sx={{ pl: 2, m: 0 }}>
+            {Object.entries(glossary).map(([term, definition]) => (
+              <Typography
+                component="li"
+                variant="body2"
+                sx={{ mb: 1, color: "text.secondary" }}
+                key={term}
+              >
+                <strong>{term}:</strong> {definition}
+              </Typography>
+            ))}
+          </Box>
+        </Paper>
+      )}
+
       {/* Mission Moment */}
       <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Public sx={{ color: "#F39C12" }} />
-          <Typography variant="h6" sx={{ color: "#F39C12", fontWeight: 600 }}>
+          <Public sx={{ color: "primary.main" }} />
+          <Typography
+            variant="h6"
+            sx={{ color: "primary.main", fontWeight: 600 }}
+          >
             Momento Misionero
           </Typography>
         </Box>
@@ -34,8 +67,11 @@ export default function ResourcesPanel({
       {/* Community Activity */}
       <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Group sx={{ color: "#27AE60" }} />
-          <Typography variant="h6" sx={{ color: "#27AE60", fontWeight: 600 }}>
+          <Group sx={{ color: "primary.main" }} />
+          <Typography
+            variant="h6"
+            sx={{ color: "primary.main", fontWeight: 600 }}
+          >
             Actividad Comunitaria
           </Typography>
         </Box>
@@ -50,8 +86,11 @@ export default function ResourcesPanel({
       {/* Call to Action */}
       <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Campaign sx={{ color: "#E74C3C" }} />
-          <Typography variant="h6" sx={{ color: "#E74C3C", fontWeight: 600 }}>
+          <Campaign sx={{ color: "primary.main" }} />
+          <Typography
+            variant="h6"
+            sx={{ color: "primary.main", fontWeight: 600 }}
+          >
             Llamado a la Acción
           </Typography>
         </Box>

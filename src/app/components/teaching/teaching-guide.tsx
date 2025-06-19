@@ -34,8 +34,8 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
         <Box
           sx={{
-            bgcolor: "#27AE60",
-            color: "white",
+            bgcolor: "primary.main",
+            color: "background.paper",
             p: 1.5,
             borderRadius: 2,
             display: "flex",
@@ -52,14 +52,12 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {keyPoints.map((point, index) => (
-          <Accordion
-            key={index}
-            sx={{ borderRadius: 2, "&:before": { display: "none" } }}
-          >
+          <Accordion key={index} sx={{ "&:before": { display: "none" } }}>
             <AccordionSummary
-              expandIcon={<ExpandMore />}
+              expandIcon={<ExpandMore sx={{ color: "#fff" }} />}
               sx={{
-                bgcolor: "rgba(39, 174, 96, 0.1)",
+                bgcolor: "primary.main",
+                color: "background.paper",
                 borderRadius: 2,
                 "&.Mui-expanded": {
                   borderBottomLeftRadius: 0,
@@ -76,9 +74,13 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                 }}
               >
                 <Chip
-                  label={`Punto ${index + 1}`}
+                  label={point.title}
                   size="small"
-                  sx={{ bgcolor: "#27AE60", color: "white", fontWeight: 600 }}
+                  sx={{
+                    bgcolor: "primary.main",
+                    color: "background.paper",
+                    fontWeight: 600,
+                  }}
                 />
                 <Typography
                   variant="h6"
@@ -94,7 +96,7 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ mb: 2, color: "#27AE60", fontWeight: 600 }}
+                  sx={{ mb: 2, color: "primary.main", fontWeight: 600 }}
                 >
                   💡 Explicación para el Maestro
                 </Typography>
@@ -112,7 +114,7 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ mb: 2, color: "#2C3E50", fontWeight: 600 }}
+                  sx={{ mb: 2, color: "primary.main", fontWeight: 600 }}
                 >
                   📖 Contenido de la Lección
                 </Typography>
@@ -131,10 +133,10 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
                 >
-                  <Image sx={{ color: "#F39C12" }} />
+                  <Image sx={{ color: "primary.main" }} />
                   <Typography
                     variant="h6"
-                    sx={{ color: "#F39C12", fontWeight: 600 }}
+                    sx={{ color: "primary.main", fontWeight: 600 }}
                   >
                     Ilustración Sugerida
                   </Typography>
@@ -142,14 +144,17 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                 <Box
                   sx={{
                     p: 2,
-                    bgcolor: "rgba(243, 156, 18, 0.1)",
+                    bgcolor: "rgba(44, 62, 80, 0.05)",
+                    color: "#000",
+                    borderLeftWidth: "4px",
+                    borderLeftStyle: "solid",
+                    borderLeftColor: "primary.main",
                     borderRadius: 2,
-                    borderLeft: "4px solid #F39C12",
                   }}
                 >
                   <Typography
                     variant="body2"
-                    sx={{ color: "text.secondary", fontStyle: "italic" }}
+                    sx={{ color: "primary.main", fontStyle: "italic" }}
                   >
                     {point.illustration}
                   </Typography>
@@ -161,10 +166,10 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
                 >
-                  <QuestionAnswer sx={{ color: "#8E44AD" }} />
+                  <QuestionAnswer sx={{ color: "primary.main" }} />
                   <Typography
                     variant="h6"
-                    sx={{ color: "#8E44AD", fontWeight: 600 }}
+                    sx={{ color: "primary.main", fontWeight: 600 }}
                   >
                     Preguntas para Discusión
                   </Typography>
@@ -175,9 +180,11 @@ export default function TeachingGuide({ keyPoints }: TeachingGuideProps) {
                       key={qIndex}
                       sx={{
                         p: 2,
-                        bgcolor: "rgba(142, 68, 173, 0.1)",
+                        bgcolor: "rgba(44, 62, 80, 0.05)",
+                        borderLeftWidth: "3px",
+                        borderLeftStyle: "solid",
+                        borderLeftColor: "primary.main",
                         borderRadius: 2,
-                        borderLeft: "3px solid #8E44AD",
                       }}
                     >
                       <Typography
