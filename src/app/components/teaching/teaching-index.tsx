@@ -14,7 +14,10 @@ interface TeachersPageProps {
   teaching_guide: TeachingGuideType | null | undefined;
   currentDayData: LessonDay | undefined;
 }
-export default function TeachersPage({ teaching_guide }: TeachersPageProps) {
+export default function TeachersPage({
+  teaching_guide,
+  currentDayData,
+}: TeachersPageProps) {
   if (!teaching_guide) {
     return null;
   }
@@ -38,6 +41,7 @@ export default function TeachersPage({ teaching_guide }: TeachersPageProps) {
               missionMoment={teaching_guide.mission_moment}
               communityActivity={teaching_guide.community_activity}
               callToAction={teaching_guide.call_to_action}
+              glossary={currentDayData?.daySummary.glossary}
             />
           </Box>
         </Box>
